@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import JobDetail from "./components/JobDetail";
-import JobList from "./components/JobList";
-import Navbar from "./components/Navbar";
-import SearchBar from "./components/SearchBar";
+import JobDetail from "./components/JobDetail.jsx";
+import JobList from "./components/JobList.jsx";
+import Navbar from "./components/Navbar.jsx";
+import SearchBar from "./components/SearchBar.jsx";
 
-const API_URL = "http://localhost:8000/VAGAS_NORDESTINAS/api";
 
+const API_URL = "http://localhost:8000/Vagas_Nordestinas/api";
 
 
 function formatJob(job) {
@@ -80,6 +80,9 @@ export default function App() {
     fetch(`${API_URL}/jobs.php`)
       .then((res) => res.json())
       .then((json) => {
+
+        console.log("API RESPONSE:", json);
+
         const list = json.data ?? [];
         const formatted = list.map(formatJob);
         

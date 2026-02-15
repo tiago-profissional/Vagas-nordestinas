@@ -43,7 +43,7 @@ function SearchBar({
           <button
             type="button"
             className={onlyRemote ? "chip active" : "chip"}
-            onClick={() => setOnlyRemote(true)}
+            onClick={() => setOnlyRemote((v) => !v)}
           >
             Apenas remotas
           </button>
