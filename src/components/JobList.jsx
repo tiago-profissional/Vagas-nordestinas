@@ -13,7 +13,9 @@ function JobList({ jobs, selectedJob, onSelect }) {
         >
           <div className="job-top">
             <span className="job-source">{job.company}</span>
-            <button className="job-save" type="button" aria-label="Salvar">
+            <button className="job-save" type="button" aria-label="Salvar" onClick={(e) => {
+              e.stopPropagation();
+            }}>
               ⭐
             </button>
           </div>

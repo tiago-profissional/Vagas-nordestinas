@@ -1,21 +1,39 @@
+import { NavLink, Link } from "react-router-dom";
+
 function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-left">
-          <h1 className="navbar-logo">Vagas Nordestinas</h1>
+          <Link to="/" className="navbar-logo">
+            Vagas Nordestinas
+          </Link>
         </div>
 
         <div className="navbar-center">
-          <a href="#" className="nav-link active">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+          >
             Vagas
-          </a>
-          <a href="#" className="nav-link">
+          </NavLink>
+
+          <button
+            type="button"
+            className="nav-link"
+            style={{ background: "transparent", border: 0, cursor: "pointer" }}
+          >
             Avaliações da Empresa
-          </a>
-          <a href="#" className="nav-link">
+          </button>
+
+          <button
+            type="button"
+            className="nav-link"
+            style={{ background: "transparent", border: 0, cursor: "pointer" }}
+          >
             Cargos e Salários
-          </a>
+          </button>
         </div>
 
         <div className="navbar-right">
@@ -23,11 +41,7 @@ function Navbar() {
             🔍
           </button>
           <span className="nav-text">Buscar</span>
-          <button
-            className="nav-icon-btn"
-            aria-label="Notificações"
-            type="button"
-          >
+          <button className="nav-icon-btn" aria-label="Notificações" type="button">
             🔔
           </button>
           <button className="nav-icon-btn" aria-label="Perfil" type="button">
