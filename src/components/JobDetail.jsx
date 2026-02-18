@@ -1,4 +1,12 @@
-function JobDetail({ job }) {
+function JobDetail({ job, loading, error, notFound }) {
+  if (loading) return <p className="empty-detail">Carregando vagas...</p>;
+
+  if (error) return <p className="empty-detail">{error}</p>;
+
+  if (notFound) {
+    return <p className="empty-detail">Vaga não encontrada.</p>;
+  }
+
   if (!job) {
     return <p className="empty-detail">Selecione uma vaga</p>;
   }

@@ -10,27 +10,22 @@ const API_URL = "http://localhost:8000/Vagas_Nordestinas/api";
 function formatJob(job) {
   let location;
 
-  if (job.work_mode === "remote") {
-    location = "Remote";
-  } else {
-    if (job.state) location = job.city + ", " + job.state;
-    else location = job.city;
-  }
+  if (job.work_mode === "remote") location = "Remote";
+  else location = job.state ? job.city + ", " + job.state : job.city;
 
   let type;
   if (job.employment_type === "full_time") type = "Full-time";
   else if (job.employment_type === "part_time") type = "Part-time";
   else if (job.employment_type === "pj") type = "PJ";
-  else if (job.employment_type) type = job.employment_type;
-  else type = "-";
+  else type = job.employment_type || "-";
 
   let salary;
   if (job.salary_min && job.salary_max) {
     salary =
       "R$ " +
-      job.salary_min.toLocaleString("pt-BR") +
+      Number(job.salary_min).toLocaleString("pt-BR") +
       " - R$ " +
-      job.salary_max.toLocaleString("pt-BR");
+      Number(job.salary_max).toLocaleString("pt-BR");
   } else {
     salary = "A combinar";
   }
@@ -59,46 +54,61 @@ export default function App() {
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
 
+  // ✅ estados UX
+  const [loadingJobs, setLoadingJobs] = useState(true);
+  const [errorJobs, setErrorJobs] = useState("");
+  const [notFound, setNotFound] = useState(false);
+
   const [searchText, setSearchText] = useState("");
   const [location, setLocation] = useState("");
-
   const [onlyRemote, setOnlyRemote] = useState(false);
   const [employmentType, setEmploymentType] = useState("");
 
-  // ✅ Fetch 1x
+  // ✅ Fetch
   useEffect(() => {
+    setLoadingJobs(true);
+    setErrorJobs("");
+
     fetch(`${API_URL}/jobs.php`)
       .then((res) => res.json())
       .then((json) => {
         const list = json.data ?? [];
-        const formatted = list.map(formatJob);
-        setJobs(formatted);
+        setJobs(list.map(formatJob));
       })
-      .catch((err) => console.log("ERROR GET /jobs:", err));
+      .catch((err) => {
+        console.log("ERROR GET /jobs:", err);
+        setErrorJobs("Erro ao carregar vagas.");
+      })
+      .finally(() => setLoadingJobs(false));
   }, []);
 
-  // ✅ Seleciona a vaga certa pela URL
+  // ✅ rota -> seleciona job (MELHORIA 1 e 2)
   useEffect(() => {
-    if (!jobs.length) return;
+    if (loadingJobs) return;
+    if (errorJobs) return;
 
-    // se estiver na home "/", escolhe a primeira
+    // ✅ MELHORIA 2: home "/" não seleciona nada
     if (!id) {
-      setSelectedJob(jobs[0] || null);
+      setSelectedJob(null);
+      setNotFound(false);
       return;
     }
 
-    // se estiver em /jobs/:id, encontra a vaga
     const found = jobs.find((j) => String(j.id) === String(id));
+
     if (found) {
       setSelectedJob(found);
+      setNotFound(false);
     } else {
-      navigate("/"); // id inválido
+      // ✅ MELHORIA 1: NÃO navega pra rota fake (sem /jobs/999)
+      setSelectedJob(null);
+      setNotFound(true);
     }
-  }, [id, jobs, navigate]);
+  }, [id, jobs, loadingJobs, errorJobs]);
 
-  // ✅ Clique na lista: seleciona + muda URL
   function handleSelect(job) {
     setSelectedJob(job);
+    setNotFound(false);
     navigate(`/jobs/${job.id}`);
   }
 
@@ -121,6 +131,32 @@ export default function App() {
       return matchTitle && matchLocation && matchRemote && matchType;
     });
   }, [jobs, searchText, location, onlyRemote, employmentType]);
+
+  // ✅ NOVA MELHORIA:
+  // Se o filtro zerar a lista e você estiver em /jobs/:id -> volta pra "/" e limpa detalhe
+  useEffect(() => {
+    if (filteredJobs.length === 0 && id) {
+      setSelectedJob(null);
+      setNotFound(false);
+      navigate("/");
+    }
+  }, [filteredJobs, id, navigate]);
+
+  // ✅ MELHORIA EXTRA (a que você pediu):
+  // Se o filtro mudar e a vaga selecionada sair do filteredJobs -> limpa o detalhe e volta pra "/"
+  useEffect(() => {
+    if (!selectedJob) return;
+
+    const stillVisible = filteredJobs.some(
+      (j) => String(j.id) === String(selectedJob.id)
+    );
+
+    if (!stillVisible) {
+      setSelectedJob(null);
+      setNotFound(false);
+      navigate("/");
+    }
+  }, [filteredJobs, selectedJob, navigate]);
 
   return (
     <div className="page-wrapper">
@@ -152,7 +188,12 @@ export default function App() {
           </aside>
 
           <section className="job-detail-area">
-            <JobDetail job={selectedJob} />
+            <JobDetail
+              job={selectedJob}
+              loading={loadingJobs}
+              error={errorJobs}
+              notFound={notFound}
+            />
           </section>
         </main>
       </div>
