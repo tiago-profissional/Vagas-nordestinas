@@ -46,6 +46,7 @@ function formatJob(job) {
     salary,
   };
 }
+ 
 
 export default function App() {
   const navigate = useNavigate();
