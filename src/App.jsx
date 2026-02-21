@@ -5,6 +5,8 @@ import JobList from "./components/JobList.jsx";
 import Navbar from "./components/Navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 
+
+
 const API_URL = "http://localhost:8000/Vagas_Nordestinas/api";
 
 function formatJob(job) {
