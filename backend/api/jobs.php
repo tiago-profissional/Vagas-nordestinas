@@ -1,21 +1,21 @@
 <?php
-require_once __DIR__ . "/config/headers.php";
-$file = __DIR__ . "/data/jobs.json";
+  require_once __DIR__ . "/config/headers.php";
+  $file = __DIR__ . "/data/jobs.json";
 
-// Lee el archivo (si no existe o está vacío, usa [])
-$jobs = [];
-if (file_exists($file)) {
-  $jobs = json_decode(file_get_contents($file), true) ?? [];
-}
-if (!is_array($jobs)) $jobs = [];
+  // Lee el archivo (si no existe o está vacío, usa [])
+  $jobs = [];
+  if (file_exists($file)) {
+    $jobs = json_decode(file_get_contents($file), true) ?? [];
+  }
+  if (!is_array($jobs)) $jobs = [];
 
-$method = $_SERVER["REQUEST_METHOD"];
+  $method = $_SERVER["REQUEST_METHOD"];
 
-// ✅ CORS preflight (muy común cuando React llama a tu API)
-if ($method === "OPTIONS") {
-  http_response_code(204);
-  exit;
-}
+  // ✅ CORS preflight (muy común cuando React llama a tu API)
+  if ($method === "OPTIONS") {
+    http_response_code(204);
+    exit;
+  }
 
 // Helper: guardar JSON bonito
 function saveJobs($file, $jobs) {

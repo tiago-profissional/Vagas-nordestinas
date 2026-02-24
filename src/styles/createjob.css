@@ -1,6 +1,214 @@
-.cj-grid{
-    width: 900px;
-    height: 720px;
-    background-color: #F4B400;
-    opacity: 10%;
+/* ===============================
+   CREATE JOB – MODAL
+   =============================== */
+
+/* OVERLAY */
+.cj-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;          /* essencial */
+  justify-content: center;      /* essencial */
+  padding: 24px;
+  z-index: 9999;
+}
+
+/* MODAL */
+.cj-modal {
+  width: 900px;
+  height: 720px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+
+  background: #e9e6dc;
+  border-radius: 14px;
+  border: 1px solid #d6d1c3;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  padding: 24px;
+
+  display: flex;               /* essencial */
+  flex-direction: column;      /* essencial */
+  align-items: stretch;        /* padrão correto */
+  justify-content: flex-start; /* evita centralizar conteúdo */
+}
+
+/* HEADER */
+.cj-header {
+  display: flex;
+  align-items: center;          /* essencial */
+  justify-content: space-between; /* essencial */
+  margin-bottom: 24px;
+}
+
+.cj-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #8b6b00;
+}
+
+.cj-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  color: #444;
+
+  display: flex;               /* essencial */
+  align-items: center;         /* essencial */
+  justify-content: center;     /* essencial */
+}
+
+.cj-close:hover {
+  color: #000;
+}
+
+/* ===============================
+   PAGE / FORM WRAPPER
+   =============================== */
+
+.cj-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;          /* essencial */
+  justify-content: center;      /* essencial */
+  padding: 40px 24px;
+  background: #000;
+}
+
+/* O FORM CONTROLA O LAYOUT VERTICAL */
+.cj-form {
+  width: 100%;
+  max-width: 900px;
+
+  display: flex;               /* essencial */
+  flex-direction: column;      /* essencial */
+  align-items: stretch;        /* correto p/ inputs */
+  justify-content: flex-start;
+
+  min-height: 520px;           /* empurra botões */
+}
+
+/* ===============================
+   FORM
+   =============================== */
+
+.cj-grid {
+  display: grid;               /* NÃO usar flex aqui */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.cj-field {
+  display: flex;               /* essencial */
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cj-field-full {
+  grid-column: span 2;
+}
+
+.cj-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* INPUTS */
+.cj-input {
+  height: 46px;
+  border-radius: 10px;
+  border: 1px solid #b8b0ff;
+  padding: 0 14px;
+  font-size: 14px;
+  background: #f5f5f5;
+  outline: none;
+}
+
+.cj-input:focus {
+  border-color: #8b6b00;
+  background: #fff;
+}
+
+/* TEXTAREA */
+.cj-textarea {
+  min-height: 110px;
+  border-radius: 10px;
+  border: 1px solid #b8b0ff;
+  padding: 12px 14px;
+  font-size: 14px;
+  resize: vertical;
+  background: #f5f5f5;
+  outline: none;
+}
+
+.cj-textarea:focus {
+  border-color: #8b6b00;
+  background: #fff;
+}
+
+/* ===============================
+   ACTIONS (BOTÕES EMBAIXO)
+   =============================== */
+
+.cj-actions {
+  margin-top: auto;              /* empurra pra baixo */
+  display: flex;                /* essencial */
+  align-items: center;          /* essencial */
+  justify-content: flex-end;    /* essencial */
+  gap: 12px;
+  padding-top: 24px;
+}
+
+/* BUTTONS */
+.cj-btn {
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+
+  display: flex;               /* essencial */
+  align-items: center;         /* essencial */
+  justify-content: center;     /* essencial */
+}
+
+.cj-btn-ghost {
+  background: transparent;
+  color: #444;
+}
+
+.cj-btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.cj-btn-primary {
+  background: #c9a227;
+  color: #111;
+}
+
+.cj-btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+
+@media (max-width: 700px) {
+  .cj-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cj-field-full {
+    grid-column: span 1;
+  }
 }
