@@ -4,10 +4,11 @@ import JobDetail from "./components/JobDetail.jsx";
 import JobList from "./components/JobList.jsx";
 import Navbar from "./components/Navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
+ 
 
 
 
-const API_URL = "http://localhost:8000/Vagas_Nordestinas/api";
+const API_URL = "http://localhost:8000/Vagas_Nordestinas/backend/api";
 
 function formatJob(job) {
   let location;

@@ -1,214 +1,118 @@
 <?php
-  require_once __DIR__ . "/config/headers.php";
-  $file = __DIR__ . "/data/jobs.json";
+require_once __DIR__ . "/config/headers.php";
+require_once __DIR__ . "/config/db.php";
 
-  // Lee el archivo (si no existe o está vacío, usa [])
-  $jobs = [];
-  if (file_exists($file)) {
-    $jobs = json_decode(file_get_contents($file), true) ?? [];
-  }
-  if (!is_array($jobs)) $jobs = [];
+$method = $_SERVER["REQUEST_METHOD"];
 
-  $method = $_SERVER["REQUEST_METHOD"];
-
-  // ✅ CORS preflight (muy común cuando React llama a tu API)
-  if ($method === "OPTIONS") {
-    http_response_code(204);
-    exit;
-  }
-
-// Helper: guardar JSON bonito
-function saveJobs($file, $jobs) {
-  file_put_contents($file, json_encode($jobs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+function respond($status, $data) {
+  http_response_code($status);
+  echo json_encode($data, JSON_UNESCAPED_UNICODE);
+  exit;
 }
 
-// Helper: validar campos mínimos
-function validateJob($data) {
-  $required = ["title", "company", "work_mode", "employment_type"];
-  $missing = [];
-
-  foreach ($required as $k) {
-    if (!isset($data[$k]) || trim((string)$data[$k]) === "") {
-      $missing[] = $k;
-    }
+function readJsonBody(): array {
+  $raw = file_get_contents("php://input");
+  $body = json_decode($raw, true);
+  if (!is_array($body)) {
+    respond(400, ["ok" => false, "error" => "JSON inválido"]);
   }
+  return $body;
+}
 
-  if (count($missing) > 0) {
-    return "Faltan campos obligatorios: " . implode(", ", $missing);
-  }
-
+function normalizeSalary($v) {
+  if ($v === "" || $v === null) return null;
+  if (is_numeric($v)) return (float)$v;
   return null;
 }
 
-// Helper: obtener ID (acepta ?id= y también /jobs.php/123 si algún día usas rewrite)
-function getIdFromRequest() {
-  if (isset($_GET["id"])) return (int)$_GET["id"];
-
-  $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-  $parts = array_values(array_filter(explode("/", $uri)));
-  $last = end($parts);
-
-  if (is_numeric($last)) return (int)$last;
-  return null;
-}
+$pdo = db();
 
 /* =========================
-   ✅ GET
-   - GET /jobs.php         -> lista
-   - GET /jobs.php?id=123  -> detalle
-   ========================= */
+   GET
+========================= */
 if ($method === "GET") {
-  $id = getIdFromRequest();
 
-  if ($id !== null) {
-    foreach ($jobs as $job) {
-      if ((int)($job["id"] ?? 0) === $id) {
-        echo json_encode(["success" => true, "data" => $job]);
-        exit;
-      }
+  $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
+
+  if ($id) {
+    $stmt = $pdo->prepare("SELECT * FROM jobs WHERE id = :id LIMIT 1");
+    $stmt->execute([":id" => $id]);
+    $job = $stmt->fetch();
+
+    if (!$job) {
+      respond(404, ["ok" => false, "error" => "Vaga não encontrada"]);
     }
 
-    http_response_code(404);
-    echo json_encode(["success" => false, "message" => "Job not found"]);
-    exit;
+    respond(200, ["ok" => true, "data" => $job]);
   }
 
-  echo json_encode(["success" => true, "data" => $jobs]);
-  exit;
+  $stmt = $pdo->query("SELECT * FROM jobs ORDER BY id DESC");
+  $jobs = $stmt->fetchAll();
+
+  respond(200, ["ok" => true, "data" => $jobs]);
 }
 
 /* =========================
-   ✅ POST /jobs.php
-   Crea un nuevo job
-   ========================= */
+   POST
+========================= */
 if ($method === "POST") {
-  $raw = file_get_contents("php://input");
-  $data = json_decode($raw, true);
 
-  if (!is_array($data)) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "error" => "JSON inválido"]);
-    exit;
+  $body = readJsonBody();
+
+  $title = trim($body["title"] ?? "");
+  $company = trim($body["company"] ?? "");
+  $city = trim($body["city"] ?? "");
+  $state = trim($body["state"] ?? "");
+  $work_mode = $body["work_mode"] ?? "remote";
+  $employment_type = $body["employment_type"] ?? "full_time";
+  $salary_min = normalizeSalary($body["salary_min"] ?? null);
+  $salary_max = normalizeSalary($body["salary_max"] ?? null);
+  $description = trim($body["description"] ?? "");
+
+  if ($title === "" || $company === "" || $city === "" || $state === "") {
+    respond(422, ["ok" => false, "error" => "Campos obrigatórios faltando"]);
   }
 
-  $err = validateJob($data);
-  if ($err) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "error" => $err]);
-    exit;
-  }
+  $sql = "INSERT INTO jobs
+    (title, company, city, state, work_mode, employment_type, salary_min, salary_max, description)
+    VALUES
+    (:title, :company, :city, :state, :work_mode, :employment_type, :salary_min, :salary_max, :description)";
 
-  // genera id nuevo (max + 1)
-  $maxId = 0;
-  foreach ($jobs as $j) {
-    $jid = (int)($j["id"] ?? 0);
-    if ($jid > $maxId) $maxId = $jid;
-  }
-  $newId = $maxId + 1;
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":title" => $title,
+    ":company" => $company,
+    ":city" => $city,
+    ":state" => $state,
+    ":work_mode" => $work_mode,
+    ":employment_type" => $employment_type,
+    ":salary_min" => $salary_min,
+    ":salary_max" => $salary_max,
+    ":description" => $description,
+  ]);
 
-  $newJob = [
-    "id" => $newId,
-    "title" => $data["title"],
-    "company" => $data["company"],
-    "city" => $data["city"] ?? "",
-    "state" => $data["state"] ?? "",
-    "work_mode" => $data["work_mode"],
-    "employment_type" => $data["employment_type"],
-    "seniority" => $data["seniority"] ?? "junior",
-    "salary_min" => $data["salary_min"] ?? null,
-    "salary_max" => $data["salary_max"] ?? null,
-    "currency" => $data["currency"] ?? "BRL",
-    "description" => $data["description"] ?? ""
-  ];
-
-  $jobs[] = $newJob;
-  saveJobs($file, $jobs);
-
-  http_response_code(201);
-  echo json_encode(["success" => true, "data" => $newJob]);
-  exit;
+  respond(201, ["ok" => true, "id" => (int)$pdo->lastInsertId()]);
 }
 
 /* =========================
-   ✅ PUT /jobs.php?id=123
-   Actualiza un job existente
-   ========================= */
-if ($method === "PUT") {
-  $id = getIdFromRequest();
-  if ($id === null) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "error" => "Falta el id (?id=123)"]);
-    exit;
-  }
-
-  $raw = file_get_contents("php://input");
-  $data = json_decode($raw, true);
-
-  if (!is_array($data)) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "error" => "JSON inválido"]);
-    exit;
-  }
-
-  $index = -1;
-  foreach ($jobs as $i => $job) {
-    if ((int)($job["id"] ?? 0) === $id) {
-      $index = $i;
-      break;
-    }
-  }
-
-  if ($index === -1) {
-    http_response_code(404);
-    echo json_encode(["success" => false, "message" => "Job not found"]);
-    exit;
-  }
-
-  // actualiza solo lo que venga
-  $jobs[$index] = array_merge($jobs[$index], $data);
-  $jobs[$index]["id"] = $id; // asegura que el id no cambie
-
-  saveJobs($file, $jobs);
-  echo json_encode(["success" => true, "data" => $jobs[$index]]);
-  exit;
-}
-
-/* =========================
-   ✅ DELETE /jobs.php?id=123
-   Elimina un job
-   ========================= */
+   DELETE
+========================= */
 if ($method === "DELETE") {
-  $id = getIdFromRequest();
-  if ($id === null) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "error" => "Falta el id (?id=123)"]);
-    exit;
+
+  $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
+
+  if (!$id) {
+    respond(400, ["ok" => false, "error" => "ID obrigatório"]);
   }
 
-  $found = false;
-  $new = [];
+  $stmt = $pdo->prepare("DELETE FROM jobs WHERE id = :id");
+  $stmt->execute([":id" => $id]);
 
-  foreach ($jobs as $job) {
-    if ((int)($job["id"] ?? 0) === $id) {
-      $found = true;
-      continue;
-    }
-    $new[] = $job;
+  if ($stmt->rowCount() === 0) {
+    respond(404, ["ok" => false, "error" => "Vaga não encontrada"]);
   }
 
-  if (!$found) {
-    http_response_code(404);
-    echo json_encode(["success" => false, "message" => "Job not found"]);
-    exit;
-  }
-
-  $jobs = $new;
-  saveJobs($file, $jobs);
-
-  echo json_encode(["success" => true, "message" => "Deleted"]);
-  exit;
+  respond(200, ["ok" => true, "message" => "Vaga removida"]);
 }
 
-// Si llega aquí: método no soportado
-http_response_code(405);
-echo json_encode(["success" => false, "error" => "Method not allowed"]);
+respond(405, ["ok" => false, "error" => "Método não permitido"]);

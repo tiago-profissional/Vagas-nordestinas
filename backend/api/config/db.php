@@ -1,7 +1,5 @@
 <?php
 
-     
-
     function db(): PDO 
     {
         // Troque esses dados pelos seus    

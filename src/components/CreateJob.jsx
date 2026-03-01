@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/createjob.css";
 
-export default function CreateJob({ onCancel }) {
+export default function CreateJob({ onCancel, onCreate }) {
   const [form, setForm] = useState({
     title: "",
     company: "",
@@ -14,13 +14,69 @@ export default function CreateJob({ onCancel }) {
     description: "",
   });
 
+  const [submitting, setSubmitting] = useState(false);
+
   function setField(name, value) {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e) {
+  function normalizeSalary(v) {
+    if (v === "") return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log("Form:", form);
+
+    console.log("🚀 SUBMIT DISPARADO");
+    console.log("🔎 onCreate recebido:", onCreate);
+    console.log("📦 form atual:", form);
+
+    if (submitting) return;
+
+    // payload normalizado
+    const payload = {
+      ...form,
+      salary_min: normalizeSalary(form.salary_min),
+      salary_max: normalizeSalary(form.salary_max),
+    };
+
+    console.log("📤 payload que será enviado:", payload);
+
+    try {
+      setSubmitting(true);
+
+      // ✅ O App vai fazer o POST e atualizar lista
+      const createdJob = await onCreate?.(payload);
+
+      console.log("✅ retorno do onCreate:", createdJob);
+
+      alert("Vaga publicada com sucesso!");
+
+      // limpa
+      setForm({
+        title: "",
+        company: "",
+        city: "",
+        state: "",
+        work_mode: "remote",
+        employment_type: "full_time",
+        salary_min: "",
+        salary_max: "",
+        description: "",
+      });
+
+      // fecha
+      onCancel?.();
+      return createdJob;
+    } catch (err) {
+      console.error("❌ ERRO no submit:", err);
+      // onCreate pode lançar erros com mensagem já pronta
+      alert(err?.message || "Erro ao criar vaga");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -135,12 +191,17 @@ export default function CreateJob({ onCancel }) {
               type="button"
               className="cj-btn cj-btn-ghost"
               onClick={onCancel}
+              disabled={submitting}
             >
               Cancelar
             </button>
 
-            <button type="submit" className="cj-btn cj-btn-primary">
-              Publicar Vaga
+            <button
+              type="submit"
+              className="cj-btn cj-btn-primary"
+              disabled={submitting}
+            >
+              {submitting ? "Publicando..." : "Publicar Vaga"}
             </button>
           </div>
         </form>
