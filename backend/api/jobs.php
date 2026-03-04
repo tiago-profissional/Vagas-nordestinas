@@ -27,9 +27,9 @@ function normalizeSalary($v) {
 
 $pdo = db();
 
-/* =========================
+/* 
    GET
-========================= */
+*/
 if ($method === "GET") {
 
   $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
@@ -52,9 +52,10 @@ if ($method === "GET") {
   respond(200, ["ok" => true, "data" => $jobs]);
 }
 
-/* =========================
+/*
    POST
-========================= */
+ */
+
 if ($method === "POST") {
 
   $body = readJsonBody();
@@ -91,12 +92,19 @@ if ($method === "POST") {
     ":description" => $description,
   ]);
 
-  respond(201, ["ok" => true, "id" => (int)$pdo->lastInsertId()]);
+  $newId = (int)$pdo->lastInsertId();
+
+
+  $stmt2 = $pdo->prepare("SELECT * FROM jobs WHERE id = :id LIMIT 1");
+  $stmt2->execute([":id" => $newId]);
+  $created = $stmt2->fetch();
+
+  respond(201, ["ok" => true, "data" => $created]);
 }
 
-/* =========================
+/*
    DELETE
-========================= */
+*/
 if ($method === "DELETE") {
 
   $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;

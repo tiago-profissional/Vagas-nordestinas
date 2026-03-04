@@ -29,29 +29,20 @@ export default function CreateJob({ onCancel, onCreate }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    console.log("🚀 SUBMIT DISPARADO");
-    console.log("🔎 onCreate recebido:", onCreate);
-    console.log("📦 form atual:", form);
-
     if (submitting) return;
 
-    // payload normalizado
     const payload = {
       ...form,
       salary_min: normalizeSalary(form.salary_min),
       salary_max: normalizeSalary(form.salary_max),
     };
 
-    console.log("📤 payload que será enviado:", payload);
-
     try {
       setSubmitting(true);
 
-      // ✅ O App vai fazer o POST e atualizar lista
-      const createdJob = await onCreate?.(payload);
+      const createdJob = await onCreate(payload);
 
       console.log("✅ retorno do onCreate:", createdJob);
-
       alert("Vaga publicada com sucesso!");
 
       // limpa
@@ -69,10 +60,10 @@ export default function CreateJob({ onCancel, onCreate }) {
 
       // fecha
       onCancel?.();
+
       return createdJob;
     } catch (err) {
       console.error("❌ ERRO no submit:", err);
-      // onCreate pode lançar erros com mensagem já pronta
       alert(err?.message || "Erro ao criar vaga");
     } finally {
       setSubmitting(false);

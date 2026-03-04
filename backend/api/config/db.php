@@ -2,7 +2,6 @@
 
     function db(): PDO 
     {
-        // Troque esses dados pelos seus    
 
         $host = 'localhost';
         $dbname = 'vagas_nordestinas';

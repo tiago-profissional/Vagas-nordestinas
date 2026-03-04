@@ -1,44 +1,56 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import App from "./App.jsx";
 import CreateJob from "./components/CreateJob.jsx";
-
-const API_URL = "http://localhost:8000/Vagas_Nordestinas/backend/api";
+import { fetchJobs, createJobApi } from "./services/jobsApi.js";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
 
-  async function createJob(payload) {
-    const res = await fetch(`${API_URL}/jobs.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+  const [jobs, setJobs] = useState([]);
+  const [loadingJobs, setLoadingJobs] = useState(true);
+  const [errorJobs, setErrorJobs] = useState("");
 
-    const json = await res.json().catch(() => ({}));
+  useEffect(() => {
+    setLoadingJobs(true);
+    setErrorJobs("");
 
-    if (!res.ok) {
-      if (json?.errors) {
-        const msg = Object.values(json.errors).join("\n");
-        throw new Error(msg);
-      }
-      throw new Error(json?.error || "Erro ao criar vaga");
-    }
+    fetchJobs()
+      .then(setJobs)
+      .catch((err) => {
+        console.log("ERROR GET /jobs:", err);
+        setErrorJobs(err.message || "Erro ao carregar vagas.");
+      })
+      .finally(() => setLoadingJobs(false));
+  }, []);
 
-    // depois de criar, volta pra home
-    navigate("/");
-    return json;
+  async function handleCreateJob(payload) {
+    const created = await createJobApi(payload);
+
+    setJobs((prev) => [created, ...prev]);
+
+    navigate(`/jobs/${created.id}`);
+
+    return created;
   }
 
   return (
     <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/jobs/:id" element={<App />} />
+      <Route
+        path="/"
+        element={<App jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />}
+      />
+
+      <Route
+        path="/jobs/:id"
+        element={<App jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />}
+      />
 
       <Route
         path="/create-job"
         element={
           <CreateJob
-            onCreate={createJob}
+            onCreate={handleCreateJob}
             onCancel={() => navigate("/")}
           />
         }

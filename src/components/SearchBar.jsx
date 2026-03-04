@@ -1,5 +1,3 @@
-
-
 function SearchBar({
   searchText,
   setSearchText,

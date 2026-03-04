@@ -1,4 +1,4 @@
-/* RESET BÁSICO */
+
 * {
   margin: 0;
   padding: 0;
@@ -17,19 +17,19 @@ body {
   min-height: 100vh;
 }
 
-/* ====== ESTRUTURA PRINCIPAL ====== */
+
 .page-wrapper {
   min-height: 100vh;
 }
 
-/* Container central */
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
 }
 
-/* Espaço do SearchBar */
+
 .search-area {
   position: relative;
   z-index: 2;
@@ -42,7 +42,7 @@ body {
 }
 
 
-/* ====== LISTA ====== */
+
 .job-list {
   width: 420px;
 }
@@ -97,7 +97,7 @@ body {
   color: #666;
 }
 
-/* Extra do modelo (topo + salvar + tags) */
+
 .job-top {
   display: flex;
   align-items: center;
@@ -135,7 +135,7 @@ body {
   margin-top: 8px;
 }
 
-/* TAG base */
+
 .tag {
   font-size: 11px;
   padding: 6px 12px;
@@ -159,7 +159,7 @@ body {
   border-color: rgba(201, 162, 39, 1);
 }
 
-/* TAGS (mantém tudo na cor do logo) */
+
 .tag.remote,
 .tag.fulltime,
 .tag.junior {
@@ -167,7 +167,7 @@ body {
   color: rgba(201, 162, 39, 0.95);
 }
 
-/* ====== DETALHE ====== */
+
 .job-detail-area {
   flex: 1;
   background: #f3f3f3;
@@ -230,7 +230,7 @@ body {
   filter: brightness(1.05);
 }
 
-/* ANIMAÇÃO */
+
 .fade-in {
   animation: fadeIn 0.35s ease-in-out;
 }
@@ -246,7 +246,6 @@ body {
   }
 }
 
-/* ==== NAVBAR ==== */
 .navbar {
   background: #e9e6dc;
   border-bottom: 1px solid #d6d1c3;
@@ -264,14 +263,13 @@ body {
   gap: 20px;
 }
 
-/* Left */
 .navbar-logo {
   font-size: 22px;
   font-weight: 800;
   color: #b26a00;
 }
 
-/* Center */
+
 .navbar-center {
   display: flex;
   gap: 22px;
@@ -293,7 +291,7 @@ body {
   font-weight: 700;
 }
 
-/* Right */
+
 .navbar-right {
   display: flex;
   align-items: center;
@@ -314,7 +312,7 @@ body {
   background: rgba(0, 0, 0, 0.06);
 }
 
-/* ===== SEARCHBAR ===== */
+
 .searchbar {
   display: flex;
   justify-content: space-between;
@@ -323,7 +321,7 @@ body {
   padding: 18px 0;
 }
 
-/* LEFT */
+
 .searchbar-left {
   min-width: 200px;
 }
@@ -333,7 +331,7 @@ body {
   color: #8b6b00;
 }
 
-/* CENTER */
+
 .searchbar-center {
   flex: 1;
   display: flex;
@@ -360,7 +358,7 @@ body {
   font-size: 15px;
 }
 
-/* CHIPS */
+
 .searchbar-chips {
   display: flex;
   gap: 10px;
@@ -377,7 +375,7 @@ body {
   font-size: 12px;
 }
 
-/* RIGHT */
+
 .searchbar-right {
   min-width: 240px;
 }
@@ -394,7 +392,7 @@ body {
   font-size: 13px;
 }
 
-/* ===== INPUT COM ÍCONE ===== */
+
 .input-icon {
   position: relative;
   display: flex;
