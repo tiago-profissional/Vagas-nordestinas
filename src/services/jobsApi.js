@@ -40,17 +40,31 @@ export function formatJob(job) {
   };
 }
 
-export async function fetchJobs() {
-  const res = await fetch(`${API_URL}/jobs.php`);
+export async function getJobById(id) {
+  const res = await fetch(`${API_URL}/jobs.php?id=${id}`);
   const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(json?.error || "Erro ao carregar vagas");
+    throw new Error(json?.error || "Erro ao carregar vaga");
   }
 
-  const list = json.data ?? [];
-  return list.map(formatJob);
+  return formatJob(json.data);
 }
+
+export async function fetchJobs() { 
+  const res = await fetch(`${API_URL}/jobs.php`);
+  const json = await res.json().catch(() => ({}));
+
+  if(!res.ok){
+    throw new Error(json?.error || "Error loading jobs");
+  }
+
+  // think: is json.data already an array?
+  // if yes, format each job
+
+  return Array.isArray(json.data) ? json.data.map(formatJob) : [];
+}
+
 
 export async function createJobApi(payload) {
   const res = await fetch(`${API_URL}/jobs.php`, {

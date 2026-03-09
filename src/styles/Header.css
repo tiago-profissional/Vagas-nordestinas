@@ -1,0 +1,46 @@
+.main-header {
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 14px 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  color: #8c6a00;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #555;
+  font-size: 14px;
+}
+
+.nav-links a:hover {
+  color: #000;
+}
+
+.header-icons {
+  display: flex;
+  gap: 18px;
+}
+
+.icon {
+  cursor: pointer;
+  font-size: 16px;
+}

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import App from "./App.jsx";
 import CreateJob from "./components/CreateJob.jsx";
 import { fetchJobs, createJobApi } from "./services/jobsApi.js";
+import EditJob from "./components/EditJob.jsx";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
@@ -60,6 +61,9 @@ export default function AppRoutes() {
         path="*"
         element={<div style={{ padding: 24 }}>404 - Página não encontrada</div>}
       />
+
+        <Route path="/edit-job/:id" element={<EditJob />} /> 
+
     </Routes>
   );
 }

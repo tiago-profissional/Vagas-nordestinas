@@ -5,6 +5,7 @@ import JobList from "./components/JobList.jsx";
 import Navbar from "./components/Navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 
+
 export default function App({ jobs, loadingJobs, errorJobs }) {
   const navigate = useNavigate();
   const { id } = useParams();
