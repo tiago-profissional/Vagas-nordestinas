@@ -13,9 +13,11 @@ function respond($status, $data) {
 function readJsonBody(): array {
   $raw = file_get_contents("php://input");
   $body = json_decode($raw, true);
+
   if (!is_array($body)) {
     respond(400, ["ok" => false, "error" => "JSON inválido"]);
   }
+
   return $body;
 }
 
@@ -27,11 +29,10 @@ function normalizeSalary($v) {
 
 $pdo = db();
 
-/* 
+/*
    GET
 */
 if ($method === "GET") {
-
   $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
 
   if ($id) {
@@ -54,10 +55,8 @@ if ($method === "GET") {
 
 /*
    POST
- */
-
+*/
 if ($method === "POST") {
-
   $body = readJsonBody();
 
   $title = trim($body["title"] ?? "");
@@ -94,7 +93,6 @@ if ($method === "POST") {
 
   $newId = (int)$pdo->lastInsertId();
 
-
   $stmt2 = $pdo->prepare("SELECT * FROM jobs WHERE id = :id LIMIT 1");
   $stmt2->execute([":id" => $newId]);
   $created = $stmt2->fetch();
@@ -103,10 +101,76 @@ if ($method === "POST") {
 }
 
 /*
+   PUT
+*/
+if ($method === "PUT") {
+  $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
+
+  if (!$id) {
+    respond(400, ["ok" => false, "error" => "ID obrigatório"]);
+  }
+
+  $body = readJsonBody();
+
+  $title = trim($body["title"] ?? "");
+  $company = trim($body["company"] ?? "");
+  $city = trim($body["city"] ?? "");
+  $state = trim($body["state"] ?? "");
+  $work_mode = $body["work_mode"] ?? "remote";
+  $employment_type = $body["employment_type"] ?? "full_time";
+  $salary_min = normalizeSalary($body["salary_min"] ?? null);
+  $salary_max = normalizeSalary($body["salary_max"] ?? null);
+  $description = trim($body["description"] ?? "");
+
+  if ($title === "" || $company === "" || $city === "" || $state === "") {
+    respond(422, ["ok" => false, "error" => "Campos obrigatórios faltando"]);
+  }
+
+  $check = $pdo->prepare("SELECT * FROM jobs WHERE id = :id LIMIT 1");
+  $check->execute([":id" => $id]);
+  $existing = $check->fetch();
+
+  if (!$existing) {
+    respond(404, ["ok" => false, "error" => "Vaga não encontrada"]);
+  }
+
+  $sql = "UPDATE jobs SET
+    title = :title,
+    company = :company,
+    city = :city,
+    state = :state,
+    work_mode = :work_mode,
+    employment_type = :employment_type,
+    salary_min = :salary_min,
+    salary_max = :salary_max,
+    description = :description
+    WHERE id = :id";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([
+    ":title" => $title,
+    ":company" => $company,
+    ":city" => $city,
+    ":state" => $state,
+    ":work_mode" => $work_mode,
+    ":employment_type" => $employment_type,
+    ":salary_min" => $salary_min,
+    ":salary_max" => $salary_max,
+    ":description" => $description,
+    ":id" => $id
+  ]);
+
+  $stmt2 = $pdo->prepare("SELECT * FROM jobs WHERE id = :id LIMIT 1");
+  $stmt2->execute([":id" => $id]);
+  $updated = $stmt2->fetch();
+
+  respond(200, ["ok" => true, "data" => $updated]);
+}
+
+/*
    DELETE
 */
 if ($method === "DELETE") {
-
   $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
 
   if (!$id) {
@@ -124,3 +188,8 @@ if ($method === "DELETE") {
 }
 
 respond(405, ["ok" => false, "error" => "Método não permitido"]);
+
+
+
+
+

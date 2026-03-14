@@ -1,0 +1,168 @@
+.about-page {
+  min-height: calc(100vh - 90px);
+  background: #e9edf0;
+  padding: 50px 20px 70px;
+  box-sizing: border-box;
+}
+
+.about-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about-title {
+  font-size: 56px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 24px;
+}
+
+.about-description {
+  max-width: 850px;
+  margin: 0 auto 50px;
+  font-size: 23px;
+  line-height: 1.7;
+  color: #222;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-bottom: 40px;
+}
+
+.about-card {
+  background: #f6f7f8;
+  border-radius: 16px;
+  padding: 30px 35px;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.about-card h2 {
+  font-size: 34px;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.about-card ul {
+  margin: 0;
+  padding-left: 28px;
+}
+
+.about-card li {
+  font-size: 24px;
+  line-height: 1.9;
+  color: #222;
+}
+
+.about-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.about-section {
+  background: #f6f7f8;
+  border-radius: 16px;
+  padding: 30px 35px;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.about-section h2 {
+  font-size: 34px;
+  margin-bottom: 16px;
+  color: #111;
+}
+
+.about-section p {
+  font-size: 22px;
+  line-height: 1.7;
+  color: #222;
+  margin: 0;
+}
+
+.about-highlights {
+  margin: 0;
+  padding-left: 28px;
+}
+
+.about-highlights li {
+  font-size: 22px;
+  line-height: 1.8;
+  color: #222;
+}
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.about-links a {
+  text-decoration: none;
+  color: #9b670d;
+  font-size: 24px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.about-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .about-title {
+    font-size: 42px;
+  }
+
+  .about-description {
+    font-size: 20px;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-card h2,
+  .about-section h2 {
+    font-size: 28px;
+  }
+
+  .about-card li,
+  .about-section p,
+  .about-links a,
+  .about-highlights li {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-page {
+    padding: 35px 16px 50px;
+  }
+
+  .about-title {
+    font-size: 34px;
+  }
+
+  .about-description {
+    font-size: 18px;
+  }
+
+  .about-card,
+  .about-section {
+    padding: 24px 20px;
+  }
+
+  .about-card li,
+  .about-section p,
+  .about-links a,
+  .about-highlights li {
+    font-size: 18px;
+  }
+}

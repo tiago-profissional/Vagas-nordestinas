@@ -4,6 +4,8 @@ import App from "./App.jsx";
 import CreateJob from "./components/CreateJob.jsx";
 import { fetchJobs, createJobApi } from "./services/jobsApi.js";
 import EditJob from "./components/EditJob.jsx";
+import NotFound from "./components/NotFound.jsx";
+import About from "./components/About.jsx";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
@@ -37,6 +39,7 @@ export default function AppRoutes() {
 
   return (
     <Routes>
+
       <Route
         path="/"
         element={<App jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />}
@@ -57,12 +60,12 @@ export default function AppRoutes() {
         }
       />
 
-      <Route
-        path="*"
-        element={<div style={{ padding: 24 }}>404 - Página não encontrada</div>}
-      />
+      <Route path="/edit-job/:id" element={<EditJob />} />
 
-        <Route path="/edit-job/:id" element={<EditJob />} /> 
+      {/* 404 must be LAST */}
+      <Route path="*" element={<NotFound />} />
+
+      <Route path="/about" element={<About />} />
 
     </Routes>
   );

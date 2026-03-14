@@ -1,11 +1,19 @@
+// EditJob.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { formatJob, getJobById } from "../services/jobsApi";
-import Headers from "../components/Headers.jsx";
+import { useParams, useNavigate } from "react-router-dom";
+import { getJobById, getJobs, updateJobApi, deleteJobApi } from "../services/jobsApi";
+import Headers from "./Headers.jsx";
 import "../styles/EditJob.css";
+import JobSidebar from "./JobSidebar.jsx";
+import JobSidebarSearch from "./JobSidebarSearch.jsx";
+import DeleteModal from "./delete.jsx";
 
 export default function EditJob() {
+  const navigate = useNavigate();
   const { id } = useParams();
+
+  const [jobs, setJobs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -19,30 +27,57 @@ export default function EditJob() {
     description: "",
   });
 
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   useEffect(() => {
     async function loadJob() {
       try {
+        setLoading(true);
+        setError("");
+
+        console.log("ID recebido:", id);
+
         const job = await getJobById(id);
+        console.log("Job carregado:", job);
+
+        const jobsList = await getJobs();
+        console.log("Lista carregada:", jobsList);
 
         setFormData({
-          title: job.title || "",
-          company: job.company || "",
-          city: job.city || "",
-          state: job.state || "",
-          work_mode: job.work_mode || "",
-          employment_type: job.employment_type || "",
-          salary_min: job.salary_min || "",
-          salary_max: job.salary_max || "",
-          description: job.description || "",
+          title: job?.title || "",
+          company: job?.company || "",
+          city: job?.city || "",
+          state: job?.state || "",
+          work_mode: job?.work_mode || "",
+          employment_type: job?.employment_type || "",
+          salary_min: job?.salary_min || "",
+          salary_max: job?.salary_max || "",
+          description: job?.description || "",
         });
 
+        setJobs(Array.isArray(jobsList) ? jobsList : []);
       } catch (error) {
         console.error("Error loading job:", error);
+        setError(error.message || "Erro ao carregar vaga.");
+      } finally {
+        setLoading(false);
       }
+    }
+
+    if (!id) {
+      setError("ID da vaga não encontrado.");
+      setLoading(false);
+      return;
     }
 
     loadJob();
   }, [id]);
+
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -51,26 +86,107 @@ export default function EditJob() {
       ...prev,
       [name]: value,
     }));
-   }
+  }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log("Updated job data:", formData);
+
+    if (
+      !formData.title ||
+      !formData.company ||
+      !formData.city ||
+      !formData.state
+    ) {
+      setError("Preencha os campos obrigatórios.");
+      setSuccess("");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setError("");
+      setSuccess("");
+
+      await updateJobApi(id, formData);
+
+      setSuccess("Vaga atualizada com sucesso!");
+
+      setTimeout(() => {
+        navigate(`/jobs/${id}`);
+      }, 1200);
+    } catch (error) {
+      console.error("Error updating job:", error);
+      setError("Erro ao atualizar vaga.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      setDeleting(true);
+      setError("");
+      setSuccess("");
+
+      await deleteJobApi(id);
+
+      setShowDeleteModal(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting job:", error);
+      setError("Erro ao deletar vaga.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Headers />
+        <div className="edit-job-wrapper">
+          <h1 className="edit-job-heading">Editar Vaga</h1>
+          <p style={{ color: "#fff", textAlign: "center" }}>
+            Carregando vaga...
+          </p>
+        </div>
+      </>
+    );
   }
 
   return (
     <>
-    <Headers />
+      <Headers />
+
       <div className="edit-job-wrapper">
         <h1 className="edit-job-heading">Editar Vaga</h1>
 
         <div className="edit-job-content">
-          <aside className="edit-job-sidebar">
-            Sidebar
-          </aside>
+          <div className="edit-job-left">
+            <JobSidebarSearch
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
 
-          <section className="edit-job-card">
-            <h2>Editar Vaga</h2>
+            <JobSidebar
+              jobs={jobs}
+              currentJobId={id}
+              searchTerm={searchTerm}
+            />
+          </div>
+
+          <div className="edit-job-right">
+            {error && (
+              <p style={{ color: "#ff6b6b", marginBottom: "16px" }}>
+                {error}
+              </p>
+            )}
+
+            {success && (
+              <p style={{ color: "#51cf66", marginBottom: "16px" }}>
+                {success}
+              </p>
+            )}
 
             <form onSubmit={handleSubmit} className="edit-job-form">
               <div className="form-group">
@@ -171,13 +287,42 @@ export default function EditJob() {
               </div>
 
               <div className="edit-job-actions">
-                <button type="button" className="cancel-btn">Cancelar</button>
-                <button type="submit" className="save-btn">Salvar Alterações</button>
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => navigate(-1)}
+                  disabled={saving || deleting}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  className="delete-btn"
+                  onClick={() => setShowDeleteModal(true)}
+                  disabled={saving || deleting}
+                >
+                  Delete
+                </button>
+
+                <button
+                  type="submit"
+                  className="save-btn"
+                  disabled={saving || deleting}
+                >
+                  {saving ? "Salvando..." : "Salvar Alterações"}
+                </button>
               </div>
             </form>
-          </section>
+          </div>
         </div>
       </div>
+
+      <DeleteModal
+        show={showDeleteModal}
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+      />
     </>
   );
 }

@@ -40,6 +40,19 @@ export function formatJob(job) {
   };
 }
 
+export async function getJobs() {
+  const res = await fetch(`${API_URL}/jobs.php`);
+  const json = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(json?.error || "Error loading jobs");
+  }
+
+  return Array.isArray(json.data) ? json.data.map(formatJob) : [];
+}
+
+export const fetchJobs = getJobs;
+
 export async function getJobById(id) {
   const res = await fetch(`${API_URL}/jobs.php?id=${id}`);
   const json = await res.json().catch(() => ({}));
@@ -51,21 +64,6 @@ export async function getJobById(id) {
   return formatJob(json.data);
 }
 
-export async function fetchJobs() { 
-  const res = await fetch(`${API_URL}/jobs.php`);
-  const json = await res.json().catch(() => ({}));
-
-  if(!res.ok){
-    throw new Error(json?.error || "Error loading jobs");
-  }
-
-  // think: is json.data already an array?
-  // if yes, format each job
-
-  return Array.isArray(json.data) ? json.data.map(formatJob) : [];
-}
-
-
 export async function createJobApi(payload) {
   const res = await fetch(`${API_URL}/jobs.php`, {
     method: "POST",
@@ -76,9 +74,42 @@ export async function createJobApi(payload) {
   const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-
     throw new Error(json?.error || "Erro ao criar vaga");
   }
 
   return formatJob(json.data);
+}
+
+export async function updateJobApi(id, payload) {
+  const res = await fetch(`${API_URL}/jobs.php?id=${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const json = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(json?.error || "Erro ao atualizar vaga");
+  }
+
+  return formatJob(json.data);
+}
+
+
+export async function deleteJobApi(id) {
+  const response = await fetch(
+    `http://localhost:8000/Vagas_Nordestinas/backend/api/jobs.php?id=${id}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.error || "Failed to delete job");
+  }
+
+  return json;
 }

@@ -1,0 +1,80 @@
+.edit-job-sidebar {
+  position: sticky;
+  top: 120px;
+  align-self: flex-start;
+  height: fit-content;
+}
+
+.sidebar-jobs-wrapper {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 14px;
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.sidebar-jobs-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-jobs-wrapper::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+  border-radius: 4px;
+}
+
+.sidebar-jobs-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #000;
+}
+
+.sidebar-jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sidebar-job {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  border-radius: 10px;
+  background: #bfc7d4;
+  text-decoration: none;
+  transition: 0.2s;
+  border: 1px solid #aeb7c5;
+  box-sizing: border-box;
+}
+
+.sidebar-job:hover {
+  transform: translateY(-2px);
+}
+
+.sidebar-job-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.sidebar-job-company {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.sidebar-job-location {
+  font-size: 13px;
+  color: #777;
+}
+
+.sidebar-job.active {
+  border-left: 6px solid #7c6cff;
+  background: #bfc7d4;
+}

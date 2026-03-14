@@ -13,8 +13,8 @@
 }
 
 .edit-job-content {
-  display: grid;
-  grid-template-columns: 320px 1fr;
+  display: flex;
+  align-items: flex-start;
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
@@ -23,11 +23,15 @@
   padding: 20px;
 }
 
-.edit-job-sidebar {
-  background: #d9dde1;
-  border-radius: 6px;
-  min-height: 600px;
-  padding: 16px;
+.edit-job-left {
+  width: 320px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.edit-job-right {
+  flex: 1;
+  min-width: 0;
 }
 
 .edit-job-card {
@@ -113,6 +117,19 @@
   background: #dcdcf3;
   color: #888;
 }
+.delete-btn {
+  border: none;
+  border-radius: 20px;
+  padding: 10px 25px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #b13a35;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #972c28;
+}
 
 .save-btn {
   background: #9a6a08;
@@ -125,7 +142,17 @@
 
 @media (max-width: 900px) {
   .edit-job-content {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .edit-job-left {
+    width: 100%;
+    position: static;
+    top: auto;
+  }
+
+  .edit-job-right {
+    width: 100%;
   }
 
   .edit-job-form {
