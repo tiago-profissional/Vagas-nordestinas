@@ -1,11 +1,15 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import App from "./App.jsx";
 import CreateJob from "./components/CreateJob.jsx";
-import { fetchJobs, createJobApi } from "./services/jobsApi.js";
 import EditJob from "./components/EditJob.jsx";
 import NotFound from "./components/NotFound.jsx";
 import About from "./components/About.jsx";
+import Signup from "./components/Signup.jsx";
+import DashboardJobs from "./components/dashboard.jsx";
+
+import { fetchJobs, createJobApi } from "./services/jobsApi.js";
 
 export default function AppRoutes() {
   const navigate = useNavigate();
@@ -39,15 +43,18 @@ export default function AppRoutes() {
 
   return (
     <Routes>
-
       <Route
         path="/"
-        element={<App jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />}
+        element={
+          <App jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />
+        }
       />
 
       <Route
         path="/jobs/:id"
-        element={<App jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />}
+        element={
+          <App jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />
+        }
       />
 
       <Route
@@ -62,11 +69,14 @@ export default function AppRoutes() {
 
       <Route path="/edit-job/:id" element={<EditJob />} />
 
-      {/* 404 must be LAST */}
-      <Route path="*" element={<NotFound />} />
+      <Route path="/signup" element={<Signup />} />
 
       <Route path="/about" element={<About />} />
 
+      <Route path="*" element={<NotFound />} />
+
+      <Route path="/dashboard" element={<DashboardJobs />} />
+      
     </Routes>
   );
 }

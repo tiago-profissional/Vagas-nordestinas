@@ -16,6 +16,7 @@
   font-weight: 500;
   color: #111;
   margin-bottom: 24px;
+  line-height: 1.2;
 }
 
 .about-description {
@@ -28,7 +29,7 @@
 
 .about-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px;
   margin-bottom: 40px;
 }
@@ -45,17 +46,19 @@
   font-size: 34px;
   margin-bottom: 20px;
   color: #111;
+  line-height: 1.3;
 }
 
 .about-card ul {
   margin: 0;
-  padding-left: 28px;
+  padding-left: 24px;
 }
 
 .about-card li {
   font-size: 24px;
   line-height: 1.9;
   color: #222;
+  word-break: break-word;
 }
 
 .about-extra {
@@ -76,6 +79,7 @@
   font-size: 34px;
   margin-bottom: 16px;
   color: #111;
+  line-height: 1.3;
 }
 
 .about-section p {
@@ -87,19 +91,21 @@
 
 .about-highlights {
   margin: 0;
-  padding-left: 28px;
+  padding-left: 24px;
 }
 
 .about-highlights li {
   font-size: 22px;
   line-height: 1.8;
   color: #222;
+  word-break: break-word;
 }
 
 .about-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 16px;
+  align-items: center;
 }
 
 .about-links a {
@@ -108,6 +114,7 @@
   font-size: 24px;
   font-weight: 500;
   transition: 0.2s ease;
+  word-break: break-word;
 }
 
 .about-links a:hover {
@@ -115,54 +122,161 @@
   text-decoration: underline;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
+  .about-page {
+    padding: 45px 20px 60px;
+  }
+
+  .about-container {
+    max-width: 900px;
+  }
+
   .about-title {
-    font-size: 42px;
+    font-size: 46px;
   }
 
   .about-description {
-    font-size: 20px;
+    font-size: 21px;
+    margin-bottom: 40px;
   }
 
-  .about-grid {
-    grid-template-columns: 1fr;
+  .about-card,
+  .about-section {
+    padding: 26px 28px;
   }
 
   .about-card h2,
   .about-section h2 {
-    font-size: 28px;
+    font-size: 30px;
   }
 
   .about-card li,
   .about-section p,
-  .about-links a,
-  .about-highlights li {
+  .about-highlights li,
+  .about-links a {
     font-size: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .about-title {
+    font-size: 40px;
+  }
+
+  .about-description {
+    font-size: 19px;
+  }
+
+  .about-card h2,
+  .about-section h2 {
+    font-size: 27px;
+  }
+
+  .about-card li,
+  .about-section p,
+  .about-highlights li,
+  .about-links a {
+    font-size: 19px;
+    line-height: 1.7;
   }
 }
 
 @media (max-width: 600px) {
   .about-page {
-    padding: 35px 16px 50px;
+    min-height: auto;
+    padding: 32px 14px 45px;
+  }
+
+  .about-container {
+    text-align: left;
   }
 
   .about-title {
-    font-size: 34px;
+    font-size: 30px;
+    margin-bottom: 16px;
+    text-align: center;
   }
 
   .about-description {
-    font-size: 18px;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+
+  .about-grid {
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  .about-extra {
+    gap: 18px;
   }
 
   .about-card,
   .about-section {
-    padding: 24px 20px;
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
+
+  .about-card h2,
+  .about-section h2 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .about-card ul,
+  .about-highlights {
+    padding-left: 20px;
   }
 
   .about-card li,
   .about-section p,
-  .about-links a,
-  .about-highlights li {
-    font-size: 18px;
+  .about-highlights li,
+  .about-links a {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .about-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .about-page {
+    padding: 28px 12px 40px;
+  }
+
+  .about-title {
+    font-size: 26px;
+  }
+
+  .about-description {
+    font-size: 15px;
+  }
+
+  .about-card,
+  .about-section {
+    padding: 18px 14px;
+  }
+
+  .about-card h2,
+  .about-section h2 {
+    font-size: 20px;
+  }
+
+  .about-card li,
+  .about-section p,
+  .about-highlights li,
+  .about-links a {
+    font-size: 15px;
   }
 }

@@ -1,0 +1,180 @@
+.dashboard {
+  background: #1b1714;
+  color: #f4f1ed;
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: #241d18;
+}
+
+.logo {
+  color: #d4a24f;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.user {
+  color: #d4a24f;
+}
+
+/* LAYOUT */
+.layout {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+}
+
+.sidebar__item {
+  display: block;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.sidebar__item.active {
+  background: #d4a24f;
+  color: black;
+}
+
+/* CONTENT */
+.content {
+  flex: 1;
+}
+
+.content__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.btn-primary {
+  background: #d4a24f;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: black;
+  text-decoration: none;
+}
+
+/* STATS */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #2a221c;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.text-green {
+  color: #4caf50;
+}
+
+.text-blue {
+  color: #42a5f5;
+}
+
+.text-gold {
+  color: #d4a24f;
+}
+
+/* TABLE */
+.table {
+  background: #2a221c;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  padding: 12px;
+}
+
+th {
+  text-align: left;
+}
+
+/* BADGES */
+.badge {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* MODALITY */
+.badge--remoto {
+  background: #555;
+}
+
+.badge--presencial {
+  background: #7b4a00;
+  color: #ffcf7a;
+}
+
+.badge--hibrido {
+  background: #063f72;
+  color: #7ac4ff;
+}
+
+/* STATUS */
+.badge--ativa {
+  background: #123d1e;
+  color: #68d17c;
+}
+
+.badge--publicada {
+  background: #0e3b68;
+  color: #67b8ff;
+}
+
+.badge--rascunho {
+  background: #5a3b00;
+  color: #ffbf52;
+}
+
+/* ACTIONS */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.error {
+  color: red;
+}

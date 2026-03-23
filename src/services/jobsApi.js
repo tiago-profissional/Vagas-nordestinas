@@ -96,20 +96,29 @@ export async function updateJobApi(id, payload) {
   return formatJob(json.data);
 }
 
+/* ========================= */
+/* DELETE */
+/* ========================= */
 
 export async function deleteJobApi(id) {
-  const response = await fetch(
-    `http://localhost:8000/Vagas_Nordestinas/backend/api/jobs.php?id=${id}`,
-    {
-      method: "DELETE",
-    }
-  );
+  const response = await fetch(`${API_URL}/jobs.php?id=${id}`, {
+    method: "DELETE",
+  });
 
-  const json = await response.json();
+  const json = await response.json().catch(() => ({}));
 
   if (!response.ok) {
     throw new Error(json.error || "Failed to delete job");
   }
 
   return json;
+}
+
+/* ✅ ALIAS (THIS FIXES YOUR ERROR) */
+export const deleteJob = deleteJobApi;
+
+/* OPTIONAL (if you later need it) */
+export async function getJobsByUser(userId) {
+  const res = await fetch(`${API_URL}/jobs.php?user_id=${userId}`);
+  return res.json();
 }

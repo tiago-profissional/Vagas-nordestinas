@@ -4,6 +4,7 @@ import JobDetail from "./components/JobDetail.jsx";
 import JobList from "./components/JobList.jsx";
 import Navbar from "./components/Navbar.jsx";
 import SearchBar from "./components/SearchBar.jsx";
+ 
 
 
 export default function App({ jobs, loadingJobs, errorJobs }) {
@@ -17,6 +18,7 @@ export default function App({ jobs, loadingJobs, errorJobs }) {
   const [location, setLocation] = useState("");
   const [onlyRemote, setOnlyRemote] = useState(false);
   const [employmentType, setEmploymentType] = useState("");
+
 
   useEffect(() => {
     if (loadingJobs) return;
