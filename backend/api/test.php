@@ -1,2 +1,1 @@
-<?php
-    echo "Backend OK";
+<?php try { $pdo = new PDO( "pgsql:host=ep-square-sea-an1fxuo5-pooler.c-6.us-east-1.aws.neon.tech;port=5432;dbname=neondb;sslmode=require", "neondb_owner", "npg_8MzsbSvUQi7a" ); echo "Conectou com sucesso 🚀"; } catch (PDOException $e) { echo $e->getMessage(); }
