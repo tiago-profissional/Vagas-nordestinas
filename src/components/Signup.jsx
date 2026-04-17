@@ -5,7 +5,7 @@ import "../styles/Signup.css";
 function LoginSignup() {
   const navigate = useNavigate();
 
-  const API_URL = "https://vagas-nordestinas.onrender.com/api";
+  const API_URL = "https://vagasnordestinasdb.infinityfree.me/api";
 
   const [action, setAction] = useState("Sign Up");
 

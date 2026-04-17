@@ -1,4 +1,4 @@
-const API_URL = "https://vagas-nordestinas.onrender.com";
+const API_URL = "https://vagasnordestinasdb.infinityfree.me/api";
 
 export function formatJob(job) {
   let location;
