@@ -6,16 +6,15 @@ $username = "if0_41689928";
 $password = "f7f9WkLEsToUl2";
 
 try {
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
-        $username,
-        $password
-    );
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
 
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "INSERT INTO jobs (title, company, city, description)
+            VALUES ('Dev React', 'Empresa X', 'Recife', 'Trabalho remoto')";
 
-    echo "Conectado com sucesso 🚀";
+    $pdo->exec($sql);
+
+    echo "Inserido com sucesso 🚀";
 
 } catch (PDOException $e) {
-    echo "Erro: " . $e->getMessage();
+    echo $e->getMessage();
 }
