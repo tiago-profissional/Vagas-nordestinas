@@ -5,6 +5,8 @@ import "../styles/Signup.css";
 function LoginSignup() {
   const navigate = useNavigate();
 
+  const API_URL = "https://vagas-nordestinas.onrender.com/api";
+
   const [action, setAction] = useState("Sign Up");
 
   const [name, setName] = useState("");
@@ -58,8 +60,8 @@ function LoginSignup() {
 
       const url =
         action === "Sign Up"
-          ? "http://localhost:8000/Vagas_Nordestinas/backend/api/register.php"
-          : "http://localhost:8000/Vagas_Nordestinas/backend/api/login.php";
+          ? `${API_URL}/register.php`
+          : `${API_URL}/login.php`;
 
       const body =
         action === "Sign Up"

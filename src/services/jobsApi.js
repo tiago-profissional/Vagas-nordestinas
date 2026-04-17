@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000/Vagas_Nordestinas/backend/api";
+const API_URL = "https://vagas-nordestinas.onrender.com";
 
 export function formatJob(job) {
   let location;
@@ -41,7 +41,7 @@ export function formatJob(job) {
 }
 
 export async function getJobs() {
-  const res = await fetch(`${API_URL}/jobs.php`);
+  const res = await fetch(`${API_URL}/api/jobs.php`);
   const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
@@ -54,7 +54,7 @@ export async function getJobs() {
 export const fetchJobs = getJobs;
 
 export async function getJobById(id) {
-  const res = await fetch(`${API_URL}/jobs.php?id=${id}`);
+  const res = await fetch(`${API_URL}/api/jobs.php?id=${id}`);
   const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
@@ -65,7 +65,7 @@ export async function getJobById(id) {
 }
 
 export async function createJobApi(payload) {
-  const res = await fetch(`${API_URL}/jobs.php`, {
+  const res = await fetch(`${API_URL}/api/jobs.php`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -81,7 +81,7 @@ export async function createJobApi(payload) {
 }
 
 export async function updateJobApi(id, payload) {
-  const res = await fetch(`${API_URL}/jobs.php?id=${id}`, {
+  const res = await fetch(`${API_URL}/api/jobs.php?id=${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -96,12 +96,8 @@ export async function updateJobApi(id, payload) {
   return formatJob(json.data);
 }
 
-/* ========================= */
-/* DELETE */
-/* ========================= */
-
 export async function deleteJobApi(id) {
-  const response = await fetch(`${API_URL}/jobs.php?id=${id}`, {
+  const response = await fetch(`${API_URL}/api/jobs.php?id=${id}`, {
     method: "DELETE",
   });
 
@@ -114,11 +110,9 @@ export async function deleteJobApi(id) {
   return json;
 }
 
-/* ✅ ALIAS (THIS FIXES YOUR ERROR) */
 export const deleteJob = deleteJobApi;
 
-/* OPTIONAL (if you later need it) */
 export async function getJobsByUser(userId) {
-  const res = await fetch(`${API_URL}/jobs.php?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/api/jobs.php?user_id=${userId}`);
   return res.json();
 }

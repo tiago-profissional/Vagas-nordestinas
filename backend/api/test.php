@@ -1,1 +1,21 @@
-<?php try { $pdo = new PDO( "pgsql:host=ep-square-sea-an1fxuo5-pooler.c-6.us-east-1.aws.neon.tech;port=5432;dbname=neondb;sslmode=require", "neondb_owner", "npg_8MzsbSvUQi7a" ); echo "Conectou com sucesso 🚀"; } catch (PDOException $e) { echo $e->getMessage(); }
+<?php
+
+$host = "sql306.infinityfree.com";
+$dbname = "if0_41689928_vagas";
+$username = "if0_41689928";
+$password = "f7f9WkLEsToUl2";
+
+try {
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+        $username,
+        $password
+    );
+
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    echo "Conectado com sucesso 🚀";
+
+} catch (PDOException $e) {
+    echo "Erro: " . $e->getMessage();
+}
