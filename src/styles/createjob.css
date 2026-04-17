@@ -8,8 +8,8 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
   display: flex;
-  align-items: center;          /* essencial */
-  justify-content: center;      /* essencial */
+  align-items: center;
+  justify-content: center;
   padding: 24px;
   z-index: 9999;
 }
@@ -17,7 +17,6 @@
 /* MODAL */
 .cj-modal {
   width: 900px;
-  height: 720px;
   max-width: calc(100vw - 48px);
   max-height: calc(100vh - 48px);
 
@@ -27,17 +26,15 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   padding: 24px;
 
-  display: flex;               /* essencial */
-  flex-direction: column;      /* essencial */
-  align-items: stretch;        /* padrão correto */
-  justify-content: flex-start; /* evita centralizar conteúdo */
+  display: flex;
+  flex-direction: column;
 }
 
 /* HEADER */
 .cj-header {
   display: flex;
-  align-items: center;          /* essencial */
-  justify-content: space-between; /* essencial */
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 24px;
 }
 
@@ -52,16 +49,9 @@
   border: none;
   cursor: pointer;
   font-size: 22px;
-  line-height: 1;
-  color: #444;
-
-  display: flex;               /* essencial */
-  align-items: center;         /* essencial */
-  justify-content: center;     /* essencial */
-}
-
-.cj-close:hover {
-  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ===============================
@@ -71,40 +61,35 @@
 .cj-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;          /* essencial */
-  justify-content: center;      /* essencial */
+  align-items: center;
+  justify-content: center;
   padding: 40px 24px;
   background: #000;
 }
 
-/* O FORM CONTROLA O LAYOUT VERTICAL */
 .cj-form {
   width: 100%;
   max-width: 900px;
 
-  display: flex;               /* essencial */
-  flex-direction: column;      /* essencial */
-  align-items: stretch;        /* correto p/ inputs */
-  justify-content: flex-start;
+  display: flex;
+  flex-direction: column;
 
-  min-height: 520px;           /* empurra botões */
+  min-height: 520px;
 }
 
 /* ===============================
-   FORM
+   FORM GRID
    =============================== */
 
 .cj-grid {
-  display: grid;               /* NÃO usar flex aqui */
+  display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
 .cj-field {
-  display: flex;               /* essencial */
+  display: flex;
   flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
   gap: 6px;
 }
 
@@ -127,11 +112,7 @@
   font-size: 14px;
   background: #f5f5f5;
   outline: none;
-}
-
-.cj-input:focus {
-  border-color: #8b6b00;
-  background: #fff;
+  width: 100%;
 }
 
 /* TEXTAREA */
@@ -144,27 +125,18 @@
   resize: vertical;
   background: #f5f5f5;
   outline: none;
+  width: 100%;
 }
 
-.cj-textarea:focus {
-  border-color: #8b6b00;
-  background: #fff;
-}
-
-/* ===============================
-   ACTIONS (BOTÕES EMBAIXO)
-   =============================== */
-
+/* ACTIONS */
 .cj-actions {
-  margin-top: auto;              /* empurra pra baixo */
-  display: flex;                /* essencial */
-  align-items: center;          /* essencial */
-  justify-content: flex-end;    /* essencial */
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
   gap: 12px;
   padding-top: 24px;
 }
 
-/* BUTTONS */
 .cj-btn {
   height: 44px;
   padding: 0 22px;
@@ -173,37 +145,89 @@
   font-weight: 700;
   cursor: pointer;
   border: none;
-  transition: 0.2s;
-
-  display: flex;               /* essencial */
-  align-items: center;         /* essencial */
-  justify-content: center;     /* essencial */
-}
-
-.cj-btn-ghost {
-  background: transparent;
-  color: #444;
-}
-
-.cj-btn-ghost:hover {
-  background: rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cj-btn-primary {
   background: #c9a227;
-  color: #111;
 }
 
-.cj-btn-primary:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
+.cj-btn-ghost {
+  background: transparent;
 }
 
 /* ===============================
-   RESPONSIVE
+   📱 BREAKPOINTS
    =============================== */
 
-@media (max-width: 700px) {
+ 
+@media (max-width: 900px) {
+  .edit-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) !important;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .edit-sidebar,
+  .edit-form {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .cj-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .cj-input {
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .cj-textarea {
+    padding: 10px 12px;
+  }
+
+  .cj-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* 🟡 768px – Tablet / Mobile */
+@media (max-width: 768px) {
+
+  .cj-modal {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .cj-page {
+    padding: 16px;
+  }
+
+  /* 👇 KEEP BUTTON LIKE DESKTOP */
+  .cj-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .cj-btn {
+    width: auto; /* 👈 important fix */
+  }
+
+}
+
+/* 🔴 480px – Mobile */
+@media (max-width: 480px) {
+
+  /* 👇 FORM GOES 1 COLUMN */
   .cj-grid {
     grid-template-columns: 1fr;
   }
@@ -211,4 +235,61 @@
   .cj-field-full {
     grid-column: span 1;
   }
+
+  /* 👇 BUTTONS STACK NOW */
+  .cj-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .cj-btn {
+    width: 100%;
+  }
+
+  /* 👇 BETTER SPACING */
+  .cj-modal {
+    padding: 16px;
+  }
+
+  .cj-header h2 {
+    font-size: 16px;
+  }
+
+  /* 👇 INPUTS LESS SQUEEZING */
+  .cj-input {
+    padding: 0 18px; /* 👈 balanced (not 35px) */
+  }
+
+  .cj-textarea {
+    padding: 12px 18px;
+  }
+
+}
+
+/* ⚫ 375px – iPhone */
+@media (max-width: 375px) {
+
+  .cj-page {
+    padding: 12px;
+  }
+
+  .cj-input {
+    padding: 0 16px;
+  }
+
+}
+
+/* ⚫ 320px – Very small */
+@media (max-width: 320px) {
+
+  .cj-header h2 {
+    font-size: 14px;
+  }
+
+  .cj-btn {
+    font-size: 12px;
+    padding: 0 12px;
+  }
+
 }

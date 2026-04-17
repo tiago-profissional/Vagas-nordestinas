@@ -70,6 +70,7 @@ export default function CreateJob({ onCancel, onCreate }) {
     }
   }
 
+
   return (
     <div className="cj-page">
       <div className="cj-card">

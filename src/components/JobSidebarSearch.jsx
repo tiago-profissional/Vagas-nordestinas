@@ -2,30 +2,33 @@ import "../styles/JobSidebarSearch.css";
 
 export default function JobSidebarSearch({ searchTerm, setSearchTerm }) {
   return (
-    <div className="sidebar-search-box">
-      <h2 className="sidebar-search-title">Vagas para sua busca</h2>
+    <div className="ejob-edit-sidebar-search">
+      <h2 className="ejob-edit-sidebar-search__title">Vagas para sua busca</h2>
 
-      <div className="sidebar-search-bar">
-        <span className="sidebar-search-icon">⌕</span>
+      <div className="ejob-edit-sidebar-search__bar">
+        <span className="ejob-edit-sidebar-search__icon">⌕</span>
 
         <input
           type="text"
           placeholder="Encontre a sua vaga"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="sidebar-search-input"
+          className="ejob-edit-sidebar-search__input"
         />
 
-        <span className="sidebar-search-divider"></span>
-        <span className="sidebar-search-arrow">▼</span>
+        <span className="ejob-edit-sidebar-search__divider"></span>
+        <span className="ejob-edit-sidebar-search__arrow">▼</span>
       </div>
 
-      <div className="sidebar-search-tags">
-        <button type="button" className="sidebar-tag">
+      <div className="ejob-edit-sidebar-search__tags">
+        <button type="button" className="ejob-edit-sidebar-search__tag">
           Apenas remotas
         </button>
 
-        <button type="button" className="sidebar-tag sidebar-tag-wide">
+        <button
+          type="button"
+          className="ejob-edit-sidebar-search__tag ejob-edit-sidebar-search__tag--wide"
+        >
           Remotas e presencial
         </button>
       </div>

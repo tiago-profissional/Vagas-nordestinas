@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 24px 16px;
   font-family: Arial, Helvetica, sans-serif;
   background: linear-gradient(
       rgba(40, 40, 40, 0.72),
@@ -23,7 +23,7 @@
   max-width: 540px;
   background: #f3f3f3;
   border-radius: 22px;
-  padding: 28px 18px 24px;
+  padding: 28px 20px 24px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
@@ -34,16 +34,18 @@
 }
 
 .auth-title {
-  font-size: 34px;
+  font-size: clamp(28px, 4vw, 34px);
   font-weight: 700;
   color: #161616;
   margin-bottom: 8px;
+  line-height: 1.1;
 }
 
 .auth-subtitle {
   font-size: 16px;
   color: #5a5a5a;
   margin-bottom: 10px;
+  line-height: 1.4;
 }
 
 .auth-underline {
@@ -62,10 +64,12 @@
 
 .auth-input-wrapper {
   width: 100%;
+  min-width: 0;
 }
 
 .auth-input {
   width: 100%;
+  min-width: 0;
   height: 60px;
   border: 1.5px solid #b8adff;
   border-radius: 10px;
@@ -91,6 +95,7 @@
   text-align: center;
   font-size: 16px;
   color: #5a5a5a;
+  line-height: 1.4;
 }
 
 .auth-forgot-password span {
@@ -99,20 +104,22 @@
   cursor: pointer;
 }
 
-.auth-error-message {
-  margin-top: 16px;
-  text-align: center;
-  color: #c62828;
-  font-size: 15px;
-  font-weight: 500;
-}
-
+.auth-error-message,
 .auth-success-message {
   margin-top: 16px;
   text-align: center;
-  color: #2e7d32;
   font-size: 15px;
   font-weight: 500;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.auth-error-message {
+  color: #c62828;
+}
+
+.auth-success-message {
+  color: #2e7d32;
 }
 
 .auth-switch-buttons {
@@ -123,6 +130,7 @@
 
 .auth-switch-btn {
   flex: 1;
+  min-width: 0;
   height: 52px;
   border: none;
   border-radius: 10px;
@@ -166,23 +174,118 @@
   cursor: not-allowed;
 }
 
-@media (max-width: 600px) {
-  .auth-form-card {
-    padding: 24px 16px 20px;
+/* Tablet / telas médias */
+@media (max-width: 768px) {
+  .auth-page {
+    padding: 20px 14px;
+    align-items: center;
   }
 
-  .auth-title {
-    font-size: 28px;
+  .auth-form-card {
+    padding: 24px 18px 22px;
+    border-radius: 20px;
+  }
+
+  .auth-header {
+    margin-bottom: 20px;
+  }
+
+  .auth-subtitle {
+    font-size: 15px;
+  }
+
+  .auth-inputs {
+    gap: 16px;
   }
 
   .auth-input {
     height: 56px;
     font-size: 16px;
+    padding: 0 16px;
   }
 
   .auth-switch-btn,
   .auth-main-submit {
     height: 50px;
     font-size: 16px;
+  }
+}
+
+/* Mobile padrão */
+@media (max-width: 600px) {
+  .auth-page {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+
+  .auth-form-card {
+    max-width: 100%;
+    padding: 22px 14px 18px;
+    border-radius: 18px;
+  }
+
+  .auth-title {
+    font-size: 26px;
+  }
+
+  .auth-subtitle {
+    font-size: 14px;
+  }
+
+  .auth-underline {
+    width: 56px;
+    height: 3px;
+  }
+
+  .auth-inputs {
+    gap: 14px;
+  }
+
+  .auth-input {
+    height: 52px;
+    font-size: 15px;
+    padding: 0 14px;
+    border-radius: 9px;
+  }
+
+  .auth-forgot-password,
+  .auth-error-message,
+  .auth-success-message {
+    font-size: 14px;
+  }
+
+  .auth-switch-buttons {
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .auth-switch-btn,
+  .auth-main-submit {
+    height: 48px;
+    font-size: 15px;
+    border-radius: 9px;
+  }
+
+  .auth-main-submit {
+    margin-top: 14px;
+  }
+}
+
+/* Mobile muito pequeno */
+@media (max-width: 400px) {
+  .auth-switch-buttons {
+    flex-direction: row; /* 🔥 volta pra lado a lado */
+    gap: 10px;
+  }
+
+  .auth-switch-btn {
+    flex: 1;
+    height: 52px; /* 🔥 aumenta altura */
+    font-size: 15px;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

@@ -1,3 +1,5 @@
+import "../styles/SearchBar.css";
+
 function SearchBar({
   searchText,
   setSearchText,
@@ -9,96 +11,83 @@ function SearchBar({
   setEmploymentType,
 }) {
   return (
-    <section className="searchbar">
-      <div className="searchbar-left">
-        <p className="searchbar-title">Vagas para sua busca</p>
+    <section className="jobs-searchbar">
+      <div className="jobs-searchbar__title-col">
+        <p className="jobs-searchbar__title">Jobs matching your search</p>
       </div>
 
-      <div className="searchbar-center">
-        <div className="searchbar-inputs">
-          <div className="input-icon">
-            <span className="icon">🔍</span>
+      <div className="jobs-searchbar__center-col">
+        <div className="jobs-searchbar__inputs">
+          <div className="jobs-searchbar__input-icon">
+            <span className="jobs-searchbar__icon">🔍</span>
             <input
               type="text"
-              placeholder="Encontre a sua vaga"
+              placeholder="Find your job"
               value={searchText ?? ""}
               onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
 
-          <div className="input-icon">
-            <span className="icon">📍</span>
+          <div className="jobs-searchbar__input-icon">
+            <span className="jobs-searchbar__icon">📍</span>
             <input
               type="text"
-              placeholder="Digite sua Cidade ou estado"
+              placeholder="Enter your city or state"
               value={location ?? ""}
               onChange={(e) => setLocation(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="searchbar-chips">
+        <div className="jobs-searchbar__chips-row">
           <button
             type="button"
-            className={onlyRemote ? "chip active" : "chip"}
+            className={onlyRemote ? "jobs-searchbar__chip active" : "jobs-searchbar__chip"}
             onClick={() => setOnlyRemote((v) => !v)}
           >
-            Apenas remotas
+            Remote only
           </button>
 
           <button
             type="button"
-            className={!onlyRemote ? "chip active" : "chip"}
+            className={!onlyRemote ? "jobs-searchbar__chip active" : "jobs-searchbar__chip"}
             onClick={() => setOnlyRemote(false)}
           >
-            Vagas remotas e presenciais
+            Remote and on-site jobs
           </button>
 
           <button
             type="button"
-            className={employmentType ? "chip active" : "chip"}
+            className={employmentType ? "jobs-searchbar__chip active" : "jobs-searchbar__chip"}
             onClick={() => setEmploymentType("")}
-            title="Limpar tipo de contrato"
           >
-            Limpar tipo
+            Clear job type
           </button>
         </div>
       </div>
 
-      <div className="searchbar-right">
-        <p className="searchbar-right-title">
-          Selecione a sua modalidade de trabalho
-        </p>
+      <div className="jobs-searchbar__right-col">
+        <p className="jobs-searchbar__right-title">Select your employment type</p>
 
-        <div className="searchbar-radios">
-          <label>
+        <div className="jobs-searchbar__radios">
+          <label className="jobs-searchbar__radio-option">
             <input
               type="radio"
               name="type"
               checked={employmentType === "part_time"}
               onChange={() => setEmploymentType("part_time")}
             />
-            Part-time
+            <span>Part-time</span>
           </label>
 
-          <label>
+          <label className="jobs-searchbar__radio-option">
             <input
               type="radio"
               name="type"
               checked={employmentType === "full_time"}
               onChange={() => setEmploymentType("full_time")}
             />
-            Full-time
-          </label>
-
-          <label>
-            <input
-              type="radio"
-              name="type"
-              checked={employmentType === ""}
-              onChange={() => setEmploymentType("")}
-            />
-            Todos
+            <span>Full-time</span>
           </label>
         </div>
       </div>

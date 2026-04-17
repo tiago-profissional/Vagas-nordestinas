@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Header from "./Headers";
 import { getJobsByUser, deleteJob } from "../services/jobsApi";
-import "../styles/DashboardJobs.css";
+import "../styles/dashboardJobs.css";
 
 function DashboardJobs() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function DashboardJobs() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   useEffect(() => {
     if (!user) {
@@ -54,6 +55,11 @@ function DashboardJobs() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/signup");
+  };
+
   const stats = useMemo(
     () => ({
       total: jobs.length,
@@ -65,133 +71,160 @@ function DashboardJobs() {
   );
 
   return (
-    <div className="dashboard">
-      <header className="topbar">
-        <div className="logo">Vagas Nordestinas</div>
+    <>
+      <Header />
 
-        <nav className="nav">
-          <a href="#">Vagas</a>
-          <a href="#">Avaliações</a>
-          <a href="#">Salários</a>
-        </nav>
+      <div className="vn-dashboard-jobs">
+        <div className="vn-dashboard-jobs__layout">
+          <aside className="vn-dashboard-jobs__sidebar">
+            <h2 className="vn-dashboard-jobs__sidebar-title">Dashboard</h2>
 
-        <div className="user">Olá, {user?.name}</div>
-      </header>
+            <div className="vn-dashboard-jobs__sidebar-menu">
+              <button className="vn-dashboard-jobs__sidebar-item active">
+                Minhas Vagas
+              </button>
 
-      <div className="layout">
-        <aside className="sidebar">
-          <h2>Dashboard</h2>
+              <Link
+                to="/create-job"
+                className="vn-dashboard-jobs__sidebar-item"
+              >
+                Criar Vaga
+              </Link>
 
-          <button className="sidebar__item active">Minhas Vagas</button>
-          <Link to="/create-job" className="sidebar__item">
-            Criar Vaga
-          </Link>
+              <button
+                className="vn-dashboard-jobs__sidebar-item"
+                onClick={handleLogout}
+              >
+                Sair
+              </button>
+            </div>
+          </aside>
 
-          <button
-            className="sidebar__item"
-            onClick={() => {
-              localStorage.removeItem("user");
-              navigate("/signup");
-            }}
-          >
-            Sair
-          </button>
-        </aside>
+          <main className="vn-dashboard-jobs__content">
+            <div className="vn-dashboard-jobs__content-header">
+              <div className="vn-dashboard-jobs__content-text">
+                <h1>Minhas Vagas</h1>
+                <p>Gerencie suas vagas</p>
+              </div>
 
-        <main className="content">
-          <div className="content__header">
-            <div>
-              <h1>Minhas Vagas</h1>
-              <p>Gerencie suas vagas</p>
+              <Link
+                to="/create-job"
+                className="vn-dashboard-jobs__btn-primary"
+              >
+                + Criar Nova Vaga
+              </Link>
             </div>
 
-            <Link to="/create-job" className="btn-primary">
-              + Criar Nova Vaga
-            </Link>
-          </div>
+            <section className="vn-dashboard-jobs__stats">
+              <div className="vn-dashboard-jobs__stat-card">
+                <span className="vn-dashboard-jobs__stat-label">
+                  Total de Vagas
+                </span>
+                <h3 className="vn-dashboard-jobs__stat-number">
+                  {stats.total}
+                </h3>
+              </div>
 
-          <div className="stats">
-            <div className="card">
-              <span>Total</span>
-              <h3>{stats.total}</h3>
-            </div>
+              <div className="vn-dashboard-jobs__stat-card">
+                <span className="vn-dashboard-jobs__stat-label">Ativas</span>
+                <h3 className="vn-dashboard-jobs__stat-number text-blue">
+                  {stats.active}
+                </h3>
+              </div>
 
-            <div className="card">
-              <span>Ativas</span>
-              <h3 className="text-green">{stats.active}</h3>
-            </div>
+              <div className="vn-dashboard-jobs__stat-card">
+                <span className="vn-dashboard-jobs__stat-label">Publicadas</span>
+                <h3 className="vn-dashboard-jobs__stat-number text-blue">
+                  {stats.published}
+                </h3>
+              </div>
 
-            <div className="card">
-              <span>Publicadas</span>
-              <h3 className="text-blue">{stats.published}</h3>
-            </div>
+              <div className="vn-dashboard-jobs__stat-card">
+                <span className="vn-dashboard-jobs__stat-label">Rascunhos</span>
+                <h3 className="vn-dashboard-jobs__stat-number text-purple">
+                  {stats.draft}
+                </h3>
+              </div>
+            </section>
 
-            <div className="card">
-              <span>Rascunhos</span>
-              <h3 className="text-gold">{stats.draft}</h3>
-            </div>
-          </div>
+            {loading ? (
+              <p>Loading...</p>
+            ) : error ? (
+              <p className="vn-dashboard-jobs__error">{error}</p>
+            ) : (
+              <section className="vn-dashboard-jobs__table-wrap">
+                <div className="vn-dashboard-jobs__table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Título</th>
+                        <th>Cidade</th>
+                        <th>Modalidade</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
 
-          {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
-            <p className="error">{error}</p>
-          ) : (
-            <div className="table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Título</th>
-                    <th>Cidade</th>
-                    <th>Modalidade</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
+                    <tbody>
+                      {jobs.map((job) => (
+                        <tr key={job.id}>
+                          <td>{job.title}</td>
 
-                <tbody>
-                  {jobs.map((job) => (
-                    <tr key={job.id}>
-                      <td>{job.title}</td>
-                      <td>
-                        {job.city}
-                        {job.state ? `, ${job.state}` : ""}
-                      </td>
+                          <td>
+                            {job.city}
+                            {job.state ? `, ${job.state}` : ""}
+                          </td>
 
-                      <td>
-                        <span
-                          className={`badge badge--${(
-                            job.work_mode || ""
-                          ).toLowerCase()}`}
-                        >
-                          {job.work_mode || "N/A"}
-                        </span>
-                      </td>
+                          <td>
+                            <span
+                              className={`badge badge--${(
+                                job.work_mode || ""
+                              ).toLowerCase()}`}
+                            >
+                              {job.work_mode || "N/A"}
+                            </span>
+                          </td>
 
-                      <td>
-                        <span
-                          className={`badge badge--${(
-                            job.status || ""
-                          ).toLowerCase()}`}
-                        >
-                          {job.status || "Sem status"}
-                        </span>
-                      </td>
+                          <td>
+                            <span
+                              className={`badge badge--${(
+                                job.status || ""
+                              ).toLowerCase()}`}
+                            >
+                              {job.status || "Sem status"}
+                            </span>
+                          </td>
 
-                      <td className="actions">
-                        <Link to={`/job/${job.id}`}>👁</Link>
-                        <Link to={`/edit-job/${job.id}`}>✏️</Link>
-                        <button onClick={() => handleDelete(job.id)}>🗑</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </main>
+                          <td className="vn-dashboard-jobs__actions">
+                            <Link to={`/job/${job.id}`} aria-label="View job">
+                              👁
+                            </Link>
+
+                            <Link
+                              to={`/edit-job/${job.id}`}
+                              aria-label="Edit job"
+                            >
+                              ✏️
+                            </Link>
+
+                            <button
+                              onClick={() => handleDelete(job.id)}
+                              aria-label="Delete job"
+                            >
+                              🗑
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

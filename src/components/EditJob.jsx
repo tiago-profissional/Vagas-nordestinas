@@ -1,7 +1,11 @@
-// EditJob.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getJobById, getJobs, updateJobApi, deleteJobApi } from "../services/jobsApi";
+import {
+  getJobById,
+  getJobs,
+  updateJobApi,
+  deleteJobApi,
+} from "../services/jobsApi";
 import Headers from "./Headers.jsx";
 import "../styles/EditJob.css";
 import JobSidebar from "./JobSidebar.jsx";
@@ -40,13 +44,8 @@ export default function EditJob() {
         setLoading(true);
         setError("");
 
-        console.log("ID recebido:", id);
-
         const job = await getJobById(id);
-        console.log("Job carregado:", job);
-
         const jobsList = await getJobs();
-        console.log("Lista carregada:", jobsList);
 
         setFormData({
           title: job?.title || "",
@@ -77,7 +76,6 @@ export default function EditJob() {
 
     loadJob();
   }, [id]);
-
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -144,11 +142,11 @@ export default function EditJob() {
     return (
       <>
         <Headers />
-        <div className="edit-job-wrapper">
-          <h1 className="edit-job-heading">Editar Vaga</h1>
-          <p style={{ color: "#fff", textAlign: "center" }}>
-            Carregando vaga...
-          </p>
+        <div className="editjob-page">
+          <div className="editjob-page__inner">
+            <h1 className="editjob-page__title">Editar Vaga</h1>
+            <p className="editjob-page__loading">Carregando vaga...</p>
+          </div>
         </div>
       </>
     );
@@ -158,162 +156,165 @@ export default function EditJob() {
     <>
       <Headers />
 
-      <div className="edit-job-wrapper">
-        <h1 className="edit-job-heading">Editar Vaga</h1>
+      <div className="editjob-page">
+        <div className="editjob-page__inner">
+          <h1 className="editjob-page__title">Editar Vaga</h1>
 
-        <div className="edit-job-content">
-          <div className="edit-job-left">
-            <JobSidebarSearch
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
-
-            <JobSidebar
-              jobs={jobs}
-              currentJobId={id}
-              searchTerm={searchTerm}
-            />
-          </div>
-
-          <div className="edit-job-right">
-            {error && (
-              <p style={{ color: "#ff6b6b", marginBottom: "16px" }}>
-                {error}
-              </p>
-            )}
-
-            {success && (
-              <p style={{ color: "#51cf66", marginBottom: "16px" }}>
-                {success}
-              </p>
-            )}
-
-            <form onSubmit={handleSubmit} className="edit-job-form">
-              <div className="form-group">
-                <label>Job title*</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
+          <div className="editjob-layout">
+            <aside className="editjob-layout__sidebar">
+              <div className="editjob-layout__search">
+                <JobSidebarSearch
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
                 />
               </div>
 
-              <div className="form-group">
-                <label>Empresa*</label>
-                <input
-                  type="text"
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
+              <div className="editjob-layout__list">
+                <JobSidebar
+                  jobs={jobs}
+                  currentJobId={id}
+                  searchTerm={searchTerm}
                 />
               </div>
+            </aside>
 
-              <div className="form-group">
-                <label>Cidade*</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                />
+            <section className="editjob-layout__main">
+              <div className="editjob-form-card">
+                <h2 className="editjob-form-card__title">Edit Job</h2>
+
+                {error && <p className="editjob-form-card__error">{error}</p>}
+                {success && (
+                  <p className="editjob-form-card__success">{success}</p>
+                )}
+
+                <form onSubmit={handleSubmit} className="editjob-form-grid">
+                  <div className="editjob-field">
+                    <label>Job title*</label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="editjob-field">
+                    <label>Empresa*</label>
+                    <input
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="editjob-field">
+                    <label>Cidade*</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="editjob-field">
+                    <label>Estado*</label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={formData.state}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="editjob-field">
+                    <label>Work Mode</label>
+                    <select
+                      name="work_mode"
+                      value={formData.work_mode}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select</option>
+                      <option value="remote">Remote</option>
+                      <option value="hybrid">Hybrid</option>
+                      <option value="onsite">On-site</option>
+                    </select>
+                  </div>
+
+                  <div className="editjob-field">
+                    <label>Employment Type</label>
+                    <select
+                      name="employment_type"
+                      value={formData.employment_type}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select</option>
+                      <option value="full_time">Full-time</option>
+                      <option value="part_time">Part-time</option>
+                      <option value="pj">PJ</option>
+                    </select>
+                  </div>
+
+                  <div className="editjob-field">
+                    <label>Salary Min</label>
+                    <input
+                      type="number"
+                      name="salary_min"
+                      value={formData.salary_min}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="editjob-field">
+                    <label>Salary Max</label>
+                    <input
+                      type="number"
+                      name="salary_max"
+                      value={formData.salary_max}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="editjob-field editjob-field--full">
+                    <label>Description</label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="editjob-actions">
+                    <button
+                      type="button"
+                      className="editjob-btn editjob-btn--cancel"
+                      onClick={() => navigate(-1)}
+                      disabled={saving || deleting}
+                    >
+                      Cancelar
+                    </button>
+
+                    <button
+                      type="button"
+                      className="editjob-btn editjob-btn--delete"
+                      onClick={() => setShowDeleteModal(true)}
+                      disabled={saving || deleting}
+                    >
+                      Delete
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="editjob-btn editjob-btn--save"
+                      disabled={saving || deleting}
+                    >
+                      {saving ? "Salvando..." : "Salvar Alterações"}
+                    </button>
+                  </div>
+                </form>
               </div>
-
-              <div className="form-group">
-                <label>Estado*</label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Work Mode</label>
-                <select
-                  name="work_mode"
-                  value={formData.work_mode}
-                  onChange={handleChange}
-                >
-                  <option value="">Select</option>
-                  <option value="remote">Remote</option>
-                  <option value="hybrid">Hybrid</option>
-                  <option value="onsite">On-site</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Employment Type</label>
-                <select
-                  name="employment_type"
-                  value={formData.employment_type}
-                  onChange={handleChange}
-                >
-                  <option value="">Select</option>
-                  <option value="full_time">Full-time</option>
-                  <option value="part_time">Part-time</option>
-                  <option value="pj">PJ</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Salary Min</label>
-                <input
-                  type="number"
-                  name="salary_min"
-                  value={formData.salary_min}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Salary Max</label>
-                <input
-                  type="number"
-                  name="salary_max"
-                  value={formData.salary_max}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group full-width">
-                <label>Description</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="edit-job-actions">
-                <button
-                  type="button"
-                  className="cancel-btn"
-                  onClick={() => navigate(-1)}
-                  disabled={saving || deleting}
-                >
-                  Cancelar
-                </button>
-
-                <button
-                  type="button"
-                  className="delete-btn"
-                  onClick={() => setShowDeleteModal(true)}
-                  disabled={saving || deleting}
-                >
-                  Delete
-                </button>
-
-                <button
-                  type="submit"
-                  className="save-btn"
-                  disabled={saving || deleting}
-                >
-                  {saving ? "Salvando..." : "Salvar Alterações"}
-                </button>
-              </div>
-            </form>
+            </section>
           </div>
         </div>
       </div>

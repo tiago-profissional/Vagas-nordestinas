@@ -10,22 +10,24 @@ export default function JobSidebar({ jobs, currentJobId, searchTerm }) {
   });
 
   return (
-    <aside className="edit-job-sidebar">
-      <div className="sidebar-jobs-wrapper">
-        <h3 className="sidebar-title">Positions</h3>
+    <aside className="vn-editjob-sidebar">
+      <div className="vn-editjob-sidebar__wrapper">
+        <h3 className="vn-editjob-sidebar__title">Positions</h3>
 
-        <div className="sidebar-jobs">
+        <div className="vn-editjob-sidebar__list">
           {filteredJobs.map((job) => (
             <Link
               key={job.id}
               to={`/edit-job/${job.id}`}
-              className={`sidebar-job ${
-                String(job.id) === String(currentJobId) ? "active" : ""
+              className={`vn-editjob-sidebar__item ${
+                String(job.id) === String(currentJobId)
+                  ? "vn-editjob-sidebar__item--active"
+                  : ""
               }`}
             >
-              <div className="sidebar-job-title">{job.title}</div>
-              <div className="sidebar-job-company">{job.company}</div>
-              <div className="sidebar-job-location">
+              <div className="vn-editjob-sidebar__item-title">{job.title}</div>
+              <div className="vn-editjob-sidebar__item-company">{job.company}</div>
+              <div className="vn-editjob-sidebar__item-location">
                 {job.city}, {job.state}
               </div>
             </Link>

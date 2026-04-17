@@ -1,10 +1,16 @@
-.edit-job-wrapper {
+.editjob-page {
   background: #d9d2bf;
   min-height: 100vh;
-  padding: 32px 40px;
+  padding: 32px 24px;
 }
 
-.edit-job-heading {
+.editjob-page__inner {
+  width: 100%;
+  max-width: 1228px;
+  margin: 0 auto;
+}
+
+.editjob-page__title {
   text-align: center;
   font-size: 40px;
   font-weight: 500;
@@ -12,35 +18,91 @@
   margin-bottom: 28px;
 }
 
-.edit-job-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  max-width: 1400px;
+.editjob-page__loading {
+  color: #ffffff;
+  text-align: center;
+}
+
+/* ===============================
+   MAIN LAYOUT
+   =============================== */
+
+.editjob-layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 24px;
+  width: 100%;
+  max-width: 1228px;
   margin: 0 auto;
   background: #efe7e2;
   border-radius: 12px;
   padding: 20px;
+  align-items: stretch;
+  box-sizing: border-box;
 }
 
-.edit-job-left {
-  width: 320px;
-  flex-shrink: 0;
-  align-self: flex-start;
+.editjob-layout__sidebar,
+.editjob-layout__main {
+  min-width: 0;
+  min-height: 0;
 }
 
-.edit-job-right {
-  flex: 1;
+.editjob-layout__sidebar {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 16px;
+  height: auto;
+}
+
+.editjob-layout__main {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.editjob-layout__search {
+  width: 100%;
   min-width: 0;
 }
 
-.edit-job-card {
+.editjob-layout__list {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.editjob-layout__search > *,
+.editjob-layout__list > * {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.editjob-layout__sidebar *,
+.editjob-layout__main * {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   FORM CARD
+   =============================== */
+
+.editjob-form-card {
   background: #d9dde1;
   border-radius: 6px;
   padding: 24px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.edit-job-card h2 {
+.editjob-form-card__title {
   font-size: 24px;
   font-weight: 500;
   color: #4b4b4b;
@@ -49,31 +111,47 @@
   border-bottom: 1px solid #7a7a7a;
 }
 
-.edit-job-form {
+.editjob-form-card__error {
+  color: #ff6b6b;
+  margin-bottom: 16px;
+}
+
+.editjob-form-card__success {
+  color: #51cf66;
+  margin-bottom: 16px;
+}
+
+/* ===============================
+   FORM GRID
+   =============================== */
+
+.editjob-form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px 28px;
 }
 
-.form-group {
+.editjob-field {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.form-group.full-width {
+.editjob-field--full {
   grid-column: 1 / -1;
 }
 
-.edit-job-form label {
+.editjob-field label {
   font-size: 16px;
   color: #555;
   margin-bottom: 8px;
 }
 
-.edit-job-form input,
-.edit-job-form select,
-.edit-job-form textarea {
+.editjob-field input,
+.editjob-field select,
+.editjob-field textarea {
   width: 100%;
+  min-width: 0;
   padding: 12px 14px;
   border: 1px solid #b8b4ff;
   border-radius: 8px;
@@ -83,29 +161,33 @@
   box-sizing: border-box;
 }
 
-.edit-job-form textarea {
-  min-height: 90px;
+.editjob-field textarea {
+  min-height: 110px;
   resize: none;
 }
 
-.edit-job-form input:focus,
-.edit-job-form select:focus,
-.edit-job-form textarea:focus {
+.editjob-field input:focus,
+.editjob-field select:focus,
+.editjob-field textarea:focus {
   outline: none;
   border-color: #8f89ff;
   box-shadow: 0 0 0 2px rgba(143, 137, 255, 0.15);
 }
 
-.edit-job-actions {
+/* ===============================
+   ACTIONS
+   =============================== */
+
+.editjob-actions {
   grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
-.cancel-btn,
-.save-btn {
+.editjob-btn {
   border: none;
   border-radius: 8px;
   padding: 10px 18px;
@@ -113,49 +195,398 @@
   cursor: pointer;
 }
 
-.cancel-btn {
+.editjob-btn--cancel {
   background: #dcdcf3;
   color: #888;
 }
-.delete-btn {
-  border: none;
+
+.editjob-btn--delete {
   border-radius: 20px;
   padding: 10px 25px;
-  font-size: 14px;
-  cursor: pointer;
   background: #b13a35;
   color: white;
 }
 
-.delete-btn:hover {
+.editjob-btn--delete:hover {
   background: #972c28;
 }
 
-.save-btn {
+.editjob-btn--save {
   background: #9a6a08;
   color: white;
 }
 
-.save-btn:hover {
+.editjob-btn--save:hover {
   opacity: 0.95;
 }
 
+/* ===============================
+   BREAKPOINTS
+   =============================== */
+
+@media (max-width: 1280px) {
+  .editjob-page__inner,
+  .editjob-layout {
+    max-width: 1120px;
+  }
+
+  .editjob-layout {
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 20px;
+    padding: 18px;
+  }
+
+  .editjob-layout__sidebar,
+  .editjob-layout__main {
+    height: 720px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .editjob-page {
+    padding: 28px 20px;
+  }
+
+  .editjob-page__inner,
+  .editjob-layout {
+    max-width: 960px;
+  }
+
+  .editjob-layout {
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 18px;
+    padding: 18px;
+  }
+
+  .editjob-layout__sidebar,
+  .editjob-layout__main {
+    height: 690px;
+  }
+
+  .editjob-form-grid {
+    gap: 16px 20px;
+  }
+}
+
 @media (max-width: 900px) {
-  .edit-job-content {
-    flex-direction: column;
+  .editjob-page {
+    padding: 24px 16px;
   }
 
-  .edit-job-left {
-    width: 100%;
-    position: static;
-    top: auto;
+  .editjob-page__inner,
+  .editjob-layout {
+    max-width: 860px;
   }
 
-  .edit-job-right {
-    width: 100%;
+  .editjob-layout {
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px;
   }
 
-  .edit-job-form {
+  .editjob-layout__sidebar,
+  .editjob-layout__main {
+    height: 660px;
+  }
+
+  .editjob-field input,
+  .editjob-field select,
+  .editjob-field textarea {
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .editjob-page {
+    padding: 18px 12px;
+  }
+
+  .editjob-page__inner,
+  .editjob-layout {
+    max-width: 760px;
+  }
+
+  .editjob-layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+    align-items: start;
+  }
+
+  .editjob-layout__sidebar,
+  .editjob-layout__main {
+    height: auto;
+  }
+
+  .editjob-form-card {
+    padding: 18px;
+  }
+
+  .editjob-form-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .editjob-field {
+    width: 100%;
+  }
+
+  .editjob-field--full {
+    grid-column: 1;
+  }
+
+  .editjob-field label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .editjob-field input,
+  .editjob-field select,
+  .editjob-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .editjob-field textarea {
+    min-height: 100px;
+  }
+
+  .editjob-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .editjob-actions .editjob-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 580px) {
+  .editjob-page {
+    padding: 18px 12px;
+  }
+
+  .editjob-page__inner,
+  .editjob-layout {
+    max-width: 760px;
+  }
+
+  .editjob-layout {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+    align-items: start;
+  }
+
+  .editjob-layout__sidebar,
+  .editjob-layout__main {
+    height: auto;
+  }
+
+  .editjob-form-card {
+    padding: 18px;
+  }
+
+  .editjob-form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .editjob-field {
+    width: 100%;
+  }
+
+  .editjob-field--full {
+    grid-column: 1;
+  }
+
+  .editjob-field label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .editjob-field input,
+  .editjob-field select,
+  .editjob-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .editjob-field textarea {
+    min-height: 100px;
+  }
+
+  .editjob-actions {
+    display: flex;
+    flex-direction: column; /* changed */
+    align-items: center; /* changed */
+    justify-content: flex-start; /* changed */
+    gap: 8px;
+    flex-wrap: nowrap; /* changed */
+  }
+
+  .editjob-actions .editjob-btn {
+    width: 100%;
+    max-width: 120px;
+    padding: 6px 12px;
+    font-size: 10px;
+    white-space: nowrap;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .editjob-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .editjob-page {
+    padding: 16px 10px;
+  }
+
+  .editjob-page__title {
+    font-size: 26px;
+    margin-bottom: 16px;
+  }
+
+  .editjob-layout {
+    padding: 14px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+  }
+
+  .editjob-layout__sidebar,
+  .editjob-layout__main {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .editjob-layout__main {
+    display: flex;
+    align-self: stretch;
+  }
+
+  .editjob-form-card {
+    padding: 18px;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+  }
+
+  .editjob-form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .editjob-field--full {
+    grid-column: 1;
+  }
+
+  .editjob-field input,
+  .editjob-field select,
+  .editjob-field textarea {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+
+  .editjob-field textarea {
+    min-height: 80px;
+  }
+
+  .editjob-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  .editjob-actions .editjob-btn,
+  .editjob-actions .editjob-btn--cancel,
+  .editjob-actions .editjob-btn--delete,
+  .editjob-actions .editjob-btn--save {
+    width: 80%;
+    font-size: 9px !important;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 375px) {
+  .editjob-page__title {
+    font-size: 22px; /* 🔽 slightly smaller */
+  }
+
+  .editjob-field label {
+    font-size: 13px; /* 🔽 tighter */
+  }
+
+  .editjob-field input,
+  .editjob-field select,
+  .editjob-field textarea {
+    font-size: 11px; /* 🔽 smaller text */
+    padding: 8px 10px; /* 🔽 tighter input */
+  }
+
+  .editjob-field textarea {
+    min-height: 70px; /* 🔽 more compact */
+  }
+
+  .editjob-actions {
+    width: 100%; /* 🔥 ensure full control */
+    align-items: center;
+  }
+
+  .editjob-actions .editjob-btn {
+    width: 80%; /* 🔥 consistent width */
+    max-width: 120px; /* 🔽 smaller cap */
+    padding: 6px 8px !important; /* 🔽 tighter */
+    font-size: 11px !important; /* 🔥 fix override issues */
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 320px) {
+  .editjob-page__title {
+    font-size: 20px; /* 🔽 menor */
+  }
+
+  .editjob-field label {
+    font-size: 12px; /* 🔥 faltava isso */
+  }
+
+  .editjob-field input,
+  .editjob-field select,
+  .editjob-field textarea {
+    padding: 6px 8px; /* 🔽 mais compacto */
+    font-size: 6px; /* 🔥 menor */
+  }
+
+  .editjob-field textarea {
+    min-height: 60px; /* 🔽 menor */
+  }
+
+  .editjob-actions {
+    gap: 5px; /* 🔽 menos espaço */
+  }
+
+  .editjob-actions .editjob-btn {
+    padding: 5px 8px !important;
+    font-size: 7px !important; /* 🔥 menor */
+    width: 75%;
+    max-width: 100px;
   }
 }

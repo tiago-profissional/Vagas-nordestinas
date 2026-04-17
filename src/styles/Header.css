@@ -1,46 +1,449 @@
-.main-header {
+.vne-header {
   width: 100%;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
+  background: #000;
 }
 
-.header-container {
-  max-width: 1400px;
-  margin: auto;
-  padding: 14px 32px;
+.vne-header .vne-header__container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 32px;
+  min-height: 88px;
+}
 
+.vne-header .vne-header__logo {
+  font-size: 2rem;
+  white-space: nowrap;
+  margin-left: 20px;
+  color: #c9a227;
+  line-height: 1;
+}
+
+.vne-header .vne-header__mobile-icons {
+  display: none;
+}
+
+.vne-header .vne-header__hamburger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.vne-header .vne-header__hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  margin: 5px auto;
+  transition: 0.25s ease;
+  border-radius: 999px;
+}
+
+.vne-header .vne-header__hamburger.is-active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.vne-header .vne-header__hamburger.is-active span:nth-child(2) {
+  opacity: 0;
+}
+
+.vne-header .vne-header__hamburger.is-active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* desktop nav */
+.vne-header .vne-header__nav {
+  display: grid !important;
+  grid-template-columns: max-content max-content max-content;
+  justify-content: center;
+  align-items: center;
+  column-gap: 34px;
+  min-width: 0;
+}
+
+.vne-header .vne-header__nav-link {
+  display: block !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  padding: 6px 0 !important;
+}
+
+.vne-header .vne-header__actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+  padding-right: 20px;
 }
 
-.logo {
-  font-size: 22px;
-  font-weight: 600;
-  color: #8c6a00;
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #555;
-  font-size: 14px;
-}
-
-.nav-links a:hover {
-  color: #000;
-}
-
-.header-icons {
-  display: flex;
-  gap: 18px;
-}
-
-.icon {
+.vne-header .vne-header__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: transparent;
+  color: #fff;
   cursor: pointer;
-  font-size: 16px;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 1100px) {
+  .vne-header .vne-header__container {
+    column-gap: 20px;
+  }
+
+  .vne-header .vne-header__logo {
+    font-size: 1.7rem;
+  }
+
+  .vne-header .vne-header__nav {
+    column-gap: 24px;
+  }
+
+  .vne-header .vne-header__nav-link {
+    font-size: 0.92rem !important;
+  }
+
+  .vne-header .vne-header__actions {
+    gap: 8px;
+  }
+
+  .vne-header .vne-header__icon-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .vne-header .vne-header__container {
+    column-gap: 16px;
+  }
+
+  .vne-header .vne-header__logo {
+    font-size: 1.55rem;
+  }
+
+  .vne-header .vne-header__nav {
+    column-gap: 18px;
+  }
+
+  .vne-header .vne-header__nav-link {
+    font-size: 0.82rem !important;
+  }
+
+  .vne-header .vne-header__icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .vne-header .vne-header__container {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 0 16px;
+    min-height: 76px;
+    box-sizing: border-box;
+  }
+
+  .vne-header .vne-header__logo {
+    display: block;
+    font-size: 1.3rem;
+    line-height: 1;
+    white-space: nowrap;
+    margin-left: 0;
+  }
+
+  /* 🔥 bring the names back in the middle */
+  .vne-header .vne-header__nav {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-width: 0;
+    
+    margin: 0 10px; /* 🔥 THIS is what you want */
+  }
+
+  .vne-header .vne-header__nav-link {
+    display: block !important;
+    font-size: 0.82rem !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    padding: 0 !important;
+    color: #fff !important;
+    text-decoration: none !important;
+  }
+
+  /* 🔥 icons back to the right hand */
+  .vne-header .vne-header__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-left: 0;
+    width: auto;
+    padding-right: 0;
+  }
+
+  .vne-header .vne-header__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  /* hide hamburger in this layout */
+  .vne-header .vne-header__hamburger {
+    display: none;
+  }
+
+  .vne-header .vne-header__mobile-icons {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .vne-header .vne-header__container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 0 16px;
+    min-height: 76px;
+  }
+
+  .vne-header .vne-header__logo {
+    font-size: 1.4rem;
+  }
+
+  /* ❌ hide nav */
+  .vne-header .vne-header__nav {
+    display: none !important;
+  }
+
+  .vne-header .vne-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 21px;
+    margin-left: auto;
+    margin-right: 20px; /* 👈 pushes them slightly left (toward center) */
+  }
+
+  /* ✅ icons */
+  .vne-header .vne-header__icon-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  /* ✅ IMAGE HAMBURGER */
+  .vne-header .vne-header__hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-left: 6px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+  }
+
+  .vne-header .vne-header__hamburger img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+  }
+
+  /* ✅ OPEN MENU */
+  .vne-header .vne-header__nav.is-open {
+    display: flex !important;
+    flex-direction: column;
+    gap: 14px;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 16px;
+    width: min(260px, 92vw);
+    background: #0b0b0b;
+    border-radius: 14px;
+    padding: 18px;
+    z-index: 20;
+  }
+
+  .vne-header .vne-header__nav-link {
+    color: white;
+    font-size: 16px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .vne-header .vne-header__container {
+    gap: 8px;
+  }
+
+  .vne-header .vne-header__logo {
+    font-size: 1.2rem;
+  }
+
+  .vne-header .vne-header__actions {
+    gap: 15px;
+  }
+
+  .vne-header .vne-header__icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  .vne-header .vne-header__hamburger {
+    width: 30px;
+    height: 30px;
+  }
+
+  .vne-header .vne-header__hamburger span {
+    width: 18px;
+    height: 2px;
+  }
+
+  .vne-header .vne-header__nav.is-open {
+    width: min(240px, 92vw);
+    padding: 16px;
+  }
+
+  .vne-header .vne-header__nav.is-open .vne-header__nav-link {
+    font-size: 14px !important;
+  }
+
+  .vne-header .vne-header__mobile-icons button {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 375px) {
+  .vne-header .vne-header__container {
+    gap: 6px;
+    padding: 0 12px;
+  }
+
+  .vne-header .vne-header__logo {
+    font-size: 1.05rem;
+  }
+
+  .vne-header .vne-header__actions {
+    gap: 5px;
+  }
+
+  .vne-header .vne-header__icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
+  }
+
+  .vne-header .vne-header__hamburger {
+    width: 28px;
+    height: 28px;
+  }
+
+  .vne-header .vne-header__hamburger span {
+    width: 16px;
+    height: 2px;
+    margin: 3px 0;
+  }
+
+  .vne-header .vne-header__nav.is-open {
+    width: min(220px, 94vw);
+    padding: 14px;
+  }
+
+  .vne-header .vne-header__nav.is-open .vne-header__nav-link {
+    font-size: 14px !important;
+  }
+
+  .vne-header .vne-header__mobile-icons button {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 320px) {
+  .vne-header .vne-header__container {
+    gap: 4px;
+    padding: 0 10px;
+  }
+
+  .vne-header .vne-header__logo {
+    font-size: 0.9rem;
+  }
+
+  .vne-header .vne-header__actions {
+    gap: 4px;
+  }
+
+  .vne-header .vne-header__icon-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+  }
+
+  .vne-header .vne-header__hamburger {
+    width: 26px;
+    height: 26px;
+    margin-left: 2px;
+  }
+
+  .vne-header .vne-header__hamburger span {
+    width: 14px;
+    height: 2px;
+    margin: 2px 0;
+  }
+
+  .vne-header .vne-header__nav.is-open {
+    width: min(200px, 96vw);
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .vne-header .vne-header__nav.is-open .vne-header__nav-link {
+    font-size: 13px !important;
+  }
+
+  .vne-header .vne-header__mobile-icons {
+    gap: 6px;
+  }
+
+  .vne-header .vne-header__mobile-icons button {
+    padding: 7px 9px;
+    font-size: 12px;
+  }
 }
