@@ -1,16 +1,26 @@
 <?php
-require_once __DIR__ . "/headers.php";
-require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/config/headers.php";
+require_once __DIR__ . "/config/db.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
+
+if (!is_array($data)) {
+    http_response_code(400);
+    echo json_encode([
+        "ok" => false,
+        "error" => "Invalid JSON"
+    ]);
+    exit;
+}
 
 $email = trim($data["email"] ?? "");
 $password = trim($data["password"] ?? "");
 
-if (!$email || !$password) {
+if ($email === "" || $password === "") {
+    http_response_code(422);
     echo json_encode([
-        "success" => false,
-        "message" => "Email and password are required."
+        "ok" => false,
+        "error" => "Email and password are required."
     ]);
     exit;
 }
@@ -20,29 +30,32 @@ try {
         SELECT id, name, email, password
         FROM users
         WHERE email = :email
+        LIMIT 1
     ");
-    $query->execute(["email" => $email]);
+    $query->execute([":email" => $email]);
 
-    $user = $query->fetch(PDO::FETCH_ASSOC);
+    $user = $query->fetch();
 
     if (!$user) {
+        http_response_code(404);
         echo json_encode([
-            "success" => false,
-            "message" => "User not found."
+            "ok" => false,
+            "error" => "User not found."
         ]);
         exit;
     }
 
     if (!password_verify($password, $user["password"])) {
+        http_response_code(401);
         echo json_encode([
-            "success" => false,
-            "message" => "Invalid password."
+            "ok" => false,
+            "error" => "Invalid password."
         ]);
         exit;
     }
 
     echo json_encode([
-        "success" => true,
+        "ok" => true,
         "message" => "Login successful.",
         "user" => [
             "id" => $user["id"],
@@ -53,7 +66,7 @@ try {
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
-        "success" => false,
-        "message" => "Server error: " . $e->getMessage()
+        "ok" => false,
+        "error" => "Server error: " . $e->getMessage()
     ]);
 }

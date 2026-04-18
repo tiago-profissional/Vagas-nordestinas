@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/headers.php";
-require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/config/headers.php";
+require_once __DIR__ . "/config/db.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -15,7 +15,7 @@ function readJsonBody(): array {
     $body = json_decode($raw, true);
 
     if (!is_array($body)) {
-        respond(400, ["ok" => false, "error" => "JSON inválido"]);
+        respond(400, ["ok" => false, "error" => "Invalid JSON"]);
     }
 
     return $body;
@@ -39,7 +39,7 @@ if ($method === "GET") {
         $job = $stmt->fetch();
 
         if (!$job) {
-            respond(404, ["ok" => false, "error" => "Vaga não encontrada"]);
+            respond(404, ["ok" => false, "error" => "Job not found"]);
         }
 
         respond(200, ["ok" => true, "data" => $job]);
@@ -68,7 +68,7 @@ if ($method === "POST") {
     $description = trim($body["description"] ?? "");
 
     if ($title === "" || $company === "" || $city === "" || $state === "") {
-        respond(422, ["ok" => false, "error" => "Campos obrigatórios faltando"]);
+        respond(422, ["ok" => false, "error" => "Missing required fields"]);
     }
 
     $sql = "INSERT INTO jobs
@@ -105,7 +105,7 @@ if ($method === "PUT") {
     $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
 
     if (!$id) {
-        respond(400, ["ok" => false, "error" => "ID obrigatório"]);
+        respond(400, ["ok" => false, "error" => "ID is required"]);
     }
 
     $body = readJsonBody();
@@ -121,7 +121,7 @@ if ($method === "PUT") {
     $description = trim($body["description"] ?? "");
 
     if ($title === "" || $company === "" || $city === "" || $state === "") {
-        respond(422, ["ok" => false, "error" => "Campos obrigatórios faltando"]);
+        respond(422, ["ok" => false, "error" => "Missing required fields"]);
     }
 
     $check = $pdo->prepare("SELECT * FROM jobs WHERE id = :id LIMIT 1");
@@ -129,7 +129,7 @@ if ($method === "PUT") {
     $existing = $check->fetch();
 
     if (!$existing) {
-        respond(404, ["ok" => false, "error" => "Vaga não encontrada"]);
+        respond(404, ["ok" => false, "error" => "Job not found"]);
     }
 
     $sql = "UPDATE jobs SET
@@ -172,17 +172,17 @@ if ($method === "DELETE") {
     $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
 
     if (!$id) {
-        respond(400, ["ok" => false, "error" => "ID obrigatório"]);
+        respond(400, ["ok" => false, "error" => "ID is required"]);
     }
 
     $stmt = $pdo->prepare("DELETE FROM jobs WHERE id = :id");
     $stmt->execute([":id" => $id]);
 
     if ($stmt->rowCount() === 0) {
-        respond(404, ["ok" => false, "error" => "Vaga não encontrada"]);
+        respond(404, ["ok" => false, "error" => "Job not found"]);
     }
 
-    respond(200, ["ok" => true, "message" => "Vaga removida"]);
+    respond(200, ["ok" => true, "message" => "Job removed"]);
 }
 
-respond(405, ["ok" => false, "error" => "Método não permitido"]);
+respond(405, ["ok" => false, "error" => "Method not allowed"]);

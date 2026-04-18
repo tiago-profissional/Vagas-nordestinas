@@ -1,6 +1,4 @@
 <?php
-header("Content-Type: application/json; charset=UTF-8");
-
 $host = "sql306.infinityfree.com";
 $dbname = "if0_41689928_vagas";
 $username = "if0_41689928";
@@ -18,8 +16,8 @@ try {
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
-        "success" => false,
-        "message" => "Erro na conexão: " . $e->getMessage()
+        "ok" => false,
+        "error" => "Database connection failed: " . $e->getMessage()
     ]);
     exit;
 }
