@@ -41,7 +41,7 @@ export function formatJob(job) {
 }
 
 export async function getJobs() {
-  const res = await fetch(`${API_URL}/api/jobs.php`);
+  const res = await fetch(`${API_URL}/jobs.php`);
   const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
@@ -65,7 +65,7 @@ export async function getJobById(id) {
 }
 
 export async function createJobApi(payload) {
-  const res = await fetch(`${API_URL}/api/jobs.php`, {
+  const res = await fetch(`${API_URL}/jobs.php`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
