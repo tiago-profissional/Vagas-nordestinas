@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/config/headers.php";
-require_once __DIR__ . "/config/db.php";
+require_once __DIR__ . "/headers.php";
+require_once __DIR__ . "/db.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -21,15 +21,12 @@ function readJsonBody(): array {
     return $body;
 }
 
-function normalizeSalary($v) {
-    if ($v === "" || $v === null) return null;
-    if (is_numeric($v)) return (float)$v;
+function normalizeSalary($value) {
+    if ($value === "" || $value === null) return null;
+    if (is_numeric($value)) return (float)$value;
     return null;
 }
 
-/*
-   GET
-*/
 if ($method === "GET") {
     $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
 
@@ -51,9 +48,6 @@ if ($method === "GET") {
     respond(200, ["ok" => true, "data" => $jobs]);
 }
 
-/*
-   POST
-*/
 if ($method === "POST") {
     $body = readJsonBody();
 
@@ -98,9 +92,6 @@ if ($method === "POST") {
     respond(201, ["ok" => true, "data" => $created]);
 }
 
-/*
-   PUT
-*/
 if ($method === "PUT") {
     $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
 
@@ -165,9 +156,6 @@ if ($method === "PUT") {
     respond(200, ["ok" => true, "data" => $updated]);
 }
 
-/*
-   DELETE
-*/
 if ($method === "DELETE") {
     $id = isset($_GET["id"]) ? (int)$_GET["id"] : null;
 
