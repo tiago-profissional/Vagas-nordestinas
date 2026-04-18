@@ -1,20 +1,20 @@
 <?php
-
-$host = "sql306.infinityfree.com";
-$dbname = "if0_41689928_vagas";
-$username = "if0_41689928";
-$password = "f7f9WkLEsToUl2";
+require_once __DIR__ . "/headers.php";
+require_once __DIR__ . "/db.php";
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $stmt = $pdo->query("SELECT 1");
+    $result = $stmt->fetchColumn();
 
-    $sql = "INSERT INTO jobs (title, company, city, description)
-            VALUES ('Dev React', 'Empresa X', 'Recife', 'Trabalho remoto')";
-
-    $pdo->exec($sql);
-
-    echo "Inserido com sucesso 🚀";
-
+    echo json_encode([
+        "success" => true,
+        "message" => "Conexão com banco funcionando",
+        "test" => $result
+    ]);
 } catch (PDOException $e) {
-    echo $e->getMessage();
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]);
 }
