@@ -1,12 +1,12 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     http_response_code(200);
-    exit();
+    exit;
 }
 
 require_once __DIR__ . "/db.php";
@@ -19,34 +19,22 @@ $password = trim($data["password"] ?? "");
 $confirmPassword = trim($data["confirmPassword"] ?? "");
 
 if (!$name || !$email || !$password || !$confirmPassword) {
-    echo json_encode([
-        "success" => false,
-        "message" => "All fields are required."
-    ]);
+    echo json_encode(["success" => false, "message" => "All fields are required."]);
     exit;
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Invalid email."
-    ]);
+    echo json_encode(["success" => false, "message" => "Invalid email."]);
     exit;
 }
 
 if ($password !== $confirmPassword) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Passwords do not match."
-    ]);
+    echo json_encode(["success" => false, "message" => "Passwords do not match."]);
     exit;
 }
 
 if (strlen($password) < 6) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Password must be at least 6 characters."
-    ]);
+    echo json_encode(["success" => false, "message" => "Password must be at least 6 characters."]);
     exit;
 }
 
@@ -55,33 +43,18 @@ try {
     $check->execute(["email" => $email]);
 
     if ($check->fetch()) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Email already registered."
-        ]);
+        echo json_encode(["success" => false, "message" => "Email already registered."]);
         exit;
     }
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $pdo->prepare("
-        INSERT INTO users (name, email, password)
-        VALUES (:name, :email, :password)
-    ");
+    $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+    $stmt->execute(["name" => $name, "email" => $email, "password" => $hashedPassword]);
 
-    $stmt->execute([
-        "name" => $name,
-        "email" => $email,
-        "password" => $hashedPassword
-    ]);
+    echo json_encode(["success" => true, "message" => "Account created successfully."]);
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Account created successfully."
-    ]);
 } catch (PDOException $e) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Server error: " . $e->getMessage()
-    ]);
+    echo json_encode(["success" => false, "message" => "Server error: " . $e->getMessage()]);
 }
+?>

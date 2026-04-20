@@ -1,20 +1,13 @@
 <?php
+header('Content-Type: application/json');
 
-$host = "sql306.infinityfree.com";
-$dbname = "if0_41689928_vagas";
-$username = "if0_41689928";
-$password = "f7f9WkLEsToUl2";
+$database_url = getenv('DATABASE_URL');
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-
-    $sql = "INSERT INTO jobs (title, company, city, description)
-            VALUES ('Dev React', 'Empresa X', 'Recife', 'Trabalho remoto')";
-
-    $pdo->exec($sql);
-
-    echo "Inserido com sucesso 🚀";
-
-} catch (PDOException $e) {
-    echo $e->getMessage();
-}
+echo json_encode([
+    'status' => 'success',
+    'message' => 'PHP is working on Vercel!',
+    'database_url_exists' => $database_url ? 'Yes' : 'No',
+    'php_version' => PHP_VERSION,
+    'time' => date('Y-m-d H:i:s')
+]);
+?>
