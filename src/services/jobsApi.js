@@ -41,7 +41,7 @@ export function formatJob(job) {
 }
 
 export async function getJobs() {
-  const res = await fetch(`${API_URL}/api/jobs.php`);
+  const res = await fetch(`${API_URL}/jobs.php`);
   const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
@@ -54,7 +54,7 @@ export async function getJobs() {
 export const fetchJobs = getJobs;
 
 export async function getJobById(id) {
-  const res = await fetch(`${API_URL}/api/jobs.php?id=${id}`);
+  const res = await fetch(`${API_URL}/jobs.php?id=${id}`);
   const json = await res.json().catch(() => ({}));
 
   if (!res.ok) {
@@ -65,7 +65,7 @@ export async function getJobById(id) {
 }
 
 export async function createJobApi(payload) {
-  const res = await fetch(`${API_URL}/api/jobs.php`, {
+  const res = await fetch(`${API_URL}/jobs.php`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -81,7 +81,7 @@ export async function createJobApi(payload) {
 }
 
 export async function updateJobApi(id, payload) {
-  const res = await fetch(`${API_URL}/api/jobs.php?id=${id}`, {
+  const res = await fetch(`${API_URL}/jobs.php?id=${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -97,7 +97,7 @@ export async function updateJobApi(id, payload) {
 }
 
 export async function deleteJobApi(id) {
-  const response = await fetch(`${API_URL}/api/jobs.php?id=${id}`, {
+  const response = await fetch(`${API_URL}/jobs.phpp?id=${id}`, {
     method: "DELETE",
   });
 
@@ -113,6 +113,6 @@ export async function deleteJobApi(id) {
 export const deleteJob = deleteJobApi;
 
 export async function getJobsByUser(userId) {
-  const res = await fetch(`${API_URL}/api/jobs.php?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/jobs.php?user_id=${userId}`);
   return res.json();
 }
