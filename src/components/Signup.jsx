@@ -5,7 +5,10 @@ import "../styles/Signup.css";
 function LoginSignup() {
   const navigate = useNavigate();
 
-  const API_URL = "/api";
+  // Detecta ambiente automaticamente
+  const API_URL = import.meta.env.DEV 
+    ? "http://localhost:8000/Vagas-nordestinas/public"
+    : "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/public";
 
   const [action, setAction] = useState("Sign Up");
 

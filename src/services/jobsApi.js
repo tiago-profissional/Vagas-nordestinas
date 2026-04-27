@@ -1,5 +1,8 @@
 // src/services/jobsApi.js
-const API_BASE = "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/public";
+// Detecta automaticamente se está em desenvolvimento ou produção
+const API_BASE = import.meta.env.DEV 
+  ? "http://localhost:8000/Vagas-nordestinas/public"  // Local (XAMPP)
+  : "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/public"; // Produção (ngrok)
 
 export async function fetchJobs() {
   console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
