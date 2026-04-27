@@ -8,8 +8,7 @@ function LoginSignup() {
   // Detecta ambiente automaticamente
   const API_URL = import.meta.env.DEV 
     ? "http://localhost:8000/Vagas-nordestinas/public"
-    : "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/public";
-
+    : "https://fossil-impatient-penalty.ngrok-free.dev";
   const [action, setAction] = useState("Sign Up");
 
   const [name, setName] = useState("");

@@ -1,8 +1,8 @@
 // src/services/jobsApi.js
-// Detecta automaticamente se está em desenvolvimento ou produção
+// Agora frontend e backend no MESMO domínio (Vercel)
 const API_BASE = import.meta.env.DEV 
   ? "http://localhost:8000/Vagas-nordestinas/public"  // Local (XAMPP)
-  : "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/public"; // Produção (ngrok)
+  : "/api";  // Produção (Vercel) - mesmo domínio, SEM CORS!
 
 export async function fetchJobs() {
   console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
