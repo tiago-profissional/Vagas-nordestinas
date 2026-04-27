@@ -5,7 +5,7 @@ export default function App({ jobs, loadingJobs, errorJobs }) {
   return (
     <Routes>
       <Route
-        path="/"
+        path="*"
         element={
           <Home
             jobs={jobs}
