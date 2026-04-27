@@ -1,5 +1,5 @@
 // src/services/jobsApi.js
-const API_BASE = "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/api";
+const API_BASE = "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/public";
 
 export async function fetchJobs() {
   console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
