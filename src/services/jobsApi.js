@@ -1,5 +1,6 @@
 // src/services/jobsApi.js
-const API_BASE = "https://vagasnordestinasdb.infinityfree.me/api";
+// 🔥 MUDE AQUI PARA A URL DO SEU PROJETO NO RAILWAY APÓS O DEPLOY
+const API_BASE = "https://seu-projeto.up.railway.app";
 
 export async function fetchJobs() {
   console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
