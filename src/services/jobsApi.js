@@ -1,6 +1,5 @@
 // src/services/jobsApi.js
-// 🔥 MUDE AQUI PARA A URL DO SEU PROJETO NO RAILWAY APÓS O DEPLOY
-const API_BASE = "https://seu-projeto.up.railway.app";
+const API_BASE = "https://fossil-impatient-penalty.ngrok-free.dev/Vagas-nordestinas/api";
 
 export async function fetchJobs() {
   console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
