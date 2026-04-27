@@ -1,98 +1,59 @@
 // src/services/jobsApi.js
-const API_BASE = "/api";
+const API_BASE = "/api";  // ← MUDE PARA /api (USA O PROXY DO VITE)
 
-// Buscar todas as vagas
 export async function fetchJobs() {
+  console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
   const response = await fetch(`${API_BASE}/jobs.php`);
-  
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-  
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
 
-// Alias para getJobs (mesma coisa que fetchJobs)
-export async function getJobs() {
-  return fetchJobs();
-}
-
-// Buscar vagas por usuário
-export async function getJobsByUser(userId) {
-  const jobs = await fetchJobs();
-  const userJobs = jobs.filter(job => job.user_id == userId);
-  
-  return {
-    ok: true,
-    data: userJobs
-  };
-}
-
-// Buscar vaga por ID
 export async function getJobById(id) {
   const response = await fetch(`${API_BASE}/jobs.php?id=${id}`);
-  
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-  
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
 }
 
-// Criar nova vaga
 export async function createJobApi(jobData) {
   const response = await fetch(`${API_BASE}/create-job.php`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(jobData),
   });
-  
   const data = await response.json();
-  
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || data.error || "Erro ao criar vaga");
-  }
-  
+  if (!response.ok || !data.success) throw new Error(data.error || "Erro ao criar vaga");
   return data.data || data;
 }
 
-// Atualizar vaga
 export async function updateJobApi(id, jobData) {
   const response = await fetch(`${API_BASE}/jobs.php?id=${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(jobData),
   });
-  
   const data = await response.json();
-  
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || data.error || "Erro ao atualizar vaga");
-  }
-  
+  if (!response.ok || !data.success) throw new Error(data.error || "Erro ao atualizar");
   return data;
 }
 
-// Deletar vaga
 export async function deleteJobApi(id) {
   const response = await fetch(`${API_BASE}/delete-job.php?id=${id}`, {
     method: "DELETE",
   });
-  
   const data = await response.json();
-  
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || data.error || "Erro ao deletar vaga");
-  }
-  
+  if (!response.ok || !data.success) throw new Error(data.error || "Erro ao deletar");
   return data;
 }
 
-// Delete (alias)
+export async function getJobs() {
+  return fetchJobs();
+}
+
 export async function deleteJob(id) {
   return deleteJobApi(id);
+}
+
+export async function getJobsByUser(userId) {
+  const jobs = await fetchJobs();
+  return { ok: true, data: jobs.filter(job => job.user_id == userId) };
 }
