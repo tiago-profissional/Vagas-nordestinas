@@ -1,19 +1,11 @@
 <?php
 // public/db.php - PARA RAILWAY
 
-$host = getenv('MYSQLHOST');
-$port = getenv('MYSQLPORT');
-$dbname = getenv('MYSQLDATABASE');
-$username = getenv('MYSQLUSER');
-$password = getenv('MYSQLPASSWORD');
-
-// Se as variáveis não existirem, tenta conexão local (fallback)
-if (!$host) {
-    $host = "localhost";
-    $dbname = "vagas_nordestinas";
-    $username = "root";
-    $password = "";
-}
+$host = getenv('MYSQLHOST') ?: 'mysql.railway.internal';
+$port = getenv('MYSQLPORT') ?: '3306';
+$dbname = getenv('MYSQLDATABASE') ?: 'railway';
+$username = getenv('MYSQLUSER') ?: 'root';
+$password = getenv('MYSQLPASSWORD') ?: 'QZZquDHJTZNboqpibNDiyVjJcBaQPHCr';
 
 $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
 
