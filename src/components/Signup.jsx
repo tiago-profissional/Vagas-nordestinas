@@ -5,7 +5,7 @@ import "../styles/Signup.css";
 function LoginSignup() {
   const navigate = useNavigate();
 
-  const API_URL = "https://vagasnordestinasdb.infinityfree.me/api";
+  const API_URL = "/api";
 
   const [action, setAction] = useState("Sign Up");
 
@@ -58,15 +58,11 @@ function LoginSignup() {
     try {
       setLoading(true);
 
-      const url =
-        action === "Sign Up"
-          ? `${API_URL}/register.php`
-          : `${API_URL}/login.php`;
+      const url = action === "Sign Up" ? `${API_URL}/register.php` : `${API_URL}/login.php`;
 
-      const body =
-        action === "Sign Up"
-          ? { name, email, password, confirmPassword }
-          : { email, password };
+      const body = action === "Sign Up"
+        ? { name, email, password, confirmPassword }
+        : { email, password };
 
       const res = await fetch(url, {
         method: "POST",
@@ -76,18 +72,7 @@ function LoginSignup() {
         body: JSON.stringify(body),
       });
 
-      const responseText = await res.text();
-      console.log("Backend raw response:", responseText);
-
-      let data;
-
-      try {
-        data = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON parse error:", parseError);
-        setError("Backend did not return valid JSON.");
-        return;
-      }
+      const data = await res.json();
 
       if (data.success) {
         setMessage(data.message || `${action} successful!`);
@@ -98,7 +83,7 @@ function LoginSignup() {
           clearFields();
 
           setTimeout(() => {
-            navigate("/");
+            navigate("/dashboard");
           }, 1000);
 
           return;
@@ -122,9 +107,7 @@ function LoginSignup() {
         <div className="auth-header">
           <h2 className="auth-title">{action}</h2>
           <p className="auth-subtitle">
-            {action === "Sign Up"
-              ? "Create your account"
-              : "Login to your account"}
+            {action === "Sign Up" ? "Create your account" : "Login to your account"}
           </p>
           <div className="auth-underline"></div>
         </div>
@@ -187,11 +170,7 @@ function LoginSignup() {
         <div className="auth-switch-buttons">
           <button
             type="button"
-            className={
-              action === "Sign Up"
-                ? "auth-switch-btn auth-switch-btn-active"
-                : "auth-switch-btn"
-            }
+            className={action === "Sign Up" ? "auth-switch-btn auth-switch-btn-active" : "auth-switch-btn"}
             onClick={() => changeAction("Sign Up")}
           >
             Sign Up
@@ -199,11 +178,7 @@ function LoginSignup() {
 
           <button
             type="button"
-            className={
-              action === "Login"
-                ? "auth-switch-btn auth-switch-btn-active"
-                : "auth-switch-btn"
-            }
+            className={action === "Login" ? "auth-switch-btn auth-switch-btn-active" : "auth-switch-btn"}
             onClick={() => changeAction("Login")}
           >
             Login

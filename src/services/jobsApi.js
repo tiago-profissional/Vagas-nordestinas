@@ -1,118 +1,98 @@
-const API_URL = "https://vagasnordestinasdb.infinityfree.me/api";
+// src/services/jobsApi.js
+const API_BASE = "/api";
 
-export function formatJob(job) {
-  let location;
-
-  if (job.work_mode === "remote") location = "Remote";
-  else location = job.state ? job.city + ", " + job.state : job.city;
-
-  let type;
-  if (job.employment_type === "full_time") type = "Full-time";
-  else if (job.employment_type === "part_time") type = "Part-time";
-  else if (job.employment_type === "pj") type = "PJ";
-  else type = job.employment_type || "-";
-
-  let salary;
-  if (job.salary_min && job.salary_max) {
-    salary =
-      "R$ " +
-      Number(job.salary_min).toLocaleString("pt-BR") +
-      " - R$ " +
-      Number(job.salary_max).toLocaleString("pt-BR");
-  } else {
-    salary = "A combinar";
+// Buscar todas as vagas
+export async function fetchJobs() {
+  const response = await fetch(`${API_BASE}/jobs.php`);
+  
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
+  
+  return response.json();
+}
 
+// Alias para getJobs (mesma coisa que fetchJobs)
+export async function getJobs() {
+  return fetchJobs();
+}
+
+// Buscar vagas por usuário
+export async function getJobsByUser(userId) {
+  const jobs = await fetchJobs();
+  const userJobs = jobs.filter(job => job.user_id == userId);
+  
   return {
-    id: job.id,
-    title: job.title,
-    company: job.company,
-    city: job.city,
-    state: job.state,
-    work_mode: job.work_mode,
-    employment_type: job.employment_type,
-    salary_min: job.salary_min,
-    salary_max: job.salary_max,
-    description: job.description,
-    location,
-    type,
-    salary,
+    ok: true,
+    data: userJobs
   };
 }
 
-export async function getJobs() {
-  const res = await fetch(`${API_URL}/jobs.php`);
-  const json = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(json?.error || "Error loading jobs");
-  }
-
-  return Array.isArray(json.data) ? json.data.map(formatJob) : [];
-}
-
-export const fetchJobs = getJobs;
-
+// Buscar vaga por ID
 export async function getJobById(id) {
-  const res = await fetch(`${API_URL}/jobs.php?id=${id}`);
-  const json = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(json?.error || "Erro ao carregar vaga");
+  const response = await fetch(`${API_BASE}/jobs.php?id=${id}`);
+  
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
-
-  return formatJob(json.data);
+  
+  return response.json();
 }
 
-export async function createJobApi(payload) {
-  const res = await fetch(`${API_URL}/jobs.php`, {
+// Criar nova vaga
+export async function createJobApi(jobData) {
+  const response = await fetch(`${API_BASE}/create-job.php`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(jobData),
   });
-
-  const json = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(json?.error || "Erro ao criar vaga");
+  
+  const data = await response.json();
+  
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || data.error || "Erro ao criar vaga");
   }
-
-  return formatJob(json.data);
+  
+  return data.data || data;
 }
 
-export async function updateJobApi(id, payload) {
-  const res = await fetch(`${API_URL}/jobs.php?id=${id}`, {
+// Atualizar vaga
+export async function updateJobApi(id, jobData) {
+  const response = await fetch(`${API_BASE}/jobs.php?id=${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(jobData),
   });
-
-  const json = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(json?.error || "Erro ao atualizar vaga");
+  
+  const data = await response.json();
+  
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || data.error || "Erro ao atualizar vaga");
   }
-
-  return formatJob(json.data);
+  
+  return data;
 }
 
+// Deletar vaga
 export async function deleteJobApi(id) {
-  const response = await fetch(`${API_URL}/jobs.phpp?id=${id}`, {
+  const response = await fetch(`${API_BASE}/delete-job.php?id=${id}`, {
     method: "DELETE",
   });
-
-  const json = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(json.error || "Failed to delete job");
+  
+  const data = await response.json();
+  
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || data.error || "Erro ao deletar vaga");
   }
-
-  return json;
+  
+  return data;
 }
 
-export const deleteJob = deleteJobApi;
-
-export async function getJobsByUser(userId) {
-  const res = await fetch(`${API_URL}/jobs.php?user_id=${userId}`);
-  return res.json();
+// Delete (alias)
+export async function deleteJob(id) {
+  return deleteJobApi(id);
 }
