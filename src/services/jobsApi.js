@@ -1,5 +1,5 @@
 // src/services/jobsApi.js
-const API_BASE = "/api";  // ← MUDE PARA /api (USA O PROXY DO VITE)
+const API_BASE = "https://vagasnordestinasdb.infinityfree.me/api";
 
 export async function fetchJobs() {
   console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
