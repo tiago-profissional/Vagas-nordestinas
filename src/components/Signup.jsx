@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import "../styles/Signup.css";
 
 function LoginSignup() {
   const navigate = useNavigate();
 
-  // Detecta ambiente automaticamente
   const API_URL = import.meta.env.DEV 
     ? "http://localhost:8000/Vagas-nordestinas/public"
     : "https://fossil-impatient-penalty.ngrok-free.dev";
+    
   const [action, setAction] = useState("Sign Up");
 
   const [name, setName] = useState("");
@@ -16,8 +17,6 @@ function LoginSignup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const clearFields = () => {
@@ -29,33 +28,32 @@ function LoginSignup() {
 
   const changeAction = (newAction) => {
     setAction(newAction);
-    setError("");
-    setMessage("");
     clearFields();
   };
 
   const handleForm = async (e) => {
     e.preventDefault();
 
-    setError("");
-    setMessage("");
-
     if (action === "Sign Up") {
       if (!name || !email || !password || !confirmPassword) {
-        setError("Please fill in all fields.");
+        toast.error("Please fill in all fields.");
         return;
       }
 
       if (password !== confirmPassword) {
-        setError("Passwords do not match.");
+        toast.error("Passwords do not match.");
         return;
       }
     } else {
       if (!email || !password) {
-        setError("Please fill in email and password.");
+        toast.error("Please fill in email and password.");
         return;
       }
     }
+
+    const loadingToast = toast.loading(
+      action === "Sign Up" ? "Creating account..." : "Logging in..."
+    );
 
     try {
       setLoading(true);
@@ -76,28 +74,35 @@ function LoginSignup() {
 
       const data = await res.json();
 
+      toast.dismiss(loadingToast);
+
       if (data.success) {
-        setMessage(data.message || `${action} successful!`);
+        toast.success(data.message || `${action} successful!`);
 
         if (action === "Login" && data.user) {
           localStorage.setItem("user", JSON.stringify(data.user));
-
           clearFields();
-
           setTimeout(() => {
             navigate("/dashboard");
           }, 1000);
-
           return;
         }
 
         clearFields();
+        
+        if (action === "Sign Up") {
+          setTimeout(() => {
+            setAction("Login");
+            toast.success("Now you can login with your credentials!");
+          }, 1500);
+        }
       } else {
-        setError(data.message || "Something went wrong.");
+        toast.error(data.message || "Something went wrong.");
       }
     } catch (err) {
+      toast.dismiss(loadingToast);
       console.error("Fetch error:", err);
-      setError("Error connecting to the server.");
+      toast.error("Error connecting to the server.");
     } finally {
       setLoading(false);
     }
@@ -165,9 +170,6 @@ function LoginSignup() {
             Lost Password? <span>Click Here!</span>
           </div>
         )}
-
-        {error && <p className="auth-error-message">{error}</p>}
-        {message && <p className="auth-success-message">{message}</p>}
 
         <div className="auth-switch-buttons">
           <button

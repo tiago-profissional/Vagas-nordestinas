@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import Header from "./Headers";
 import { getJobsByUser, deleteJob } from "../services/jobsApi";
 import "../styles/dashboardJobs.css";
@@ -15,6 +16,7 @@ function DashboardJobs() {
 
   useEffect(() => {
     if (!user) {
+      toast.error("Faça login para acessar o dashboard");
       navigate("/signup");
       return;
     }
@@ -28,10 +30,13 @@ function DashboardJobs() {
 
       if (data.ok) {
         setJobs(data.data || []);
+        toast.success(`${data.data?.length || 0} vagas carregadas`);
       } else {
+        toast.error(data.error || "Failed to load jobs.");
         setError(data.error || "Failed to load jobs.");
       }
     } catch (err) {
+      toast.error("Server error.");
       setError("Server error.");
     } finally {
       setLoading(false);
@@ -42,21 +47,28 @@ function DashboardJobs() {
     const confirmDelete = window.confirm("Delete this job?");
     if (!confirmDelete) return;
 
+    const loadingToast = toast.loading("Deletando vaga...");
+
     try {
       const data = await deleteJob(id);
 
       if (data.success || data.ok) {
         setJobs((prev) => prev.filter((job) => job.id !== id));
+        toast.dismiss(loadingToast);
+        toast.success("Vaga deletada com sucesso!");
       } else {
-        alert(data.message || data.error || "Failed to delete job.");
+        toast.dismiss(loadingToast);
+        toast.error(data.message || data.error || "Failed to delete job.");
       }
     } catch (err) {
-      alert("Server error while deleting job.");
+      toast.dismiss(loadingToast);
+      toast.error("Server error while deleting job.");
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    toast.success("Logout realizado com sucesso!");
     navigate("/signup");
   };
 

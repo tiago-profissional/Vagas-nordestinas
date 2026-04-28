@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import JobDetail from "./JobDetail.jsx";
 import JobList from "./JobList.jsx";
 import Headers from "./Headers.jsx";
 import SearchBar from "./SearchBar.jsx";
@@ -10,64 +9,24 @@ export default function Home({ jobs, loadingJobs, errorJobs }) {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [notFound, setNotFound] = useState(false);
-  const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth <= 375);
-
   const [searchText, setSearchText] = useState("");
   const [location, setLocation] = useState("");
   const [onlyRemote, setOnlyRemote] = useState(false);
   const [employmentType, setEmploymentType] = useState("");
 
-  useEffect(() => {
-    function handleResize() {
-      setIsSmallMobile(window.innerWidth <= 375);
-    }
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (loadingJobs) return;
-    if (errorJobs) return;
-
-    if (!id) {
-      setSelectedJob(null);
-      setNotFound(false);
-      return;
-    }
-
-    const found = jobs.find((j) => String(j.id) === String(id));
-
-    if (found) {
-      setSelectedJob(found);
-      setNotFound(false);
-    } else {
-      setSelectedJob(null);
-      setNotFound(true);
-    }
-  }, [id, jobs, loadingJobs, errorJobs]);
-
   function handleSelect(job) {
-    setSelectedJob(job);
-    setNotFound(false);
     navigate(`/jobs/${job.id}`);
   }
 
-  function handleBackToList() {
-    setSelectedJob(null);
-    setNotFound(false);
-    navigate("/");
-  }
-
   const filteredJobs = useMemo(() => {
+    if (!jobs || !Array.isArray(jobs)) return [];
+    
     return jobs.filter((job) => {
       const matchTitle = (job.title || "")
         .toLowerCase()
         .includes(searchText.toLowerCase());
 
-      const matchLocation = (job.location || "")
+      const matchLocation = ((job.city || "") + " " + (job.state || ""))
         .toLowerCase()
         .includes(location.toLowerCase());
 
@@ -80,6 +39,26 @@ export default function Home({ jobs, loadingJobs, errorJobs }) {
       return matchTitle && matchLocation && matchRemote && matchType;
     });
   }, [jobs, searchText, location, onlyRemote, employmentType]);
+
+  if (errorJobs) {
+    return (
+      <div className="home-page page-wrapper">
+        <Headers />
+        <div className="container">
+          <div className="error-container" style={{ textAlign: "center", padding: "40px" }}>
+            <h2>⚠️ Erro ao carregar vagas</h2>
+            <p>{errorJobs}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              style={{ padding: "10px 20px", marginTop: "20px", cursor: "pointer" }}
+            >
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home-page page-wrapper">
@@ -100,53 +79,13 @@ export default function Home({ jobs, loadingJobs, errorJobs }) {
         </section>
 
         <main className="layout">
-          {isSmallMobile ? (
-            selectedJob || notFound ? (
-              <section className="job-detail-area mobile-single-column-detail">
-                <button
-                  type="button"
-                  className="mobile-back-btn"
-                  onClick={handleBackToList}
-                >
-                  ← Voltar para vagas
-                </button>
-
-                <JobDetail
-                  job={selectedJob}
-                  loading={loadingJobs}
-                  error={errorJobs}
-                  notFound={notFound}
-                />
-              </section>
-            ) : (
-              <aside className="job-list">
-                <JobList
-                  jobs={filteredJobs}
-                  selectedJob={selectedJob}
-                  onSelect={handleSelect}
-                />
-              </aside>
-            )
-          ) : (
-            <>
-              <aside className="job-list">
-                <JobList
-                  jobs={filteredJobs}
-                  selectedJob={selectedJob}
-                  onSelect={handleSelect}
-                />
-              </aside>
-
-              <section className="job-detail-area">
-                <JobDetail
-                  job={selectedJob}
-                  loading={loadingJobs}
-                  error={errorJobs}
-                  notFound={notFound}
-                />
-              </section>
-            </>
-          )}
+          <aside className="job-list">
+            <JobList
+              jobs={filteredJobs}
+              selectedJobId={id}
+              onSelect={handleSelect}
+            />
+          </aside>
         </main>
       </div>
     </div>

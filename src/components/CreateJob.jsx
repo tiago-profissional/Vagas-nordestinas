@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import "../styles/createjob.css";
 
 export default function CreateJob({ onCancel, onCreate }) {
@@ -31,21 +32,28 @@ export default function CreateJob({ onCancel, onCreate }) {
 
     if (submitting) return;
 
+    // Validação básica
+    if (!form.title || !form.company || !form.city || !form.state) {
+      toast.error("Preencha todos os campos obrigatórios (*)");
+      return;
+    }
+
     const payload = {
       ...form,
       salary_min: normalizeSalary(form.salary_min),
       salary_max: normalizeSalary(form.salary_max),
     };
 
+    const loadingToast = toast.loading("Publicando vaga...");
+
     try {
       setSubmitting(true);
-
       const createdJob = await onCreate(payload);
 
-      console.log("✅ retorno do onCreate:", createdJob);
-      alert("Vaga publicada com sucesso!");
+      toast.dismiss(loadingToast);
+      toast.success(`Vaga "${createdJob.title}" publicada com sucesso!`);
 
-      // limpa
+      // Limpa o formulário
       setForm({
         title: "",
         company: "",
@@ -58,18 +66,16 @@ export default function CreateJob({ onCancel, onCreate }) {
         description: "",
       });
 
-      // fecha
       onCancel?.();
-
       return createdJob;
     } catch (err) {
+      toast.dismiss(loadingToast);
       console.error("❌ ERRO no submit:", err);
-      alert(err?.message || "Erro ao criar vaga");
+      toast.error(err?.message || "Erro ao criar vaga");
     } finally {
       setSubmitting(false);
     }
   }
-
 
   return (
     <div className="cj-page">
@@ -77,6 +83,7 @@ export default function CreateJob({ onCancel, onCreate }) {
         <h2 className="cj-title">Cadastrar Vaga</h2>
 
         <form className="cj-form" onSubmit={handleSubmit}>
+          {/* ... resto do form igual ... */}
           <div className="cj-grid">
             <div className="cj-field">
               <label className="cj-label">Título*</label>

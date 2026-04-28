@@ -13,20 +13,44 @@ function JobList({ jobs, selectedJob, onSelect }) {
         >
           <div className="job-top">
             <span className="job-source">{job.company}</span>
-            <button className="job-save" type="button" aria-label="Salvar" onClick={(e) => {
-              e.stopPropagation();
-            }}>
+            <button 
+              className="job-save" 
+              type="button" 
+              aria-label="Salvar" 
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Salvar vaga:", job.id);
+              }}
+            >
               ⭐
             </button>
           </div>
 
           <h3 className="job-title">{job.title}</h3>
-          <p className="job-location">{job.location}</p>
-          <p className="job-salary">{job.salary}</p>
+          
+          {/* Localização: cidade + estado */}
+          <p className="job-location">
+            {job.city}{job.state ? `, ${job.state}` : ''}
+          </p>
+          
+          {/* Salário */}
+          <p className="job-salary">
+            {job.salary_min && job.salary_max 
+              ? `R$ ${job.salary_min} - R$ ${job.salary_max}`
+              : job.salary_min 
+                ? `A partir de R$ ${job.salary_min}`
+                : 'Salário a combinar'}
+          </p>
 
           <div className="job-tags">
-            <span className="tag remote">{job.work_mode === "remote" ? "Remoto" : "Presencial"}</span>
-            <span className="tag fulltime">{job.type}</span>
+            <span className={`tag ${job.work_mode === "remote" ? "remote" : "onsite"}`}>
+              {job.work_mode === "remote" ? "Remoto" : 
+               job.work_mode === "hybrid" ? "Híbrido" : "Presencial"}
+            </span>
+            <span className="tag fulltime">
+              {job.employment_type === "full_time" ? "Tempo Integral" :
+               job.employment_type === "part_time" ? "Meio Período" : "PJ"}
+            </span>
           </div>
         </div>
       ))}

@@ -1,53 +1,86 @@
 // src/services/jobsApi.js
-// Agora frontend e backend no MESMO domínio (Vercel)
-const API_BASE = import.meta.env.DEV 
-  ? "http://localhost:8000/Vagas-nordestinas/public"  // Local (XAMPP)
-  : "/api";  // Produção (Vercel) - mesmo domínio, SEM CORS!
+
+// URL base do backend (sem barra no final)
+const API_BASE = 'http://localhost:8000/Vagas-nordestinas/backend';
+
+console.log("🌐 API_BASE:", API_BASE);
+
+// Função auxiliar para fazer requisições
+async function request(endpoint, options = {}) {
+  // Adiciona o parâmetro route para o router PHP
+  const url = `${API_BASE}/index.php?route=${endpoint}`;
+  console.log(`📡 ${options.method || 'GET'} ${url}`);
+  
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+  
+  console.log("📡 Response status:", response.status);
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.error || `HTTP ${response.status}`);
+  }
+  
+  return response.json();
+}
 
 export async function fetchJobs() {
-  console.log("🔍 Buscando em:", `${API_BASE}/jobs.php`);
-  const response = await fetch(`${API_BASE}/jobs.php`);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.json();
+  try {
+    const data = await request('/jobs');
+    console.log("✅ Vagas recebidas:", data);
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("❌ Erro em fetchJobs:", error);
+    throw new Error(`Falha ao carregar vagas: ${error.message}`);
+  }
 }
 
 export async function getJobById(id) {
-  const response = await fetch(`${API_BASE}/jobs.php?id=${id}`);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.json();
+  const data = await request(`/jobs/${id}`);
+  return data;
 }
 
 export async function createJobApi(jobData) {
-  const response = await fetch(`${API_BASE}/create-job.php`, {
+  console.log("📝 Criando vaga:", jobData);
+  
+  const data = await request('/jobs', {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(jobData),
   });
-  const data = await response.json();
-  if (!response.ok || !data.success) throw new Error(data.error || "Erro ao criar vaga");
-  return data.data || data;
+  
+  console.log("✅ Vaga criada:", data);
+  return data;
 }
 
 export async function updateJobApi(id, jobData) {
-  const response = await fetch(`${API_BASE}/jobs.php?id=${id}`, {
+  console.log("✏️ Atualizando vaga:", id, jobData);
+  
+  const data = await request(`/jobs/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(jobData),
   });
-  const data = await response.json();
-  if (!response.ok || !data.success) throw new Error(data.error || "Erro ao atualizar");
+  
+  console.log("✅ Vaga atualizada:", data);
   return data;
 }
 
 export async function deleteJobApi(id) {
-  const response = await fetch(`${API_BASE}/delete-job.php?id=${id}`, {
+  console.log("🗑️ Deletando vaga:", id);
+  
+  const data = await request(`/jobs/${id}`, {
     method: "DELETE",
   });
-  const data = await response.json();
-  if (!response.ok || !data.success) throw new Error(data.error || "Erro ao deletar");
+  
+  console.log("✅ Vaga deletada:", data);
   return data;
 }
 
+// Alias para compatibilidade
 export async function getJobs() {
   return fetchJobs();
 }

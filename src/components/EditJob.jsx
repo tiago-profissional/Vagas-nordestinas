@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   getJobById,
   getJobs,
@@ -62,6 +63,7 @@ export default function EditJob() {
         setJobs(Array.isArray(jobsList) ? jobsList : []);
       } catch (error) {
         console.error("Error loading job:", error);
+        toast.error(error.message || "Erro ao carregar vaga.");
         setError(error.message || "Erro ao carregar vaga.");
       } finally {
         setLoading(false);
@@ -69,6 +71,7 @@ export default function EditJob() {
     }
 
     if (!id) {
+      toast.error("ID da vaga não encontrado.");
       setError("ID da vaga não encontrado.");
       setLoading(false);
       return;
@@ -79,26 +82,19 @@ export default function EditJob() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (
-      !formData.title ||
-      !formData.company ||
-      !formData.city ||
-      !formData.state
-    ) {
+    if (!formData.title || !formData.company || !formData.city || !formData.state) {
+      toast.error("Preencha os campos obrigatórios.");
       setError("Preencha os campos obrigatórios.");
-      setSuccess("");
       return;
     }
+
+    const loadingToast = toast.loading("Salvando alterações...");
 
     try {
       setSaving(true);
@@ -107,13 +103,17 @@ export default function EditJob() {
 
       await updateJobApi(id, formData);
 
+      toast.dismiss(loadingToast);
+      toast.success("Vaga atualizada com sucesso!");
       setSuccess("Vaga atualizada com sucesso!");
 
       setTimeout(() => {
         navigate(`/jobs/${id}`);
       }, 1200);
     } catch (error) {
+      toast.dismiss(loadingToast);
       console.error("Error updating job:", error);
+      toast.error("Erro ao atualizar vaga.");
       setError("Erro ao atualizar vaga.");
     } finally {
       setSaving(false);
@@ -121,6 +121,8 @@ export default function EditJob() {
   }
 
   async function handleDelete() {
+    const loadingToast = toast.loading("Deletando vaga...");
+
     try {
       setDeleting(true);
       setError("");
@@ -128,10 +130,14 @@ export default function EditJob() {
 
       await deleteJobApi(id);
 
+      toast.dismiss(loadingToast);
+      toast.success("Vaga deletada com sucesso!");
       setShowDeleteModal(false);
       navigate("/");
     } catch (error) {
+      toast.dismiss(loadingToast);
       console.error("Error deleting job:", error);
+      toast.error("Erro ao deletar vaga.");
       setError("Erro ao deletar vaga.");
     } finally {
       setDeleting(false);
@@ -181,11 +187,6 @@ export default function EditJob() {
             <section className="editjob-layout__main">
               <div className="editjob-form-card">
                 <h2 className="editjob-form-card__title">Edit Job</h2>
-
-                {error && <p className="editjob-form-card__error">{error}</p>}
-                {success && (
-                  <p className="editjob-form-card__success">{success}</p>
-                )}
 
                 <form onSubmit={handleSubmit} className="editjob-form-grid">
                   <div className="editjob-field">
