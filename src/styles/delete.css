@@ -1,0 +1,66 @@
+.delete-overlay{
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.delete-modal{
+  background:#ffffff;
+  width:520px;
+  padding:40px;
+  border-radius:12px;
+  position:relative;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+}
+
+.delete-close{
+  position:absolute;
+  top:16px;
+  right:18px;
+  border:none;
+  background:none;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.delete-message{
+  font-size:20px;
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.delete-actions{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+}
+
+.delete-cancel{
+  padding:10px 28px;
+  border-radius:25px;
+  border:2px solid #b8b8ff;
+  background:#d7d7d7;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.delete-confirm{
+  padding:10px 28px;
+  border-radius:25px;
+  border:none;
+  background:#b13a35;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.delete-confirm:hover{
+  background:#972c28;
+}

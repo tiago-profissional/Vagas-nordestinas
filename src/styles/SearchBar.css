@@ -1,0 +1,730 @@
+.jobs-searchbar {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 28px;
+  align-items: start;
+  padding: 24px 0;
+}
+
+.jobs-searchbar__title-col {
+  grid-column: span 2;
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  padding-top: 8px;
+  min-width: 0;
+}
+
+.jobs-searchbar__title {
+  color: #c89b2c;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.jobs-searchbar__center-col {
+  grid-column: span 7;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.jobs-searchbar__inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+}
+
+.jobs-searchbar__input-icon {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.jobs-searchbar__icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.jobs-searchbar__inputs input {
+  width: 100%;
+  min-width: 0;
+  height: 62px;
+  border-radius: 18px;
+  border: 1px solid #8a84ff;
+  background: #dcdcdc;
+  color: #555;
+  padding: 0 18px 0 48px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.jobs-searchbar__inputs input::placeholder {
+  color: #666;
+}
+
+.jobs-searchbar__chips-row {
+  display: flex;
+  gap: 10px;
+
+  justify-content: center;  /* center inside container */
+}
+
+.jobs-searchbar__chip {
+  border: 1px solid #2f2f2f;
+  background: #171717;
+  color: #f3f3f3;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: center;
+  min-height: 36px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.jobs-searchbar__chip:hover {
+  background: #202020;
+}
+
+.jobs-searchbar__chip.active {
+  border-color: #8a84ff;
+}
+
+.jobs-searchbar__right-col {
+  grid-column: span 3;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 14px;
+  align-content: start;
+  width: 100%;
+  min-width: 0;
+}
+
+.jobs-searchbar__right-title {
+  color: #111;
+  font-size: 1rem;
+  line-height: 1.3;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.jobs-searchbar__radios {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.jobs-searchbar__radio-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #111;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.jobs-searchbar__radios input[type="radio"] {
+  accent-color: #a56c00;
+  cursor: pointer;
+}
+
+@media (max-width: 980px) {
+  .jobs-searchbar {
+    gap: 22px;
+    padding: 20px 0;
+  }
+
+  .jobs-searchbar__center-col {
+    gap: 12px;
+  }
+
+  .jobs-searchbar__inputs {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .jobs-searchbar__inputs input {
+    height: 54px;
+    border-radius: 16px;
+    font-size: 0.92rem;
+    padding: 0 14px 0 42px;
+  }
+
+  .jobs-searchbar__icon {
+    left: 14px;
+    font-size: 14px;
+  }
+
+  .jobs-searchbar__chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__chip {
+    width: 150px;
+    max-width: 150px;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    line-height: 1.1;
+    min-height: 34px;
+  }
+
+  .jobs-searchbar__right-col {
+    gap: 12px;
+  }
+
+  .jobs-searchbar__right-title {
+    font-size: 0.92rem;
+  }
+
+  .jobs-searchbar__radio-option {
+    font-size: 0.88rem;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .jobs-searchbar__chips-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 🔥 3 columns */
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__chip {
+    width: 100%;
+    max-width: 180px;   /* 🔽 smaller so 3 fit */
+
+    padding: 5px 6px;
+    min-height: 28px;
+    border-radius: 12px;
+
+    font-size: 0.72rem; /* 🔽 slightly smaller */
+    line-height: 1.1;
+
+    text-align: center;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .jobs-searchbar {
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  /* INPUTS */
+  .jobs-searchbar__inputs input {
+    height: 42px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    padding: 0 8px 0 30px;
+  }
+
+  .jobs-searchbar__inputs input::placeholder {
+    font-size: 0.72rem;
+  }
+
+  .jobs-searchbar__icon {
+    left: 8px;
+    font-size: 11px;
+  }
+
+  /* TITLES */
+  .jobs-searchbar__title {
+    font-size: 0.78rem;
+  }
+
+  .jobs-searchbar__right-title {
+    font-size: 0.76rem;
+    line-height: 1.2;
+    margin-bottom: 8px; /* 🔥 spacing fix */
+  }
+
+  /* 🔥 CLEAN SEPARATION (no layout break) */
+  .jobs-searchbar__right-col {
+    padding-left: 14px;
+    margin-left: 6px;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    min-width: 0;
+  }
+
+  /* CHIPS */
+  .jobs-searchbar__chips-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 180px));
+    justify-content: center;
+    justify-items: center;
+    gap: 6px;
+  }
+
+  .jobs-searchbar__chip {
+    width: 100%;
+    max-width: 180px;
+
+    padding: 4px 6px;
+    min-height: 32px;
+    border-radius: 10px;
+
+    font-size: 0.68rem;
+    line-height: 1.1;
+
+    text-align: center;
+  }
+
+  /* RADIOS */
+  .jobs-searchbar__radios {
+    display: flex;         /* 🔥 cleaner alignment */
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .jobs-searchbar__radio-option {
+    font-size: 0.74rem;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .jobs-searchbar__radios input[type="radio"] {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 690px) {
+  .jobs-searchbar {
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  /* 🔥 INPUTS (FIXED SIZE) */
+  .jobs-searchbar__inputs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 160px)); /* 🔥 smaller */
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__input-icon {
+    width: 100%;
+    max-width: 160px; /* 🔥 match grid */
+    justify-self: center;
+  }
+
+  .jobs-searchbar__inputs input {
+    height: 40px;          /* 🔽 slightly smaller */
+    width: 100%;
+    border-radius: 10px;
+    font-size: 0.73rem;    /* 🔽 tiny adjustment */
+    padding: 0 8px 0 28px; /* 🔽 tighter */
+  }
+
+  .jobs-searchbar__inputs input::placeholder {
+    font-size: 0.7rem;
+  }
+
+  .jobs-searchbar__icon {
+    left: 8px;
+    font-size: 11px;
+  }
+
+  /* TITLES */
+  .jobs-searchbar__title {
+    font-size: 0.78rem;
+  }
+
+  .jobs-searchbar__right-title {
+    font-size: 0.76rem;
+    line-height: 1.2;
+  }
+
+  /* CHIPS */
+  .jobs-searchbar__chips-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 180px));
+    justify-content: center;
+    gap: 3px;
+  }
+
+  .jobs-searchbar__chip {
+    width: 90%;
+    max-width: 180px;
+
+    padding: 2px 4px;
+    min-height: 28px;
+    border-radius: 7px;
+
+    font-size: 0.6rem;
+    line-height: 1;
+  }
+
+  /* RADIOS */
+  .jobs-searchbar__radios {
+    gap: 5px;
+  }
+
+  .jobs-searchbar__radio-option {
+    font-size: 0.74rem;
+    gap: 4px;
+  }
+
+  .jobs-searchbar__radios input[type="radio"] {
+    transform: scale(0.85);
+  }
+}
+
+
+
+@media (max-width: 480px) {
+  .jobs-searchbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px 0;
+  }
+
+  .jobs-searchbar__title-col,
+  .jobs-searchbar__center-col,
+  .jobs-searchbar__right-col {
+    grid-column: 1 / -1;
+  }
+
+  .jobs-searchbar__title-col {
+    padding-top: 0;
+    justify-items: start;
+  }
+
+  .jobs-searchbar__title {
+    font-size: 0.82rem;
+    line-height: 1.2;
+  }
+
+  .jobs-searchbar__center-col {
+    gap: 8px;
+  }
+
+  /* 🔥 INPUTS (clean + slightly smaller) */
+  .jobs-searchbar__inputs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .jobs-searchbar__input-icon {
+    width: 100%;
+    max-width: 95%;       /* 🔥 slightly less wide visually */
+    justify-self: center;
+  }
+
+  .jobs-searchbar__inputs input {
+    height: 34px;         /* 🔽 smaller */
+    font-size: 0.7rem;
+    border-radius: 10px;
+    padding: 0 8px 0 28px;
+  }
+
+  .jobs-searchbar__inputs input::placeholder {
+    font-size: 0.68rem;
+  }
+
+  .jobs-searchbar__icon {
+    left: 8px;
+    font-size: 10px;
+  }
+
+  /* CHIPS */
+  .jobs-searchbar__chips-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: center;
+    justify-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__chip {
+    width: 80%;
+    max-width: 165px;
+
+    font-size: 0.68rem;
+    line-height: 1.1;
+
+    padding: 5px 7px;
+    min-height: 30px;
+    border-radius: 12px;
+
+    text-align: center;
+    white-space: normal;
+  }
+
+  /* RIGHT SIDE */
+  .jobs-searchbar__right-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__right-title {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .jobs-searchbar__radios {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__radio-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    font-size: 0.78rem;
+    line-height: 1.2;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .jobs-searchbar__radios input[type="radio"] {
+    transform: scale(0.85);
+    margin: 0;
+  }
+}
+
+
+
+@media (max-width: 375px) {
+  .jobs-searchbar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .jobs-searchbar__title-col,
+  .jobs-searchbar__center-col,
+  .jobs-searchbar__right-col {
+    grid-column: 1 / -1;
+  }
+
+  .jobs-searchbar__title-col {
+    padding-top: 0;
+    justify-items: start;
+  }
+
+  .jobs-searchbar__title {
+    font-size: 0.82rem;
+    line-height: 1.15;
+  }
+
+  .jobs-searchbar__center-col {
+    gap: 8px;
+  }
+
+  .jobs-searchbar__inputs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .jobs-searchbar__input-icon {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .jobs-searchbar__inputs input {
+    height: 42px;
+    width: 100%;
+    font-size: 0.72rem;
+    border-radius: 12px;
+    padding: 0 8px 0 28px;
+  }
+
+  .jobs-searchbar__inputs input::placeholder {
+    font-size: 0.7rem;
+  }
+
+  .jobs-searchbar__icon {
+    left: 8px;
+    font-size: 10px;
+  }
+
+  /* 🔥 FIXED CHIPS */
+  .jobs-searchbar__chips-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: center;     /* 🔥 center grid */
+    justify-items: center;       /* 🔥 center items */
+    gap: 8px;                    /* 🔼 more breathing space */
+    width: 100%;
+  }
+
+  .jobs-searchbar__chip {
+    width: 100%;
+    max-width: 150px;            /* 🔼 bigger but controlled */
+
+    font-size: 0.68rem;          /* 🔼 bigger text */
+    line-height: 1.1;
+
+    padding: 6px 8px;            /* 🔼 more comfortable */
+    min-height: 30px;            /* 🔼 taller */
+    border-radius: 12px;
+
+    text-align: center;
+  }
+
+  .jobs-searchbar__right-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__right-title {
+    font-size: 0.78rem;
+    line-height: 1.2;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .jobs-searchbar__radios {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__radio-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    font-size: 0.72rem;
+    line-height: 1.1;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .jobs-searchbar__radios input[type="radio"] {
+    transform: scale(0.8);
+    margin: 0;
+  }
+}
+
+
+@media (max-width: 320px) {
+  .jobs-searchbar {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px 0;
+  }
+
+  .jobs-searchbar__title-col,
+  .jobs-searchbar__center-col,
+  .jobs-searchbar__right-col {
+    grid-column: 1 / -1;
+  }
+
+  .jobs-searchbar__title {
+    font-size: 0.75rem;
+    line-height: 1.1;
+  }
+
+  .jobs-searchbar__center-col {
+    gap: 6px;
+  }
+
+  .jobs-searchbar__inputs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .jobs-searchbar__input-icon {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .jobs-searchbar__inputs input {
+    height: 38px;
+    font-size: 0.68rem;
+    border-radius: 10px;
+    padding: 0 6px 0 24px;
+  }
+
+  .jobs-searchbar__inputs input::placeholder {
+    font-size: 0.65rem;
+  }
+
+  .jobs-searchbar__icon {
+    left: 6px;
+    font-size: 9px;
+  }
+
+  .jobs-searchbar__chips-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: center;
+    justify-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .jobs-searchbar__chip {
+    width: 100%;
+    max-width: 140px;
+    font-size: 0.6rem;
+    line-height: 1.05;
+    padding: 4px 5px;
+    min-height: 24px;
+    border-radius: 9px;
+    text-align: center;
+  }
+
+  .jobs-searchbar__right-col {
+    gap: 6px;
+  }
+
+  .jobs-searchbar__right-title {
+    font-size: 0.72rem;
+    line-height: 1.1;
+  }
+
+  .jobs-searchbar__radios {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .jobs-searchbar__radio-option {
+    font-size: 0.7rem;
+    gap: 5px;
+  }
+
+  .jobs-searchbar__radios input[type="radio"] {
+    transform: scale(0.85);
+  }
+}
