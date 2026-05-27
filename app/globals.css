@@ -1,26 +1,204 @@
 @import "tailwindcss";
 
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* LAYOUT */
+  --container-width: 1280px;
+  --container-height: 1024px;
+
+  /* PRIMARY */
+  --primary: #c9a227;
+  --primary-light: #f4b400;
+  --primary-dark: #a07d1f;
+  --primary-hover: #b38a1f;
+
+  /* SECONDARY */
+  --secondary: #6b5ed6;
+
+  /* SUCCESS */
+  --success: #4de7b7;
+
+  /* WARNING */
+  --warning: #f4b400;
+
+  /* ERROR */
+  --error: #ef4444;
+
+  /* INFO */
+  --info: #3b82f6;
+
+  /* NEUTRALS */
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d4d4d4;
+  --gray-400: #a3a3a3;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-700: #404040;
+  --gray-800: #262626;
+  --gray-900: #171717;
+
+  /* BACKGROUNDS */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f7;
+  --bg-dark: #181a1b;
+
+  /* TEXT */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-white: #ffffff;
+
+  /* BORDERS */
+  --border-light: #e5e7eb;
+  --border-medium: #d1d5db;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* =========================================================
+   TAILWIND V4 THEME
+========================================================= */
+
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+
+  --color-secondary: var(--secondary);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================================================
+   HTML / BODY
+========================================================= */
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+
+  overflow-x: hidden;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.layout-container {
+  width: var(--container-width);
+  min-height: var(--container-height);
+
+  margin: 0 auto;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: var(--bg-secondary);
+}
+
+/* =========================================================
+   MEDIA
+========================================================= */
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e5e5e5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c9a227;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a07d1f;
 }

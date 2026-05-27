@@ -1,0 +1,24 @@
+src/
+├── components/
+│   ├── ui/           ← buttons, cards, inputs (shadcn style)
+│   ├── layout/       ← Header, Footer, Container, Sidebar
+│   └── features/     ← JobCard, JobFilter, ProfileForm
+├── lib/
+│   ├── db.ts         ← database connection
+│   ├── openai.ts     ← OpenAI client
+│   └── auth.ts       ← authentication logic
+├── hooks/
+│   ├── useAuth.ts
+│   ├── useJobs.ts
+│   └── useLocalStorage.ts
+├── utils/
+│   ├── formatDate.ts
+│   ├── parseResume.ts
+│   └── validateEmail.ts
+├── types/
+│   ├── job.ts
+│   ├── user.ts
+│   └── api.ts
+└── constants/
+    ├── routes.ts
+    └── config.ts
