@@ -1,20 +1,8 @@
-# backend/.htaccess
 RewriteEngine On
-RewriteBase /Vagas-nordestinas/backend/
+Options -MultiViews
 
-# Garantir que o Apache está usando o mod_rewrite
 <IfModule mod_rewrite.c>
-    
-    # Se for um arquivo real (.php, .css, .js), não redireciona
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    
-    # Redireciona tudo para index.php
-    RewriteRule ^(.*)$ index.php [QSA,L]
-    
-</IfModule>
-
-# Se mod_rewrite não estiver disponível, mostrar erro
-<IfModule !mod_rewrite.c>
-    ErrorDocument 500 "ModRewrite is required"
+    RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
 </IfModule>

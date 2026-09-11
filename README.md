@@ -163,5 +163,21 @@ Thank you for helping improve this project!
 ## Author
 
 Tiago  
+<<<<<<< HEAD
 Junior Web Developer
 >>>>>>> b80654ffc73c9cb89c6af9ed8c331ed33c7e67e1
+=======
+Junior Web Developer 
+
+
+Fluxo do import-jobs.php
+
+1. Receber uma requisição POST
+2. Buscar vagas da fonte externa
+3. Transformar os campos externos para o meu formato
+4. Validar se title, company, city e state existem
+5. Verificar se a vaga já existe no banco
+6. Se não existir, salvar
+7. Se existir, atualizar
+8. Retornar quantas vagas foram importadas
+>>>>>>> 418967e (Atualiza funcionalidades do projeto)

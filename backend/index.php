@@ -2,7 +2,19 @@
 // backend/index.php - Versão Corrigida (sem getDB duplicado)
 
 // CORS
-header("Access-Control-Allow-Origin: http://localhost:5173");
+$allowedOrigins = [
+    "http://localhost:5173",
+    "https://vagasnordestinas.com",
+    "https://www.vagasnordestinas.com"
+];
+
+$origin = $_SERVER["HTTP_ORIGIN"] ?? "";
+
+if (in_array($origin, $allowedOrigins, true)) {
+    header("Access-Control-Allow-Origin: " . $origin);
+}
+
+header("Vary: Origin");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
@@ -32,7 +44,6 @@ spl_autoload_register(function($class) {
 if (file_exists(__DIR__ . '/config/database.php')) {
     require_once __DIR__ . '/config/database.php';
 } else {
-    // Fallback: definir getDB aqui se não existir o arquivo
     if (!function_exists('getDB')) {
         function getDB() {
             try {
@@ -63,6 +74,10 @@ $router->get('/jobs/:id', 'JobController@show');
 $router->post('/jobs', 'JobController@store');
 $router->put('/jobs/:id', 'JobController@update');
 $router->delete('/jobs/:id', 'JobController@destroy');
+
+// ===== NOVA ROTA — vagas do GitHub =====
+$router->get('/github-jobs', 'GithubJobController@index');
+$router->get('/github-jobs/:id', 'GithubJobController@show');
 
 // Pega a rota do parâmetro GET 'route'
 $route = $_GET['route'] ?? '/';

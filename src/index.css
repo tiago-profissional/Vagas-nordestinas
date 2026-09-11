@@ -1,48 +1,187 @@
+/* Todas as cores e padrões globais ficam aqui. */
+:root {
+  /* Paleta da marca */
+  --cor-texto: #191815;
+  --cor-titulo: #7e4220;
+  --cor-primaria: #ea7805;
+  --cor-destaque: #f1b435;
+  --cor-fundo: #fff5ea;
+
+  /* Superfícies e textos */
+  --cor-superficie: #ffffff;
+  --cor-superficie-suave: #fffaf4;
+  --cor-texto-secundario: #756454;
+  --cor-borda: #e8d8c6;
+  --cor-borda-forte: #b4a08b;
+  --cor-selecao: #ffecd5;
+  --cor-sobre-primaria: var(--cor-texto);
+  --cor-primaria-hover: #f18b23;
+  --cor-link: var(--cor-titulo);
+
+  /* Estados */
+  --cor-erro: #b42318;
+  --cor-erro-hover: #8f1c13;
+  --cor-erro-fundo: #fff0ed;
+  --cor-sucesso: #24683c;
+  --cor-sucesso-fundo: #edf7ef;
+  --cor-info: #245e8a;
+  --cor-info-fundo: #eef5fc;
+  --cor-aviso: #76520b;
+  --cor-aviso-fundo: #fff3cc;
+
+  /* Efeitos */
+  --cor-overlay: rgb(25 24 21 / 48%);
+  --cor-foco: rgb(234 120 5 / 20%);
+  --cor-scrollbar: #c8b7a4;
+  --sombra-card: 0 2px 8px rgb(126 66 32 / 8%);
+  --sombra-elevada: 0 12px 32px rgb(126 66 32 / 12%);
+
+  /* Bordas */
+  --raio-pequeno: 6px;
+  --raio-campo: 10px;
+  --raio-card: 16px;
+  --raio-pill: 999px;
+
+  /* Espaçamentos */
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-5: 24px;
+  --espaco-6: 32px;
+  --espaco-7: 48px;
+
+  /* Tipografia */
+  --fonte-familia: Arial, Helvetica, sans-serif;
+  --fonte-xs: 0.75rem;
+  --fonte-sm: 0.875rem;
+  --fonte-base: 1rem;
+  --fonte-lg: 1.125rem;
+  --fonte-xl: 1.375rem;
+  --fonte-titulo: clamp(1.5rem, 2.2vw, 2rem);
+
+  /* Dimensões */
+  --largura-container: 1440px;
+  --altura-campo: 48px;
+  --altura-botao: 44px;
+  --transicao: 160ms ease;
+  --z-header: 100;
+  --z-modal: 1000;
+
+  font-family: var(--fonte-familia);
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+}
+
 *,
 *::before,
 *::after {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  font-family: system-ui, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #222;
-  background: #e9e6dc;
+body,
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
 }
 
-html,
-body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+html {
+  min-width: 320px;
 }
 
 body {
   min-height: 100vh;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
 }
 
-img,
-svg,
-video,
-canvas {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
+#root,
 .page-wrapper {
-  min-height: 100vh;
   width: 100%;
-  overflow-x: hidden;
+  min-height: 100vh;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
   width: 100%;
+  max-width: var(--largura-container);
+  margin-inline: auto;
+  padding-inline: var(--espaco-6);
+}
+
+img,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input,
+select,
+textarea {
+  color: var(--cor-texto);
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: var(--cor-titulo);
+}
+
+textarea {
+  resize: vertical;
+}
+
+a {
+  color: var(--cor-link);
+  text-underline-offset: 3px;
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--cor-titulo);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--cor-destaque);
+  color: var(--cor-texto);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-inline: var(--espaco-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transicao: 0s;
+  }
 }

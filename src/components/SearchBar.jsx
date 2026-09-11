@@ -10,19 +10,33 @@ function SearchBar({
   employmentType,
   setEmploymentType,
 }) {
+  function handleRemoteOnly() {
+    setOnlyRemote(true);
+  }
+
+  function handleAllWorkModes() {
+    setOnlyRemote(false);
+  }
+
+  function handleClearFilters() {
+    setOnlyRemote(false);
+    setEmploymentType("");
+  }
+
   return (
     <section className="jobs-searchbar">
       <div className="jobs-searchbar__title-col">
-        <p className="jobs-searchbar__title">Jobs matching your search</p>
+        <p className="jobs-searchbar__title">Vagas encontradas para sua busca</p>
       </div>
 
       <div className="jobs-searchbar__center-col">
         <div className="jobs-searchbar__inputs">
           <div className="jobs-searchbar__input-icon">
             <span className="jobs-searchbar__icon">🔍</span>
+
             <input
               type="text"
-              placeholder="Find your job"
+              placeholder="Encontre sua vaga"
               value={searchText ?? ""}
               onChange={(e) => setSearchText(e.target.value)}
             />
@@ -30,9 +44,10 @@ function SearchBar({
 
           <div className="jobs-searchbar__input-icon">
             <span className="jobs-searchbar__icon">📍</span>
+
             <input
               type="text"
-              placeholder="Enter your city or state"
+              placeholder="Digite sua cidade ou estado"
               value={location ?? ""}
               onChange={(e) => setLocation(e.target.value)}
             />
@@ -42,32 +57,36 @@ function SearchBar({
         <div className="jobs-searchbar__chips-row">
           <button
             type="button"
-            className={onlyRemote ? "jobs-searchbar__chip active" : "jobs-searchbar__chip"}
-            onClick={() => setOnlyRemote((v) => !v)}
+            className={`jobs-searchbar__chip ${onlyRemote ? "active" : ""}`}
+            onClick={handleRemoteOnly}
           >
-            Remote only
+            Apenas remoto
           </button>
 
           <button
             type="button"
-            className={!onlyRemote ? "jobs-searchbar__chip active" : "jobs-searchbar__chip"}
-            onClick={() => setOnlyRemote(false)}
+            className={`jobs-searchbar__chip ${!onlyRemote ? "active" : ""}`}
+            onClick={handleAllWorkModes}
           >
-            Remote and on-site jobs
+            Remoto e presencial
           </button>
 
           <button
             type="button"
-            className={employmentType ? "jobs-searchbar__chip active" : "jobs-searchbar__chip"}
-            onClick={() => setEmploymentType("")}
+            className={`jobs-searchbar__chip ${
+              !onlyRemote && !employmentType ? "active" : ""
+            }`}
+            onClick={handleClearFilters}
           >
-            Clear job type
+            Limpar tipo de vaga
           </button>
         </div>
       </div>
 
       <div className="jobs-searchbar__right-col">
-        <p className="jobs-searchbar__right-title">Select your employment type</p>
+        <p className="jobs-searchbar__right-title">
+          Selecione o tipo de contratação
+        </p>
 
         <div className="jobs-searchbar__radios">
           <label className="jobs-searchbar__radio-option">
@@ -77,7 +96,8 @@ function SearchBar({
               checked={employmentType === "part_time"}
               onChange={() => setEmploymentType("part_time")}
             />
-            <span>Part-time</span>
+
+            <span>Meio período</span>
           </label>
 
           <label className="jobs-searchbar__radio-option">
@@ -87,7 +107,8 @@ function SearchBar({
               checked={employmentType === "full_time"}
               onChange={() => setEmploymentType("full_time")}
             />
-            <span>Full-time</span>
+
+            <span>Tempo integral</span>
           </label>
         </div>
       </div>

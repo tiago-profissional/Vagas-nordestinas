@@ -25,34 +25,26 @@ class Router {
     }
 
     public function dispatch($uri, $method) {
-        // Remove query string
         $uri = strtok($uri, '?');
-        
-        // Remove barra do final
         $uri = rtrim($uri, '/');
         if (empty($uri)) $uri = '/';
-        
+
         foreach ($this->routes[$method] ?? [] as $path => $handler) {
-            // Converte :id para regex
             $pattern = $path;
             $pattern = str_replace('/', '\/', $pattern);
             $pattern = preg_replace('/:([a-zA-Z0-9_]+)/', '([^\/]+)', $pattern);
             $pattern = '/^' . $pattern . '$/';
-            
+
             if (preg_match($pattern, $uri, $matches)) {
                 array_shift($matches);
-                
-                // Extrai nomes dos parâmetros
                 preg_match_all('/:([a-zA-Z0-9_]+)/', $path, $paramNames);
                 $params = [];
                 foreach ($paramNames[1] as $index => $name) {
                     $params[$name] = $matches[$index] ?? null;
                 }
-                
                 return $this->execute($handler, $params);
             }
         }
-        
         $this->send404($uri);
     }
 
@@ -60,16 +52,16 @@ class Router {
         if (is_callable($handler)) {
             return $handler($params);
         }
-        
+
         if (is_string($handler) && strpos($handler, '@')) {
             list($controller, $method) = explode('@', $handler);
             $controllerClass = "Controllers\\{$controller}";
-            
+
             if (!class_exists($controllerClass)) {
                 $file = __DIR__ . "/controllers/{$controller}.php";
                 if (file_exists($file)) require_once $file;
             }
-            
+
             if (class_exists($controllerClass)) {
                 $obj = new $controllerClass();
                 if (method_exists($obj, $method)) {
@@ -77,7 +69,6 @@ class Router {
                 }
             }
         }
-        
         return null;
     }
 

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
+
 import Header from "./Headers";
 import { getJobsByUser, deleteJob } from "../services/jobsApi";
+
 import "../styles/dashboardJobs.css";
 
 function DashboardJobs() {
@@ -17,7 +19,7 @@ function DashboardJobs() {
   useEffect(() => {
     if (!user) {
       toast.error("Faça login para acessar o dashboard");
-      navigate("/signup");
+      navigate("/login");
       return;
     }
 
@@ -32,19 +34,19 @@ function DashboardJobs() {
         setJobs(data.data || []);
         toast.success(`${data.data?.length || 0} vagas carregadas`);
       } else {
-        toast.error(data.error || "Failed to load jobs.");
-        setError(data.error || "Failed to load jobs.");
+        toast.error(data.error || "Falha ao carregar vagas.");
+        setError(data.error || "Falha ao carregar vagas.");
       }
     } catch (err) {
-      toast.error("Server error.");
-      setError("Server error.");
+      toast.error("Erro no servidor.");
+      setError("Erro no servidor.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Delete this job?");
+    const confirmDelete = window.confirm("Deseja deletar esta vaga?");
     if (!confirmDelete) return;
 
     const loadingToast = toast.loading("Deletando vaga...");
@@ -54,22 +56,23 @@ function DashboardJobs() {
 
       if (data.success || data.ok) {
         setJobs((prev) => prev.filter((job) => job.id !== id));
+
         toast.dismiss(loadingToast);
         toast.success("Vaga deletada com sucesso!");
       } else {
         toast.dismiss(loadingToast);
-        toast.error(data.message || data.error || "Failed to delete job.");
+        toast.error(data.message || data.error || "Falha ao deletar vaga.");
       }
     } catch (err) {
       toast.dismiss(loadingToast);
-      toast.error("Server error while deleting job.");
+      toast.error("Erro no servidor ao deletar vaga.");
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     toast.success("Logout realizado com sucesso!");
-    navigate("/signup");
+    navigate("/login");
   };
 
   const stats = useMemo(
@@ -86,13 +89,16 @@ function DashboardJobs() {
     <>
       <Header />
 
-      <div className="vn-dashboard-jobs">
+      <section className="vn-dashboard-jobs">
         <div className="vn-dashboard-jobs__layout">
           <aside className="vn-dashboard-jobs__sidebar">
             <h2 className="vn-dashboard-jobs__sidebar-title">Dashboard</h2>
 
             <div className="vn-dashboard-jobs__sidebar-menu">
-              <button className="vn-dashboard-jobs__sidebar-item active">
+              <button
+                type="button"
+                className="vn-dashboard-jobs__sidebar-item active"
+              >
                 Minhas Vagas
               </button>
 
@@ -104,6 +110,7 @@ function DashboardJobs() {
               </Link>
 
               <button
+                type="button"
                 className="vn-dashboard-jobs__sidebar-item"
                 onClick={handleLogout}
               >
@@ -132,6 +139,7 @@ function DashboardJobs() {
                 <span className="vn-dashboard-jobs__stat-label">
                   Total de Vagas
                 </span>
+
                 <h3 className="vn-dashboard-jobs__stat-number">
                   {stats.total}
                 </h3>
@@ -139,20 +147,27 @@ function DashboardJobs() {
 
               <div className="vn-dashboard-jobs__stat-card">
                 <span className="vn-dashboard-jobs__stat-label">Ativas</span>
+
                 <h3 className="vn-dashboard-jobs__stat-number text-blue">
                   {stats.active}
                 </h3>
               </div>
 
               <div className="vn-dashboard-jobs__stat-card">
-                <span className="vn-dashboard-jobs__stat-label">Publicadas</span>
+                <span className="vn-dashboard-jobs__stat-label">
+                  Publicadas
+                </span>
+
                 <h3 className="vn-dashboard-jobs__stat-number text-blue">
                   {stats.published}
                 </h3>
               </div>
 
               <div className="vn-dashboard-jobs__stat-card">
-                <span className="vn-dashboard-jobs__stat-label">Rascunhos</span>
+                <span className="vn-dashboard-jobs__stat-label">
+                  Rascunhos
+                </span>
+
                 <h3 className="vn-dashboard-jobs__stat-number text-purple">
                   {stats.draft}
                 </h3>
@@ -160,9 +175,11 @@ function DashboardJobs() {
             </section>
 
             {loading ? (
-              <p>Loading...</p>
+              <p>Carregando vagas...</p>
             ) : error ? (
               <p className="vn-dashboard-jobs__error">{error}</p>
+            ) : jobs.length === 0 ? (
+              <p>Nenhuma vaga cadastrada ainda.</p>
             ) : (
               <section className="vn-dashboard-jobs__table-wrap">
                 <div className="vn-dashboard-jobs__table">
@@ -208,20 +225,24 @@ function DashboardJobs() {
                           </td>
 
                           <td className="vn-dashboard-jobs__actions">
-                            <Link to={`/job/${job.id}`} aria-label="View job">
+                            <Link
+                              to={`/jobs/${job.id}`}
+                              aria-label="Visualizar vaga"
+                            >
                               👁
                             </Link>
 
                             <Link
                               to={`/edit-job/${job.id}`}
-                              aria-label="Edit job"
+                              aria-label="Editar vaga"
                             >
                               ✏️
                             </Link>
 
                             <button
+                              type="button"
                               onClick={() => handleDelete(job.id)}
-                              aria-label="Delete job"
+                              aria-label="Deletar vaga"
                             >
                               🗑
                             </button>
@@ -235,7 +256,7 @@ function DashboardJobs() {
             )}
           </main>
         </div>
-      </div>
+      </section>
     </>
   );
 }

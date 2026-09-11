@@ -1,16 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../styles/Signup.css";
 
-function LoginSignup() {
+function Signup() {
   const navigate = useNavigate();
-
-  const API_URL = import.meta.env.DEV 
-    ? "http://localhost:8000/Vagas-nordestinas/public"
-    : "https://fossil-impatient-penalty.ngrok-free.dev";
-    
-  const [action, setAction] = useState("Sign Up");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,111 +20,60 @@ function LoginSignup() {
     setConfirmPassword("");
   };
 
-  const changeAction = (newAction) => {
-    setAction(newAction);
-    clearFields();
-  };
-
-  const handleForm = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    if (action === "Sign Up") {
-      if (!name || !email || !password || !confirmPassword) {
-        toast.error("Please fill in all fields.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        toast.error("Passwords do not match.");
-        return;
-      }
-    } else {
-      if (!email || !password) {
-        toast.error("Please fill in email and password.");
-        return;
-      }
+    if (!name || !email || !password || !confirmPassword) {
+      toast.error("Please fill in all fields.");
+      return;
     }
 
-    const loadingToast = toast.loading(
-      action === "Sign Up" ? "Creating account..." : "Logging in..."
-    );
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const url = action === "Sign Up" ? `${API_URL}/register.php` : `${API_URL}/login.php`;
+    setTimeout(() => {
+      const demoUser = {
+        id: Date.now(),
+        name,
+        email,
+      };
 
-      const body = action === "Sign Up"
-        ? { name, email, password, confirmPassword }
-        : { email, password };
+      localStorage.setItem("user", JSON.stringify(demoUser));
 
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      toast.success("Demo account created successfully!");
+      clearFields();
 
-      const data = await res.json();
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 700);
 
-      toast.dismiss(loadingToast);
-
-      if (data.success) {
-        toast.success(data.message || `${action} successful!`);
-
-        if (action === "Login" && data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
-          clearFields();
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 1000);
-          return;
-        }
-
-        clearFields();
-        
-        if (action === "Sign Up") {
-          setTimeout(() => {
-            setAction("Login");
-            toast.success("Now you can login with your credentials!");
-          }, 1500);
-        }
-      } else {
-        toast.error(data.message || "Something went wrong.");
-      }
-    } catch (err) {
-      toast.dismiss(loadingToast);
-      console.error("Fetch error:", err);
-      toast.error("Error connecting to the server.");
-    } finally {
       setLoading(false);
-    }
+    }, 700);
   };
 
   return (
     <div className="auth-page">
-      <form className="auth-form-card" onSubmit={handleForm}>
+      <form className="auth-form-card" onSubmit={handleSignup}>
         <div className="auth-header">
-          <h2 className="auth-title">{action}</h2>
-          <p className="auth-subtitle">
-            {action === "Sign Up" ? "Create your account" : "Login to your account"}
-          </p>
+          <h2 className="auth-title">Sign Up</h2>
+          <p className="auth-subtitle">Create your account</p>
           <div className="auth-underline"></div>
         </div>
 
         <div className="auth-inputs">
-          {action === "Sign Up" && (
-            <div className="auth-input-wrapper">
-              <input
-                className="auth-input"
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-          )}
+          <div className="auth-input-wrapper">
+            <input
+              className="auth-input"
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
 
           <div className="auth-input-wrapper">
             <input
@@ -152,49 +95,30 @@ function LoginSignup() {
             />
           </div>
 
-          {action === "Sign Up" && (
-            <div className="auth-input-wrapper">
-              <input
-                className="auth-input"
-                type="password"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-          )}
-        </div>
-
-        {action === "Login" && (
-          <div className="auth-forgot-password">
-            Lost Password? <span>Click Here!</span>
+          <div className="auth-input-wrapper">
+            <input
+              className="auth-input"
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
           </div>
-        )}
-
-        <div className="auth-switch-buttons">
-          <button
-            type="button"
-            className={action === "Sign Up" ? "auth-switch-btn auth-switch-btn-active" : "auth-switch-btn"}
-            onClick={() => changeAction("Sign Up")}
-          >
-            Sign Up
-          </button>
-
-          <button
-            type="button"
-            className={action === "Login" ? "auth-switch-btn auth-switch-btn-active" : "auth-switch-btn"}
-            onClick={() => changeAction("Login")}
-          >
-            Login
-          </button>
         </div>
 
         <button type="submit" className="auth-main-submit" disabled={loading}>
-          {loading ? "Please wait..." : action}
+          {loading ? "Please wait..." : "Sign Up"}
         </button>
+
+        <p className="auth-bottom-text">
+          Already have an account?{" "}
+          <Link to="/login" className="auth-bottom-link">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
 }
 
-export default LoginSignup;
+export default Signup;
