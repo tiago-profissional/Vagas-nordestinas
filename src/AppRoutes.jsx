@@ -7,6 +7,7 @@ import DashboardJobs from "./components/dashboard";
 import CreateJob from "./components/CreateJob";
 import EditJob from "./components/EditJob";
 import NotFound from "./components/NotFound";
+import MyTickets from "./components/MyTickets.jsx";
 
 function AppRoutes({ jobs, loadingJobs, errorJobs }) {
   return (
@@ -39,6 +40,8 @@ function AppRoutes({ jobs, loadingJobs, errorJobs }) {
       <Route path="/dashboard" element={<DashboardJobs />} />
       <Route path="/create-job" element={<CreateJob />} />
       <Route path="/edit-job/:id" element={<EditJob />} />
+
+      <Route path="/MyTickets" element={<MyTickets />} /> 
 
       <Route path="*" element={<NotFound />} />
     </Routes>
