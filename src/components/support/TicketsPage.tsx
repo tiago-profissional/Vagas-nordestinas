@@ -1,6 +1,6 @@
-import "../styles/MyTickets.css";
+import "../../styles/support/TicketsPage.css";
 
-function MyTickets() {
+function MyTickets() {   
   return (
     <div className="tickets-page">
       <header className="tickets-header">

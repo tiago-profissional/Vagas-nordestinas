@@ -1,0 +1,69 @@
+Complete task plan
+Frontend with TypeScript
+TypeScript setup and page conversion — completed
+Convert the real page to .tsx.
+Configure Vite declarations.
+Organize the support feature.
+Create the ticket type — in progress
+Define statuses and categories.
+Define the ticket blueprint.
+Add optional relationships such as jobId and resumeId.
+Create typed local ticket data
+Replace repeated hardcoded markup with ticket objects.
+Store them in an array with the correct type.
+Build TicketRow
+Learn typed React props.
+Make one reusable row component.
+Build TicketStatistics
+Calculate tickets under analysis, waiting, and resolved.
+Stop hardcoding the numbers.
+Build TicketFilters
+Add typed state.
+Implement search, status, category, and date filters.
+Build the ticket details page
+Open a ticket by its ID.
+Display its description, status, updates, and related resource.
+Build the new-ticket form
+Collect the title, description, and category.
+Validate the form.
+Optionally connect a job, interview, or resume.
+Node.js and Express backend
+Prepare the Node.js TypeScript backend
+Configure the backend project.
+Organize routes, controllers, services, and types.
+Create the first ticket API
+Return a temporary ticket array.
+Test it using Postman.
+Implement ticket CRUD
+List tickets.
+Retrieve one ticket.
+Create, update, and delete tickets.
+Add API filters and statistics
+Search by text.
+Filter by category, status, and date.
+Calculate statistics in the backend.
+Connect MySQL
+Create the database tables.
+Replace temporary arrays with database queries.
+Connect tickets to users and related resources.
+Connect React to the API
+Create the ticket service.
+Replace local data with API requests.
+Add loading, empty, and error states.
+Add ticket messages
+Allow the user and support agent to communicate.
+Record message authors and timestamps.
+Add authorization and validation
+Ensure users only access their own tickets.
+Validate request data.
+Handle invalid IDs and server errors.
+Test and finish
+Test the complete ticket workflow.
+Verify responsive design.
+Remove unused files and hardcoded values.
+Prepare deployment.
+
+
+done -> Task 1 — TypeScript setup and page conversion
+
+ongoing -> Task 2 — Create the ticket type
