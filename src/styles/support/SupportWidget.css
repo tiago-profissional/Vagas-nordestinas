@@ -1,0 +1,288 @@
+.support-widget-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  font-family: "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Modal Card */
+.support-card {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
+  width: 350px;
+  background-color: var(--cor-superficie, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(126, 66, 32, 0.18);
+  border: 1px solid var(--cor-borda, #e8d8c6);
+  padding: 20px;
+  animation: supportSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+@keyframes supportSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header */
+.support-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.support-card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cor-titulo, #7e4220);
+}
+
+.support-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--cor-texto-secundario, #756454);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.support-close-btn:hover {
+  background-color: rgba(126, 66, 32, 0.08);
+  color: var(--cor-texto, #191815);
+}
+
+/* Greeting */
+.support-card-greeting {
+  margin: 0 0 16px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cor-texto, #191815);
+}
+
+/* Form Layout */
+.support-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.support-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.support-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cor-texto, #191815);
+}
+
+/* Select Box */
+.support-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.support-select {
+  width: 100%;
+  height: 42px;
+  padding: 0 36px 0 12px;
+  border: 1px solid var(--cor-borda, #e8d8c6);
+  border-radius: 10px;
+  background-color: var(--cor-superficie-suave, #fffaf4);
+  color: var(--cor-texto, #191815);
+  font-size: 0.875rem;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.support-select:focus {
+  border-color: var(--cor-primaria, #ea7805);
+  box-shadow: 0 0 0 3px rgba(234, 120, 5, 0.15);
+}
+
+.support-select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--cor-texto-secundario, #756454);
+  display: flex;
+  align-items: center;
+}
+
+/* Textarea */
+.support-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--cor-borda, #e8d8c6);
+  border-radius: 10px;
+  background-color: var(--cor-superficie-suave, #fffaf4);
+  color: var(--cor-texto, #191815);
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 72px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.support-textarea::placeholder {
+  color: var(--cor-texto-secundario, #a09080);
+}
+
+.support-textarea:focus {
+  border-color: var(--cor-primaria, #ea7805);
+  box-shadow: 0 0 0 3px rgba(234, 120, 5, 0.15);
+}
+
+/* Attachments */
+.support-attachment-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.support-attach-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--cor-borda-forte, #b4a08b);
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: var(--cor-titulo, #7e4220);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: fit-content;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.support-attach-btn:hover {
+  background-color: var(--cor-fundo, #fff5ea);
+  border-color: var(--cor-primaria, #ea7805);
+}
+
+.support-attached-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--cor-fundo, #fff5ea);
+  border: 1px solid var(--cor-borda, #e8d8c6);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  color: var(--cor-titulo, #7e4220);
+}
+
+.support-file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
+}
+
+.support-remove-file-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--cor-erro, #b42318);
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.support-metadata-note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--cor-texto-secundario, #756454);
+  line-height: 1.3;
+}
+
+/* Submit Button */
+.support-submit-btn {
+  width: 100%;
+  height: 44px;
+  background-color: var(--cor-primaria, #ea7805);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-top: 4px;
+}
+
+.support-submit-btn:hover {
+  background-color: var(--cor-primaria-hover, #f18b23);
+}
+
+.support-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Floating Launcher Button */
+.support-launcher-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--cor-primaria, #ea7805);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(234, 120, 5, 0.4);
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.support-launcher-btn:hover {
+  transform: scale(1.06);
+  background-color: var(--cor-primaria-hover, #f18b23);
+  box-shadow: 0 6px 20px rgba(234, 120, 5, 0.5);
+}
+
+.support-launcher-btn.active {
+  transform: scale(0.95);
+  background-color: var(--cor-titulo, #7e4220);
+}
+
+@media (max-width: 480px) {
+  .support-widget-container {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .support-card {
+    position: fixed;
+    bottom: 80px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}
+

@@ -71,7 +71,7 @@
   position: absolute;
   left: var(--espaco-4);
   pointer-events: none;
-  font-size: var(--fonte-base);
+  font-size: 30px;
 }
 
 .jobs-searchbar__inputs input {

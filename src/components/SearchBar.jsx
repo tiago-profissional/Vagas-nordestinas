@@ -32,7 +32,7 @@ function SearchBar({
       <div className="jobs-searchbar__center-col">
         <div className="jobs-searchbar__inputs">
           <div className="jobs-searchbar__input-icon">
-            <span className="jobs-searchbar__icon">🔍</span>
+            <span className="jobs-searchbar__icon">⌕</span>
 
             <input
               type="text"

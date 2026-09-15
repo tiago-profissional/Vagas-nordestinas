@@ -70,7 +70,7 @@ export default function Headers() {
               className="vne-header__mobile-search"
               onClick={closeMenu}
             >
-              <span aria-hidden="true">🔎</span>
+              <span aria-hidden="true">⌕</span>
               Buscar
             </button>
 
@@ -98,7 +98,7 @@ export default function Headers() {
             className="vne-header__icon-btn"
             aria-label="Buscar vagas"
           >
-            <span aria-hidden="true">🔎</span>
+            <span aria-hidden="true">⌕</span>
           </button>
 
           <Link
