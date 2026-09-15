@@ -1,6 +1,9 @@
 import "../../styles/support/TicketsPage.css";
 
-function MyTickets() {   
+import TicketRow from "./components/TicketRow";
+import { tickets } from "./data/tickets";
+
+function MyTickets() {
   return (
     <div className="tickets-page">
       <header className="tickets-header">
@@ -125,83 +128,9 @@ function MyTickets() {
               <span />
             </div>
 
-            <article className="tickets-table-row">
-              <div className="tickets-row-icon">○</div>
-
-              <div className="tickets-description">
-                <strong>#VN-051</strong>
-                <span>Entrevista não reconheceu meu microfone</span>
-              </div>
-
-              <span className="tickets-category">AI Interview</span>
-
-              <span className="tickets-status tickets-status-analysis">
-                <span>◷</span>
-                Em análise
-              </span>
-
-              <time>Atualizado hoje, 14:32</time>
-              <span className="tickets-row-arrow">›</span>
-            </article>
-
-            <article className="tickets-table-row">
-              <div className="tickets-row-icon">!</div>
-
-              <div className="tickets-description">
-                <strong>#VN-049</strong>
-                <span>Currículo PDF não foi processado</span>
-              </div>
-
-              <span className="tickets-category">
-                Comparação de currículo
-              </span>
-
-              <span className="tickets-status tickets-status-waiting">
-                <span>!</span>
-                Aguardando sua resposta
-              </span>
-
-              <time>Ontem, 18:10</time>
-              <span className="tickets-row-arrow">›</span>
-            </article>
-
-            <article className="tickets-table-row">
-              <div className="tickets-row-icon">●</div>
-
-              <div className="tickets-description">
-                <strong>#VN-042</strong>
-                <span>Transcrição não foi salva</span>
-              </div>
-
-              <span className="tickets-category">AI Interview</span>
-
-              <span className="tickets-status tickets-status-resolved">
-                <span>✓</span>
-                Resolvido
-              </span>
-
-              <time>12/09/2026</time>
-              <span className="tickets-row-arrow">›</span>
-            </article>
-
-            <article className="tickets-table-row">
-              <div className="tickets-row-icon">□</div>
-
-              <div className="tickets-description">
-                <strong>#VN-038</strong>
-                <span>Vaga apareceu duplicada</span>
-              </div>
-
-              <span className="tickets-category">Vagas</span>
-
-              <span className="tickets-status tickets-status-resolved">
-                <span>✓</span>
-                Resolvido
-              </span>
-
-              <time>08/09/2026</time>
-              <span className="tickets-row-arrow">›</span>
-            </article>
+            {tickets.map((ticket) => (
+              <TicketRow key={ticket.id} ticket={ticket} />
+            ))}
           </div>
         </section>
 
@@ -213,13 +142,16 @@ function MyTickets() {
               <h2>Precisa de ajuda?</h2>
 
               <p>
-                Não encontrou o que precisa? Abra um novo chamado e nossa
-                equipe vai ajudar.
+                Não encontrou o que precisa? Abra um novo chamado e nossa equipe
+                vai ajudar.
               </p>
             </div>
           </div>
 
-          <button className="tickets-primary-button tickets-new-button">
+          <button
+            className="tickets-primary-button tickets-new-button"
+            type="button"
+          >
             <span>＋</span>
             Abrir novo chamado
           </button>

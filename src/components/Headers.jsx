@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import brandLogo from "../img/Logo6.1.svg";
 import menuIcon from "../img/menu_hamburger.svg";
-
 import "../styles/Header.css";
 
 export default function Headers() {
@@ -15,6 +14,10 @@ export default function Headers() {
 
   function toggleMenu() {
     setMenuOpen((current) => !current);
+  }
+
+  function getNavLinkClass({ isActive }) {
+    return `vne-header__nav-link ${isActive ? "active" : ""}`;
   }
 
   return (
@@ -40,40 +43,34 @@ export default function Headers() {
           }`}
           aria-label="Navegação principal"
         >
-          <Link
-            className="vne-header__nav-link"
+          <NavLink
             to="/"
+            end
+            className={getNavLinkClass}
             onClick={closeMenu}
           >
             Vagas
-          </Link>
+          </NavLink>
 
-          <Link
-            className="vne-header__nav-link"
-            to="/reviews"
+          <NavLink
+            to="/dashboard"
+            className={getNavLinkClass}
             onClick={closeMenu}
           >
-            Avaliações da Empresa
-          </Link>
+            Dashboard
+          </NavLink>
 
-          <Link
+          <a
+            href="https://app.vagasnordestinas.com/dashboard"
             className="vne-header__nav-link"
-            to="/salaries"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={closeMenu}
           >
-            Cargos e Salários
-          </Link>
+            AI Resume
+          </a>
 
           <div className="vne-header__mobile-icons">
-            <button
-              type="button"
-              className="vne-header__mobile-search"
-              onClick={closeMenu}
-            >
-              <span aria-hidden="true">🔎</span>
-              Buscar
-            </button>
-
             <Link
               to="/login"
               className="vne-header__mobile-login"
@@ -93,14 +90,6 @@ export default function Headers() {
         </nav>
 
         <div className="vne-header__actions">
-          <button
-            type="button"
-            className="vne-header__icon-btn"
-            aria-label="Buscar vagas"
-          >
-            <span aria-hidden="true">🔎</span>
-          </button>
-
           <Link
             to="/login"
             className="vne-header__login-btn"
@@ -122,9 +111,7 @@ export default function Headers() {
             menuOpen ? "is-active" : ""
           }`}
           onClick={toggleMenu}
-          aria-label={
-            menuOpen ? "Fechar menu" : "Abrir menu"
-          }
+          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={menuOpen}
           aria-controls="menu-principal"
         >
