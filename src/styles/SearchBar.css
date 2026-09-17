@@ -72,7 +72,7 @@
   display: grid;
   place-items: center;
   pointer-events: none;
-  font-size: var(--fonte-base);
+  font-size: 30px;
 }
 
 .jobs-searchbar__inputs input {

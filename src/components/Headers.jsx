@@ -71,6 +71,18 @@ export default function Headers() {
           </a>
 
           <div className="vne-header__mobile-icons">
+<<<<<<< HEAD
+=======
+            <button
+              type="button"
+              className="vne-header__mobile-search"
+              onClick={closeMenu}
+            >
+              <span aria-hidden="true">⌕</span>
+              Buscar
+            </button>
+
+>>>>>>> origin/SupportWidget
             <Link
               to="/login"
               className="vne-header__mobile-login"
@@ -90,6 +102,17 @@ export default function Headers() {
         </nav>
 
         <div className="vne-header__actions">
+<<<<<<< HEAD
+=======
+          <button
+            type="button"
+            className="vne-header__icon-btn"
+            aria-label="Buscar vagas"
+          >
+            <span aria-hidden="true">⌕</span>
+          </button>
+
+>>>>>>> origin/SupportWidget
           <Link
             to="/login"
             className="vne-header__login-btn"
