@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 import brandLogo from "../img/Logo6.1.svg";
 import menuIcon from "../img/menu_hamburger.svg";
+
 import "../styles/Header.css";
 
 export default function Headers() {
@@ -38,9 +39,7 @@ export default function Headers() {
 
         <nav
           id="menu-principal"
-          className={`vne-header__nav ${
-            menuOpen ? "is-open" : ""
-          }`}
+          className={`vne-header__nav ${menuOpen ? "is-open" : ""}`}
           aria-label="Navegação principal"
         >
           <NavLink
@@ -71,8 +70,6 @@ export default function Headers() {
           </a>
 
           <div className="vne-header__mobile-icons">
-<<<<<<< HEAD
-=======
             <button
               type="button"
               className="vne-header__mobile-search"
@@ -82,7 +79,6 @@ export default function Headers() {
               Buscar
             </button>
 
->>>>>>> origin/SupportWidget
             <Link
               to="/login"
               className="vne-header__mobile-login"
@@ -102,8 +98,6 @@ export default function Headers() {
         </nav>
 
         <div className="vne-header__actions">
-<<<<<<< HEAD
-=======
           <button
             type="button"
             className="vne-header__icon-btn"
@@ -112,7 +106,6 @@ export default function Headers() {
             <span aria-hidden="true">⌕</span>
           </button>
 
->>>>>>> origin/SupportWidget
           <Link
             to="/login"
             className="vne-header__login-btn"
