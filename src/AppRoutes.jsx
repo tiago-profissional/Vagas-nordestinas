@@ -8,6 +8,7 @@ import CreateJob from "./components/CreateJob";
 import EditJob from "./components/EditJob";
 import NotFound from "./components/NotFound";
 import Tickets from "./components/support/TicketsPage.jsx";
+import User from "./components/User.jsx";
 
 function AppRoutes({ jobs, loadingJobs, errorJobs }) {
   return (
@@ -42,6 +43,7 @@ function AppRoutes({ jobs, loadingJobs, errorJobs }) {
       <Route path="/edit-job/:id" element={<EditJob />} />
 
       <Route path="/Tickets" element={<Tickets />} /> 
+      <Route path="/user" element={<User />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
