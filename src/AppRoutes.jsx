@@ -8,12 +8,12 @@ import DashboardJobs from "./components/dashboard";
 import CreateJob from "./components/CreateJob";
 import EditJob from "./components/EditJob";
 import NotFound from "./components/NotFound";
-import Tickets from "./components/support/TicketsPage.jsx";
-<<<<<<< HEAD
-import Footer from "./components/Footer";
 
+import Tickets from "./components/support/TicketsPage.jsx";
+import Footer from "./components/Footer";
 import TermsUseScreen from "./components/TermsUseScreen";
 import PrivacyPolicyScreen from "./components/PrivacyPolicyScreen";
+import User from "./components/User.jsx";
 
 const JOBS_API_URL =
   "http://localhost:8000/vagas_nordestinas/Vagas-nordestinas_velha/backend/index.php?route=/jobs";
@@ -52,10 +52,7 @@ export default function AppRoutes() {
           setJobs([]);
         }
       } catch (error) {
-        console.error(
-          "Erro ao buscar vagas:",
-          error
-        );
+        console.error("Erro ao buscar vagas:", error);
 
         setErrorJobs(
           error instanceof Error
@@ -71,9 +68,6 @@ export default function AppRoutes() {
 
     loadJobs();
   }, []);
-=======
-import User from "./components/User.jsx";
->>>>>>> origin/User
 
   return (
     <Routes>
@@ -99,25 +93,19 @@ import User from "./components/User.jsx";
         }
       />
 
-      <Route
-        path="/signup"
-        element={<Signup />}
-      />
+      <Route path="/signup" element={<Signup />} />
 
-      <Route
-        path="/login"
-        element={<Login />}
-      />
+      <Route path="/login" element={<Login />} />
 
-<<<<<<< HEAD
       <Route
         path="/dashboard"
         element={<DashboardJobs />}
       />
-=======
-      <Route path="/Tickets" element={<Tickets />} /> 
-      <Route path="/user" element={<User />} />
->>>>>>> origin/User
+
+      <Route
+        path="/user"
+        element={<User />}
+      />
 
       <Route
         path="/create-job"
