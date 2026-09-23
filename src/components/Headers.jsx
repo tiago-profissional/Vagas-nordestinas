@@ -80,6 +80,15 @@ export default function Headers() {
             </button>
 
             <Link
+              to="/user"
+              className="profile-icon"
+              onClick={closeMenu}
+              aria-label="Abrir perfil"
+            >
+              👤
+            </Link>
+
+            <Link
               to="/login"
               className="vne-header__mobile-login"
               onClick={closeMenu}
@@ -105,6 +114,15 @@ export default function Headers() {
           >
             <span aria-hidden="true">⌕</span>
           </button>
+
+          <Link
+            to="/user"
+            className="profile-icon"
+            onClick={closeMenu}
+            aria-label="Abrir perfil"
+          >
+            👤
+          </Link>
 
           <Link
             to="/login"

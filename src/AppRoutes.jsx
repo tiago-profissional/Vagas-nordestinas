@@ -9,6 +9,7 @@ import CreateJob from "./components/CreateJob";
 import EditJob from "./components/EditJob";
 import NotFound from "./components/NotFound";
 import Tickets from "./components/support/TicketsPage.jsx";
+<<<<<<< HEAD
 import Footer from "./components/Footer";
 
 import TermsUseScreen from "./components/TermsUseScreen";
@@ -70,6 +71,9 @@ export default function AppRoutes() {
 
     loadJobs();
   }, []);
+=======
+import User from "./components/User.jsx";
+>>>>>>> origin/User
 
   return (
     <Routes>
@@ -105,10 +109,15 @@ export default function AppRoutes() {
         element={<Login />}
       />
 
+<<<<<<< HEAD
       <Route
         path="/dashboard"
         element={<DashboardJobs />}
       />
+=======
+      <Route path="/Tickets" element={<Tickets />} /> 
+      <Route path="/user" element={<User />} />
+>>>>>>> origin/User
 
       <Route
         path="/create-job"
