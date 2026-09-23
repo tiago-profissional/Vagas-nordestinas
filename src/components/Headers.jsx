@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
-import brandLogo from "../img/Logo6.1.svg";
+import brandLogo from "./img/LogoPrincipal.png";
 import menuIcon from "../img/menu_hamburger.svg";
 
 import "../styles/Header.css";

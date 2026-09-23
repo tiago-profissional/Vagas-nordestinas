@@ -1,7 +1,29 @@
 import "../../styles/support/TicketsPage.css";
-
 import TicketRow from "./components/TicketRow";
 import { tickets } from "./data/tickets";
+
+
+
+export interface Ticket {
+  id: number;
+  code: string;          // e.g. "#1042" shown in the table
+  title: string;
+  description: string;
+  category: TicketCategory;
+  status: TicketStatus;
+  createdAt: string;     // ISO date
+  updatedAt: string;     // ISO date
+  jobId?: number;
+  resumeId?: number;
+  interviewId?: number;
+}
+
+
+type STATUS_LABELS ={
+  in_analysis: TicketStatus,
+  waiting_for_user: TicketStatus,
+  resolved: TicketStatus,
+}
 
 function MyTickets() {
   return (

@@ -1,4 +1,5 @@
 /* Todas as cores e padrões globais ficam aqui. */
+
 :root {
   /* Paleta da marca */
   --cor-texto: #191815;
@@ -14,7 +15,10 @@
   --cor-borda: #e8d8c6;
   --cor-borda-forte: #b4a08b;
   --cor-selecao: #ffecd5;
-  --cor-sobre-primaria: var(--cor-texto);
+
+  /* ALTERADO: texto sobre fundo laranja agora é branco */
+  --cor-sobre-primaria: #ffffff;
+
   --cor-primaria-hover: #f18b23;
   --cor-link: var(--cor-titulo);
 
@@ -22,10 +26,13 @@
   --cor-erro: #b42318;
   --cor-erro-hover: #8f1c13;
   --cor-erro-fundo: #fff0ed;
+
   --cor-sucesso: #24683c;
   --cor-sucesso-fundo: #edf7ef;
+
   --cor-info: #245e8a;
   --cor-info-fundo: #eef5fc;
+
   --cor-aviso: #76520b;
   --cor-aviso-fundo: #fff3cc;
 
@@ -33,6 +40,7 @@
   --cor-overlay: rgb(25 24 21 / 48%);
   --cor-foco: rgb(234 120 5 / 20%);
   --cor-scrollbar: #c8b7a4;
+
   --sombra-card: 0 2px 8px rgb(126 66 32 / 8%);
   --sombra-elevada: 0 12px 32px rgb(126 66 32 / 12%);
 
@@ -53,26 +61,32 @@
 
   /* Tipografia */
   --fonte-familia: Arial, Helvetica, sans-serif;
+
   --fonte-xs: 0.75rem;
   --fonte-sm: 0.875rem;
   --fonte-base: 1rem;
   --fonte-lg: 1.125rem;
   --fonte-xl: 1.375rem;
+
   --fonte-titulo: clamp(1.5rem, 2.2vw, 2rem);
 
   /* Dimensões */
   --largura-container: 1440px;
   --altura-campo: 48px;
   --altura-botao: 44px;
+
   --transicao: 160ms ease;
+
   --z-header: 100;
   --z-modal: 1000;
 
   font-family: var(--fonte-familia);
   color: var(--cor-texto);
   background: var(--cor-fundo);
+
   line-height: 1.5;
   font-weight: 400;
+
   color-scheme: light;
 }
 
@@ -97,6 +111,7 @@ html {
 
 body {
   min-height: 100vh;
+
   background: var(--cor-fundo);
   color: var(--cor-texto);
 }
@@ -109,8 +124,11 @@ body {
 
 .container {
   width: 100%;
+
   max-width: var(--largura-container);
+
   margin-inline: auto;
+
   padding-inline: var(--espaco-6);
 }
 
@@ -118,12 +136,15 @@ img,
 video,
 canvas {
   display: block;
+
   max-width: 100%;
+
   height: auto;
 }
 
 svg {
   display: block;
+
   max-width: 100%;
 }
 
@@ -141,6 +162,7 @@ select {
 
 button:disabled {
   cursor: not-allowed;
+
   opacity: 0.6;
 }
 
@@ -161,16 +183,25 @@ textarea {
 
 a {
   color: var(--cor-link);
+
   text-underline-offset: 3px;
 }
 
-:where(a, button, input, select, textarea):focus-visible {
+:where(
+  a,
+  button,
+  input,
+  select,
+  textarea
+):focus-visible {
   outline: 2px solid var(--cor-titulo);
+
   outline-offset: 3px;
 }
 
 ::selection {
   background: var(--cor-destaque);
+
   color: var(--cor-texto);
 }
 

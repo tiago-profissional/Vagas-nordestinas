@@ -28,3 +28,18 @@ export interface Ticket {
   resumeId?: number;
   interviewId?: number;
 }
+
+export const STATUS_LABELS: Record<TicketStatus, string> = {
+  in_analysis: "Em análise",
+  waiting_for_user: "Aguardando resposta",
+  resolved: "Resolvido",
+}
+
+export const CATEGORY_LABELS: Record<TicketCategory, string> = {
+  ai_interview: "AI Interview",
+  resume_comparison: "Comparação de currículo",
+  jobs: "Vagas",
+  account: "Conta",
+  other: "Outros",
+}
+

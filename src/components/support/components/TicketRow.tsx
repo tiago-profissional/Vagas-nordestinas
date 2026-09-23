@@ -1,5 +1,4 @@
-import type { Ticket } from "../types/Ticket";
-
+import { STATUS_LABELS, CATEGORY_LABELS, type Ticket } from "../types/Ticket";
 interface TicketRowProps {
   ticket: Ticket;
 }
