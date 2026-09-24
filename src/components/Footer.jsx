@@ -4,37 +4,32 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-
         <div className="footer-brand">
           <h2>
             Vagas <span>Nordestinas</span>
           </h2>
 
-          <p>
-            Conectando talentos do Nordeste a novas oportunidades.
-          </p>
+          <p>Conectando talentos do Nordeste a novas oportunidades.</p>
         </div>
 
-        <div className="footer-links">
+        <nav className="footer-links" aria-label="Vagas Nordestinas">
           <h3>Vagas Nordestinas</h3>
-
           <a href="/">Vagas</a>
           <a href="/about">Sobre nós</a>
           <a href="/support">Suporte</a>
-        </div>
+        </nav>
 
-        <div className="footer-links">
+        <nav className="footer-links" aria-label="Informações legais">
           <h3>Legal</h3>
-
           <a href="/">Termos de Uso</a>
           <a href="/">Política de Privacidade</a>
-        </div>
-
+        </nav>
       </div>
 
       <div className="footer-bottom">
         <p>
-          © {new Date().getFullYear()} Vagas Nordestinas. Todos os direitos reservados.
+          © {new Date().getFullYear()} Vagas Nordestinas. Todos os direitos
+          reservados.
         </p>
 
         <p>

@@ -12,8 +12,8 @@ import "../styles/createjob.css";
   O index.php recebe a rota através de:
   ?route=/jobs
 */
-const API_URL =
-  "http://localhost:8000/vagas_nordestinas/Vagas-nordestinas_velha/backend/index.php?route=/jobs";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/index.php";
+const API_URL = `${API_BASE_URL}?route=/jobs`;
 
 export default function CreateJob({ onCancel }) {
   const navigate = useNavigate();
@@ -46,9 +46,7 @@ export default function CreateJob({ onCancel }) {
 
     const number = Number(value);
 
-    return Number.isFinite(number)
-      ? number
-      : null;
+    return Number.isFinite(number) ? number : null;
   }
 
   async function createJob(payload) {
@@ -57,19 +55,14 @@ export default function CreateJob({ onCancel }) {
 
     const response = await fetch(API_URL, {
       method: "POST",
-
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-
       body: JSON.stringify(payload),
     });
 
-    console.log(
-      "📥 Status da resposta:",
-      response.status
-    );
+    console.log("📥 Status da resposta:", response.status);
 
     /*
       Lemos a resposta como texto primeiro.
@@ -79,10 +72,7 @@ export default function CreateJob({ onCancel }) {
     */
     const responseText = await response.text();
 
-    console.log(
-      "📥 Resposta bruta do backend:",
-      responseText
-    );
+    console.log("📥 Resposta bruta do backend:", responseText);
 
     let data = null;
 
@@ -106,11 +96,7 @@ export default function CreateJob({ onCancel }) {
       throw new Error(message);
     }
 
-    return (
-      data || {
-        ...payload,
-      }
-    );
+    return data || { ...payload };
   }
 
   async function handleSubmit(e) {
@@ -126,38 +112,20 @@ export default function CreateJob({ onCancel }) {
       !form.city.trim() ||
       !form.state.trim()
     ) {
-      toast.error(
-        "Preencha todos os campos obrigatórios (*)"
-      );
-
+      toast.error("Preencha todos os campos obrigatórios (*)");
       return;
     }
 
-    const salaryMin =
-      normalizeSalary(form.salary_min);
+    const salaryMin = normalizeSalary(form.salary_min);
+    const salaryMax = normalizeSalary(form.salary_max);
 
-    const salaryMax =
-      normalizeSalary(form.salary_max);
-
-    if (
-      form.salary_min !== "" &&
-      salaryMin === null
-    ) {
-      toast.error(
-        "O salário mínimo precisa ser um número."
-      );
-
+    if (form.salary_min !== "" && salaryMin === null) {
+      toast.error("O salário mínimo precisa ser um número.");
       return;
     }
 
-    if (
-      form.salary_max !== "" &&
-      salaryMax === null
-    ) {
-      toast.error(
-        "O salário máximo precisa ser um número."
-      );
-
+    if (form.salary_max !== "" && salaryMax === null) {
+      toast.error("O salário máximo precisa ser um número.");
       return;
     }
 
@@ -169,53 +137,34 @@ export default function CreateJob({ onCancel }) {
       toast.error(
         "O salário mínimo não pode ser maior que o salário máximo."
       );
-
       return;
     }
 
     const payload = {
       title: form.title.trim(),
-
       company: form.company.trim(),
-
       city: form.city.trim(),
-
       state: form.state.trim(),
-
       work_mode: form.work_mode,
-
-      employment_type:
-        form.employment_type,
-
+      employment_type: form.employment_type,
       salary_min: salaryMin,
-
       salary_max: salaryMax,
-
-      description:
-        form.description.trim(),
+      description: form.description.trim(),
     };
 
-    const loadingToast =
-      toast.loading("Publicando vaga...");
+    const loadingToast = toast.loading("Publicando vaga...");
 
     try {
       setSubmitting(true);
 
-      const createdJob =
-        await createJob(payload);
+      const createdJob = await createJob(payload);
 
-      console.log(
-        "✅ Vaga criada:",
-        createdJob
-      );
+      console.log("✅ Vaga criada:", createdJob);
 
       toast.dismiss(loadingToast);
 
       toast.success(
-        `Vaga "${
-          createdJob?.title ||
-          form.title
-        }" publicada com sucesso!`
+        `Vaga "${createdJob?.title || form.title}" publicada com sucesso!`
       );
 
       setForm({
@@ -231,9 +180,7 @@ export default function CreateJob({ onCancel }) {
       });
 
       setTimeout(() => {
-        if (
-          typeof onCancel === "function"
-        ) {
+        if (typeof onCancel === "function") {
           onCancel();
         } else {
           navigate("/");
@@ -242,10 +189,7 @@ export default function CreateJob({ onCancel }) {
     } catch (error) {
       toast.dismiss(loadingToast);
 
-      console.error(
-        "❌ ERRO ao criar vaga:",
-        error
-      );
+      console.error("❌ ERRO ao criar vaga:", error);
 
       if (
         error instanceof TypeError &&
@@ -254,25 +198,18 @@ export default function CreateJob({ onCancel }) {
         toast.error(
           "Não foi possível acessar a API PHP. Verifique Apache, a URL do backend e o CORS."
         );
-
         return;
       }
 
-      toast.error(
-        error?.message ||
-          "Erro ao criar vaga"
-      );
+      toast.error(error?.message || "Erro ao criar vaga");
     } finally {
       setSubmitting(false);
     }
   }
 
   function handleCancel() {
-    if (
-      typeof onCancel === "function"
-    ) {
+    if (typeof onCancel === "function") {
       onCancel();
-
       return;
     }
 
@@ -285,29 +222,18 @@ export default function CreateJob({ onCancel }) {
 
       <div className="cj-page">
         <div className="cj-card">
-          <h2 className="cj-title">
-            Cadastrar Vaga
-          </h2>
+          <h2 className="cj-title">Cadastrar Vaga</h2>
 
-          <form
-            className="cj-form"
-            onSubmit={handleSubmit}
-          >
+          <form className="cj-form" onSubmit={handleSubmit}>
             <div className="cj-grid">
-
               <div className="cj-field">
-                <label className="cj-label">
-                  Título*
-                </label>
+                <label className="cj-label">Título*</label>
 
                 <input
                   className="cj-input"
                   value={form.title}
                   onChange={(e) =>
-                    setField(
-                      "title",
-                      e.target.value
-                    )
+                    setField("title", e.target.value)
                   }
                   placeholder="Ex: Frontend React"
                   required
@@ -315,18 +241,13 @@ export default function CreateJob({ onCancel }) {
               </div>
 
               <div className="cj-field">
-                <label className="cj-label">
-                  Empresa*
-                </label>
+                <label className="cj-label">Empresa*</label>
 
                 <input
                   className="cj-input"
                   value={form.company}
                   onChange={(e) =>
-                    setField(
-                      "company",
-                      e.target.value
-                    )
+                    setField("company", e.target.value)
                   }
                   placeholder="Ex: Minha empresa"
                   required
@@ -334,18 +255,13 @@ export default function CreateJob({ onCancel }) {
               </div>
 
               <div className="cj-field">
-                <label className="cj-label">
-                  Cidade*
-                </label>
+                <label className="cj-label">Cidade*</label>
 
                 <input
                   className="cj-input"
                   value={form.city}
                   onChange={(e) =>
-                    setField(
-                      "city",
-                      e.target.value
-                    )
+                    setField("city", e.target.value)
                   }
                   placeholder="Ex: Recife"
                   required
@@ -353,18 +269,13 @@ export default function CreateJob({ onCancel }) {
               </div>
 
               <div className="cj-field">
-                <label className="cj-label">
-                  Estado*
-                </label>
+                <label className="cj-label">Estado*</label>
 
                 <input
                   className="cj-input"
                   value={form.state}
                   onChange={(e) =>
-                    setField(
-                      "state",
-                      e.target.value
-                    )
+                    setField("state", e.target.value)
                   }
                   placeholder="Ex: CE"
                   required
@@ -372,73 +283,40 @@ export default function CreateJob({ onCancel }) {
               </div>
 
               <div className="cj-field">
-                <label className="cj-label">
-                  Modalidade*
-                </label>
+                <label className="cj-label">Modalidade*</label>
 
                 <select
                   className="cj-input"
                   value={form.work_mode}
                   onChange={(e) =>
-                    setField(
-                      "work_mode",
-                      e.target.value
-                    )
+                    setField("work_mode", e.target.value)
                   }
                 >
-                  <option value="remote">
-                    Remote
-                  </option>
-
-                  <option value="onsite">
-                    Onsite
-                  </option>
-
-                  <option value="hybrid">
-                    Hybrid
-                  </option>
+                  <option value="remote">Remote</option>
+                  <option value="onsite">Onsite</option>
+                  <option value="hybrid">Hybrid</option>
                 </select>
               </div>
 
               <div className="cj-field">
-                <label className="cj-label">
-                  Tipo de contrato*
-                </label>
+                <label className="cj-label">Tipo de contrato*</label>
 
                 <select
                   className="cj-input"
-                  value={
-                    form.employment_type
-                  }
+                  value={form.employment_type}
                   onChange={(e) =>
-                    setField(
-                      "employment_type",
-                      e.target.value
-                    )
+                    setField("employment_type", e.target.value)
                   }
                 >
-                  <option value="full_time">
-                    Full-time
-                  </option>
-
-                  <option value="part_time">
-                    Part-time
-                  </option>
-
-                  <option value="pj">
-                    PJ
-                  </option>
-
-                  <option value="internship">
-                    Estágio
-                  </option>
+                  <option value="full_time">Full-time</option>
+                  <option value="part_time">Part-time</option>
+                  <option value="pj">PJ</option>
+                  <option value="internship">Estágio</option>
                 </select>
               </div>
 
               <div className="cj-field">
-                <label className="cj-label">
-                  Salário mín. (R$)
-                </label>
+                <label className="cj-label">Salário mín. (R$)</label>
 
                 <input
                   className="cj-input"
@@ -446,19 +324,14 @@ export default function CreateJob({ onCancel }) {
                   min="0"
                   value={form.salary_min}
                   onChange={(e) =>
-                    setField(
-                      "salary_min",
-                      e.target.value
-                    )
+                    setField("salary_min", e.target.value)
                   }
                   placeholder="5000"
                 />
               </div>
 
               <div className="cj-field">
-                <label className="cj-label">
-                  Salário máx. (R$)
-                </label>
+                <label className="cj-label">Salário máx. (R$)</label>
 
                 <input
                   className="cj-input"
@@ -466,40 +339,28 @@ export default function CreateJob({ onCancel }) {
                   min="0"
                   value={form.salary_max}
                   onChange={(e) =>
-                    setField(
-                      "salary_max",
-                      e.target.value
-                    )
+                    setField("salary_max", e.target.value)
                   }
                   placeholder="7000"
                 />
               </div>
 
               <div className="cj-field cj-field-full">
-                <label className="cj-label">
-                  Descrição
-                </label>
+                <label className="cj-label">Descrição</label>
 
                 <textarea
                   className="cj-textarea"
-                  value={
-                    form.description
-                  }
+                  value={form.description}
                   onChange={(e) =>
-                    setField(
-                      "description",
-                      e.target.value
-                    )
+                    setField("description", e.target.value)
                   }
                   placeholder="Detalhes da vaga..."
                   rows={5}
                 />
               </div>
-
             </div>
 
             <div className="cj-actions">
-
               <button
                 type="button"
                 className="cj-btn cj-btn-ghost"
@@ -514,11 +375,8 @@ export default function CreateJob({ onCancel }) {
                 className="cj-btn cj-btn-primary"
                 disabled={submitting}
               >
-                {submitting
-                  ? "Publicando..."
-                  : "Publicar Vaga"}
+                {submitting ? "Publicando..." : "Publicar Vaga"}
               </button>
-
             </div>
           </form>
         </div>

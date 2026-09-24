@@ -8,15 +8,14 @@ import DashboardJobs from "./components/dashboard";
 import CreateJob from "./components/CreateJob";
 import EditJob from "./components/EditJob";
 import NotFound from "./components/NotFound";
-
 import Tickets from "./components/support/TicketsPage.jsx";
 import Footer from "./components/Footer";
 import TermsUseScreen from "./components/TermsUseScreen";
 import PrivacyPolicyScreen from "./components/PrivacyPolicyScreen";
 import User from "./components/User.jsx";
 
-const JOBS_API_URL =
-  "http://localhost:8000/vagas_nordestinas/Vagas-nordestinas_velha/backend/index.php?route=/jobs";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/index.php";
+const JOBS_API_URL = `${API_BASE_URL}?route=/jobs`;
 
 export default function AppRoutes() {
   const [jobs, setJobs] = useState([]);
@@ -24,6 +23,8 @@ export default function AppRoutes() {
   const [errorJobs, setErrorJobs] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function loadJobs() {
       try {
         setLoadingJobs(true);
@@ -34,12 +35,11 @@ export default function AppRoutes() {
           headers: {
             Accept: "application/json",
           },
+          signal: controller.signal,
         });
 
         if (!response.ok) {
-          throw new Error(
-            `Erro ${response.status} ao carregar vagas`
-          );
+          throw new Error(`Erro ${response.status} ao carregar vagas`);
         }
 
         const data = await response.json();
@@ -52,95 +52,51 @@ export default function AppRoutes() {
           setJobs([]);
         }
       } catch (error) {
+        if (error.name === "AbortError") return;
+
         console.error("Erro ao buscar vagas:", error);
-
         setErrorJobs(
-          error instanceof Error
-            ? error.message
-            : "Erro ao carregar vagas"
+          error instanceof Error ? error.message : "Erro ao carregar vagas"
         );
-
         setJobs([]);
       } finally {
-        setLoadingJobs(false);
+        if (!controller.signal.aborted) {
+          setLoadingJobs(false);
+        }
       }
     }
 
     loadJobs();
+
+    return () => controller.abort();
   }, []);
+
+  const home = (
+    <Home
+      jobs={jobs}
+      loadingJobs={loadingJobs}
+      errorJobs={errorJobs}
+    />
+  );
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <Home
-            jobs={jobs}
-            loadingJobs={loadingJobs}
-            errorJobs={errorJobs}
-          />
-        }
-      />
-
-      <Route
-        path="/jobs/:id"
-        element={
-          <Home
-            jobs={jobs}
-            loadingJobs={loadingJobs}
-            errorJobs={errorJobs}
-          />
-        }
-      />
-
+      <Route path="/" element={home} />
+      <Route path="/jobs/:id" element={home} />
       <Route path="/signup" element={<Signup />} />
-
       <Route path="/login" element={<Login />} />
-
-      <Route
-        path="/dashboard"
-        element={<DashboardJobs />}
-      />
-
-      <Route
-        path="/user"
-        element={<User />}
-      />
-
-      <Route
-        path="/create-job"
-        element={<CreateJob />}
-      />
-
-      <Route
-        path="/edit-job/:id"
-        element={<EditJob />}
-      />
-
-      <Route
-        path="/tickets"
-        element={<Tickets />}
-      />
-
-      <Route
-        path="/footer"
-        element={<Footer />}
-      />
-
-      <Route
-        path="/termos-de-uso"
-        element={<TermsUseScreen />}
-      />
-
+      <Route path="/dashboard" element={<DashboardJobs />} />
+      <Route path="/user" element={<User />} />
+      <Route path="/create-job" element={<CreateJob />} />
+      <Route path="/edit-job/:id" element={<EditJob />} />
+      <Route path="/tickets" element={<Tickets />} />
+      <Route path="/footer" element={<Footer />} />
+      <Route path="/termos-de-uso" element={<TermsUseScreen />} />
       <Route
         path="/politica-de-privacidade"
         element={<PrivacyPolicyScreen />}
       />
-
-      <Route
-        path="*"
-        element={<NotFound />}
-      />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

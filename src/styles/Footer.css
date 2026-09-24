@@ -1,147 +1,148 @@
 .footer {
-  background-color: #191815;
-  color: #FFF5EA;
-
   width: 100%;
-  box-sizing: border-box;
-
-  padding: 45px 8% 12px;
-
   margin-top: 60px;
-  margin-bottom: 0 !important;
-
+  padding: 45px 4% 28px;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
   flex-shrink: 0;
 }
 
 .footer-container {
-  display: flex;
-  justify-content: space-between;
+  width: 100%;
+  max-width: var(--largura-container);
+  margin-inline: auto;
+
+  display: grid;
+  grid-template-columns: minmax(280px, 1.5fr) repeat(2, minmax(180px, 1fr));
+  align-items: start;
   gap: 40px;
-  flex-wrap: wrap;
 }
 
 .footer-brand {
-  max-width: 350px;
+  max-width: 390px;
 }
 
 .footer-brand h2 {
-  color: #EA7805;
-  margin-top: 0;
   margin-bottom: 12px;
+  color: var(--cor-primaria);
 }
 
 .footer-brand h2 span {
-  color: #F1B435;
+  color: var(--cor-destaque);
 }
 
 .footer-brand p {
-  color: #FFF5EA;
-  line-height: 1.6;
-  margin: 0;
+  color: var(--cor-texto);
+  font-size: var(--fonte-lg);
+  line-height: 1.5;
 }
 
 .footer-links {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  justify-items: start;
+  align-content: start;
   gap: 10px;
 }
 
 .footer-links h3 {
-  color: #F1B435;
-  margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  color: var(--cor-titulo);
+  font-size: var(--fonte-xl);
 }
 
 .footer-links a {
-  color: #FFF5EA;
+  display: inline-grid;
+  grid-template-columns: 12px auto;
+  align-items: center;
+  gap: 14px;
+
+  color: var(--cor-texto);
+  font-size: var(--fonte-lg);
   text-decoration: none;
-  transition: 0.2s;
+  transition: color var(--transicao);
+}
+
+.footer-links a::before {
+  content: "›";
+  color: var(--cor-primaria);
+  font-size: 28px;
+  line-height: 0.7;
+  font-weight: 300;
 }
 
 .footer-links a:hover {
-  color: #EA7805;
+  color: var(--cor-primaria);
 }
 
 .footer-bottom {
-  border-top: 1px solid #7E4220;
+  width: 100%;
+  max-width: var(--largura-container);
+  margin: 50px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--cor-borda);
 
-  margin-top: 35px;
-  margin-bottom: 0;
-
-  padding-top: 18px;
-  padding-bottom: 0;
-
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
+  gap: 20px;
 
-  gap: 10px;
-
-  font-size: 14px;
-}
-
-.footer-bottom p {
-  margin: 0;
-  padding: 0;
+  color: var(--cor-texto);
+  font-size: var(--fonte-base);
 }
 
 .footer-bottom strong {
-  color: #EA7805;
+  color: var(--cor-primaria);
 }
 
-/* Remove qualquer espaço padrão da página */
-
-html,
-body,
-#root {
-  margin: 0 !important;
-  padding: 0 !important;
-
-  width: 100%;
-  min-height: 100%;
-}
-
-html,
-body {
-  min-height: 100vh;
-}
-
-#root {
-  min-height: 100vh;
-}
-
-/* Faz a página ocupar a tela inteira */
-
+/* Mantém o rodapé no fim da página quando há pouco conteúdo. */
 .home-page.page-wrapper {
   min-height: 100vh;
-
   display: flex;
   flex-direction: column;
-
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
+  padding-bottom: 0;
 }
-
-/* Faz o conteúdo ocupar o espaço disponível
-   e empurra o footer para a borda inferior */
 
 .home-page.page-wrapper > .container {
   flex: 1;
 }
 
-/* Garante que nada crie espaço depois do footer */
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-.home-page.page-wrapper > .footer {
-  margin-bottom: 0 !important;
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
+  .footer {
+    padding: 36px var(--espaco-4) 24px;
+  }
+
   .footer-container {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-brand p,
+  .footer-links a {
+    font-size: var(--fonte-base);
+  }
+
+  .footer-links h3 {
+    font-size: var(--fonte-lg);
   }
 
   .footer-bottom {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    margin-top: 36px;
     text-align: center;
   }
 }
