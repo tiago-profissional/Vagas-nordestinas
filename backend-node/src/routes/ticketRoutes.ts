@@ -1,9 +1,13 @@
 import { Router } from "express";
 
-import { listTickets } from "../controllers/ticketController.js";
+import {
+  createTicket,
+  listTickets,
+} from "../controllers/ticketController.js";
 
 const ticketRoutes = Router();
 
 ticketRoutes.get("/", listTickets);
+ticketRoutes.post("/", createTicket);
 
 export default ticketRoutes;

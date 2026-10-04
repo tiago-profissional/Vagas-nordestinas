@@ -8,16 +8,30 @@ import DashboardJobs from "./components/dashboard";
 import CreateJob from "./components/CreateJob";
 import EditJob from "./components/EditJob";
 import NotFound from "./components/NotFound";
-import Tickets from "./components/support/TicketsPage.jsx";
+
+import Tickets from "./components/support/TicketsPage.tsx";
+import RelatarProblema from "./components/support/relatar-problema/page.tsx";
+
 import Footer from "./components/Footer";
 import TermsUseScreen from "./components/TermsUseScreen";
 import PrivacyPolicyScreen from "./components/PrivacyPolicyScreen";
 import User from "./components/User.jsx";
+import RequireRole from "./components/RequireRole.jsx";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/index.php";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "/api/index.php";
+
 const JOBS_API_URL = `${API_BASE_URL}?route=/jobs`;
 
 export default function AppRoutes() {
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "null");
+    } catch {
+      return null;
+    }
+  });
+
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [errorJobs, setErrorJobs] = useState(null);
@@ -39,7 +53,9 @@ export default function AppRoutes() {
         });
 
         if (!response.ok) {
-          throw new Error(`Erro ${response.status} ao carregar vagas`);
+          throw new Error(
+            `Erro ${response.status} ao carregar vagas`,
+          );
         }
 
         const data = await response.json();
@@ -52,12 +68,16 @@ export default function AppRoutes() {
           setJobs([]);
         }
       } catch (error) {
-        if (error.name === "AbortError") return;
+        if (controller.signal.aborted) return;
 
         console.error("Erro ao buscar vagas:", error);
+
         setErrorJobs(
-          error instanceof Error ? error.message : "Erro ao carregar vagas"
+          error instanceof Error
+            ? error.message
+            : "Erro ao carregar vagas",
         );
+
         setJobs([]);
       } finally {
         if (!controller.signal.aborted) {
@@ -66,7 +86,7 @@ export default function AppRoutes() {
       }
     }
 
-    loadJobs();
+    void loadJobs();
 
     return () => controller.abort();
   }, []);
@@ -83,19 +103,58 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={home} />
       <Route path="/jobs/:id" element={home} />
+
       <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<DashboardJobs />} />
+      <Route
+        path="/login"
+        element={<Login onLogin={setUser} />}
+      />
+
+      <Route
+        path="/dashboard"
+        element={<DashboardJobs />}
+      />
+
       <Route path="/user" element={<User />} />
-      <Route path="/create-job" element={<CreateJob />} />
-      <Route path="/edit-job/:id" element={<EditJob />} />
+
       <Route path="/tickets" element={<Tickets />} />
+
+      <Route
+        path="/relatar-problema"
+        element={<RelatarProblema />}
+      />
+
       <Route path="/footer" element={<Footer />} />
-      <Route path="/termos-de-uso" element={<TermsUseScreen />} />
+
+      <Route
+        path="/termos-de-uso"
+        element={<TermsUseScreen />}
+      />
+
       <Route
         path="/politica-de-privacidade"
         element={<PrivacyPolicyScreen />}
       />
+
+      <Route
+        element={
+          <RequireRole
+            user={user}
+            roles={["recruiter"]}
+          />
+        }
+      >
+        <Route
+          path="/create-job"
+          element={<CreateJob />}
+        />
+
+        <Route
+          path="/edit-job/:id"
+          element={<EditJob />}
+        />
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

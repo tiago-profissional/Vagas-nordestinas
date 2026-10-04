@@ -1,0 +1,617 @@
+/* Estilos exclusivos da página de suporte.
+   Tokens e reset global vêm do index.css. */
+
+.vn-page {
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  padding-bottom: var(--espaco-5);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte-familia);
+  font-size: var(--fonte-base);
+  font-weight: 400;
+}
+
+/* CABEÇALHO */
+
+.vn-page .vn-header {
+  padding-block: var(--espaco-4);
+  border-bottom: 1px solid var(--cor-borda);
+  background: var(--cor-superficie-suave);
+}
+
+.vn-page .vn-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--espaco-5);
+  width: 100%;
+  max-width: var(--largura-container);
+  margin-inline: auto;
+  padding-inline: var(--espaco-6);
+}
+
+.vn-page .vn-brand {
+  color: var(--cor-titulo);
+  font-size: var(--fonte-xl);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.vn-page .vn-nav,
+.vn-page .vn-header-actions,
+.vn-page .vn-profile {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--espaco-4);
+  min-width: 0;
+}
+
+.vn-page .vn-nav a,
+.vn-page .vn-nav button {
+  padding: var(--espaco-2) 0;
+  border: 0;
+  background: transparent;
+  color: var(--cor-titulo);
+  font-size: var(--fonte-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.vn-page .vn-nav a:hover,
+.vn-page .vn-nav button:hover,
+.vn-page .vn-nav .vn-nav-active {
+  text-decoration: underline;
+}
+
+.vn-page .vn-avatar {
+  display: grid;
+  place-items: center;
+  width: var(--altura-botao);
+  height: var(--altura-botao);
+  border-radius: var(--raio-pill);
+  background: var(--cor-selecao);
+  color: var(--cor-titulo);
+  font-weight: 700;
+}
+
+/* CONTEÚDO */
+
+.vn-page .vn-main {
+  width: 100%;
+  max-width: var(--largura-container);
+  margin-inline: auto;
+  padding: var(--espaco-5) var(--espaco-6);
+}
+
+.vn-page .vn-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--espaco-3);
+  margin-bottom: var(--espaco-5);
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-sm);
+}
+
+.vn-page .vn-breadcrumb a,
+.vn-page .vn-breadcrumb button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cor-link);
+  text-decoration: none;
+}
+
+.vn-page .vn-breadcrumb a:hover,
+.vn-page .vn-breadcrumb button:hover {
+  text-decoration: underline;
+}
+
+.vn-page .vn-heading {
+  margin-bottom: var(--espaco-5);
+}
+
+.vn-page .vn-heading h1 {
+  margin-bottom: var(--espaco-2);
+  color: var(--cor-titulo);
+  font-size: var(--fonte-titulo);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.vn-page .vn-heading p {
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-lg);
+}
+
+.vn-page .vn-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2.15fr)
+    minmax(18rem, 1fr);
+  align-items: stretch;
+  gap: var(--espaco-4);
+}
+
+.vn-page .vn-card {
+  min-width: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-card);
+  background: var(--cor-superficie);
+  box-shadow: var(--sombra-card);
+  transition:
+    border-color var(--transicao),
+    background-color var(--transicao);
+}
+
+/* FORMULÁRIO */
+
+.vn-page .vn-form {
+  padding: var(--espaco-6);
+}
+
+.vn-page .vn-form fieldset {
+  display: grid;
+  gap: var(--espaco-5);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.vn-page .vn-field {
+  display: grid;
+  gap: var(--espaco-2);
+  min-width: 0;
+}
+
+.vn-page .vn-field label {
+  color: var(--cor-texto);
+  font-size: var(--fonte-base);
+  font-weight: 600;
+}
+
+.vn-page .vn-field input,
+.vn-page .vn-field select,
+.vn-page .vn-field textarea {
+  width: 100%;
+  min-width: 0;
+  padding: var(--espaco-3) var(--espaco-4);
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio-campo);
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  font-size: var(--fonte-base);
+  line-height: 1.5;
+  transition:
+    border-color var(--transicao),
+    box-shadow var(--transicao);
+}
+
+.vn-page .vn-field input,
+.vn-page .vn-field select {
+  min-height: var(--altura-campo);
+}
+
+.vn-page .vn-field textarea {
+  display: block;
+  min-height: calc(var(--altura-campo) * 3.5);
+}
+
+.vn-page .vn-field input::placeholder,
+.vn-page .vn-field textarea::placeholder {
+  color: var(--cor-texto-secundario);
+  opacity: 1;
+}
+
+.vn-page .vn-field input:focus-visible,
+.vn-page .vn-field select:focus-visible,
+.vn-page .vn-field textarea:focus-visible {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 var(--espaco-1) var(--cor-foco);
+}
+
+.vn-page .vn-field [aria-invalid="true"] {
+  border-color: var(--cor-erro);
+}
+
+.vn-page .vn-select-wrapper {
+  position: relative;
+}
+
+.vn-page .vn-select-wrapper select {
+  appearance: none;
+  padding-right: var(--espaco-7);
+}
+
+.vn-page .vn-select-wrapper svg {
+  position: absolute;
+  top: 50%;
+  right: var(--espaco-4);
+  color: var(--cor-titulo);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.vn-page .vn-field-help {
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-sm);
+}
+
+.vn-page .vn-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--espaco-3);
+  margin-top: var(--espaco-5);
+  padding-top: var(--espaco-4);
+  border-top: 1px solid var(--cor-borda);
+}
+
+/* BOTÕES */
+
+.vn-page .vn-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espaco-2);
+  min-width: var(--altura-botao);
+  min-height: var(--altura-botao);
+  padding: var(--espaco-2) var(--espaco-3);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+  font-size: var(--fonte-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition:
+    background-color var(--transicao),
+    border-color var(--transicao),
+    color var(--transicao);
+}
+
+.vn-page .vn-button svg {
+  flex-shrink: 0;
+}
+
+.vn-page .vn-primary {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: var(--cor-sobre-primaria);
+}
+
+.vn-page .vn-primary:hover:not(:disabled) {
+  background: var(--cor-primaria-hover);
+}
+
+.vn-page .vn-secondary {
+  border-color: var(--cor-borda);
+  background: var(--cor-superficie);
+  color: var(--cor-titulo);
+}
+
+.vn-page .vn-secondary:hover:not(:disabled) {
+  background: var(--cor-selecao);
+}
+
+/* ORIENTAÇÕES */
+
+.vn-page .vn-help {
+  padding: var(--espaco-6);
+}
+
+.vn-page .vn-help-icon {
+  display: grid;
+  place-items: center;
+  width: calc(var(--altura-campo) + var(--espaco-6));
+  height: calc(var(--altura-campo) + var(--espaco-6));
+  margin-bottom: var(--espaco-4);
+  border-radius: var(--raio-pill);
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-titulo);
+}
+
+.vn-page .vn-help h2 {
+  margin-bottom: var(--espaco-2);
+  color: var(--cor-titulo);
+  font-size: var(--fonte-xl);
+  line-height: 1.3;
+}
+
+.vn-page .vn-help-intro {
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-lg);
+}
+
+.vn-page .vn-help-list {
+  display: grid;
+  gap: var(--espaco-3);
+  margin: var(--espaco-4) 0 var(--espaco-5);
+  padding: 0;
+  list-style: none;
+}
+
+.vn-page .vn-help-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-4);
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-base);
+}
+
+.vn-page .vn-help-list li > span {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--altura-campo);
+  height: var(--altura-campo);
+  border-radius: var(--raio-pill);
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-titulo);
+}
+
+.vn-page .vn-help-footer {
+  padding-top: var(--espaco-5);
+  border-top: 1px solid var(--cor-borda);
+}
+
+.vn-page .vn-help-footer h3 {
+  margin-bottom: var(--espaco-2);
+  color: var(--cor-titulo);
+  font-size: var(--fonte-lg);
+}
+
+.vn-page .vn-help-footer p {
+  margin-bottom: var(--espaco-4);
+  color: var(--cor-texto-secundario);
+}
+
+.vn-page .vn-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cor-link);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* MENSAGENS */
+
+.vn-page .vn-feedback {
+  margin-bottom: var(--espaco-5);
+  padding: var(--espaco-3) var(--espaco-4);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+}
+
+.vn-page .vn-success {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--espaco-3);
+  background: var(--cor-sucesso-fundo);
+  color: var(--cor-sucesso);
+}
+
+.vn-page .vn-error {
+  border-color: var(--cor-erro);
+  background: var(--cor-erro-fundo);
+  color: var(--cor-erro);
+}
+
+/* MEUS CHAMADOS */
+
+.vn-page .vn-ticket-section {
+  padding: var(--espaco-6);
+}
+
+.vn-page .vn-ticket-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--espaco-4);
+  margin-bottom: var(--espaco-5);
+}
+
+.vn-page .vn-ticket-toolbar h2 {
+  color: var(--cor-titulo);
+  font-size: var(--fonte-xl);
+}
+
+.vn-page .vn-empty {
+  padding: var(--espaco-7) var(--espaco-4);
+  color: var(--cor-texto-secundario);
+  text-align: center;
+}
+
+.vn-page .vn-empty svg {
+  margin: 0 auto var(--espaco-3);
+}
+
+.vn-page .vn-empty h3 {
+  margin-bottom: var(--espaco-2);
+  color: var(--cor-titulo);
+}
+
+.vn-page .vn-empty p {
+  margin-bottom: var(--espaco-5);
+}
+
+.vn-page .vn-ticket-list {
+  display: grid;
+  gap: var(--espaco-3);
+}
+
+.vn-page .vn-ticket {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+  background: var(--cor-superficie);
+  transition:
+    border-color var(--transicao),
+    background-color var(--transicao);
+}
+
+.vn-page .vn-ticket:hover {
+  border-color: var(--cor-primaria);
+  background: var(--cor-superficie-suave);
+}
+
+.vn-page .vn-ticket[open] {
+  border-color: var(--cor-primaria);
+  background: var(--cor-selecao);
+}
+
+.vn-page .vn-ticket summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--espaco-4);
+  padding: var(--espaco-5);
+  list-style: none;
+  cursor: pointer;
+}
+
+.vn-page .vn-ticket summary::-webkit-details-marker {
+  display: none;
+}
+
+.vn-page .vn-ticket h3 {
+  margin-block: var(--espaco-2);
+  color: var(--cor-titulo);
+  font-size: var(--fonte-lg);
+  overflow-wrap: anywhere;
+}
+
+.vn-page .vn-ticket-meta {
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-sm);
+}
+
+.vn-page .vn-status {
+  justify-self: end;
+  padding: var(--espaco-1) var(--espaco-2);
+  border-radius: var(--raio-pill);
+  font-size: var(--fonte-xs);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.vn-page .vn-status-aberto {
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso);
+}
+
+.vn-page .vn-status-em_atendimento {
+  background: var(--cor-info-fundo);
+  color: var(--cor-info);
+}
+
+.vn-page .vn-status-resolvido {
+  background: var(--cor-sucesso-fundo);
+  color: var(--cor-sucesso);
+}
+
+.vn-page .vn-ticket-description {
+  padding: var(--espaco-5);
+  border-top: 1px solid var(--cor-borda);
+}
+
+.vn-page .vn-ticket-description h4 {
+  margin-bottom: var(--espaco-2);
+  color: var(--cor-titulo);
+}
+
+.vn-page .vn-ticket-description p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ANIMAÇÃO */
+
+.vn-page .vn-spin {
+  animation: vn-support-spin 1s linear infinite;
+}
+
+@keyframes vn-support-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1024px) {
+  .vn-page .vn-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .vn-page .vn-header-content,
+  .vn-page .vn-main {
+    padding-inline: var(--espaco-4);
+  }
+
+  .vn-page .vn-header-content {
+    gap: var(--espaco-3);
+  }
+
+  .vn-page .vn-nav {
+    order: 3;
+    width: 100%;
+  }
+
+  .vn-page .vn-form,
+  .vn-page .vn-help,
+  .vn-page .vn-ticket-section {
+    padding: var(--espaco-5);
+  }
+
+  .vn-page .vn-heading p {
+    font-size: var(--fonte-base);
+  }
+}
+
+@media (max-width: 520px) {
+  .vn-page .vn-form,
+  .vn-page .vn-help,
+  .vn-page .vn-ticket-section {
+    padding: var(--espaco-4);
+  }
+
+  .vn-page .vn-form-actions {
+    flex-direction: column;
+  }
+
+  .vn-page .vn-form-actions .vn-button {
+    width: 100%;
+  }
+
+  .vn-page .vn-ticket summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--espaco-3);
+    padding: var(--espaco-4);
+  }
+
+  .vn-page .vn-status {
+    justify-self: start;
+  }
+
+  .vn-page .vn-ticket-description {
+    padding: var(--espaco-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vn-page .vn-spin {
+    animation: none;
+  }
+}

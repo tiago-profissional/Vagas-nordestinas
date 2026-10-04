@@ -3,12 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../styles/Signup.css";
 
-function Login() {
+function Login({ onLogin }) {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   const clearFields = () => {
@@ -31,18 +30,19 @@ function Login() {
         id: Date.now(),
         name: "Demo User",
         email,
+        role: "candidate",
       };
 
       localStorage.setItem("user", JSON.stringify(demoUser));
+      onLogin(demoUser);
 
       toast.success("Demo login successful!");
       clearFields();
+      setLoading(false);
 
       setTimeout(() => {
         navigate("/dashboard");
       }, 700);
-
-      setLoading(false);
     }, 700);
   };
 
@@ -81,7 +81,11 @@ function Login() {
           Lost Password? <span>Click Here!</span>
         </div>
 
-        <button type="submit" className="auth-main-submit" disabled={loading}>
+        <button
+          type="submit"
+          className="auth-main-submit"
+          disabled={loading}
+        >
           {loading ? "Please wait..." : "Login"}
         </button>
 
