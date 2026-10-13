@@ -1,7 +1,36 @@
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import pool from '../config/database.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const router = express.Router();
+
+function getFallbackJobs() {
+  try {
+    const vagasPath = path.join(__dirname, '../../public/vagas.json');
+    if (fs.existsSync(vagasPath)) {
+      const content = fs.readFileSync(vagasPath, 'utf-8');
+      return JSON.parse(content);
+    }
+  } catch {
+    // ignore
+  }
+  return [];
+}
+
+// GET /api/jobs
+router.get('/jobs', async (req, res) => {
+  try {
+    const [jobs] = await pool.query('SELECT * FROM jobs ORDER BY id DESC');
+    return res.status(200).json(jobs);
+  } catch {
+    return res.status(200).json(getFallbackJobs());
+  }
+});
 
 // GET /api/github-jobs
 router.get('/github-jobs', async (req, res) => {
@@ -24,15 +53,15 @@ router.get('/github-jobs', async (req, res) => {
     });
 
     return res.status(200).json({ jobs: formattedJobs });
-  } catch (error) {
-    return res.status(500).json({ error: 'Erro ao buscar vagas do GitHub', details: error.message });
+  } catch {
+    return res.status(200).json({ jobs: getFallbackJobs() });
   }
 });
 
 // GET /api/github-jobs/:id
 router.get('/github-jobs/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
     const [rows] = await pool.query(
       'SELECT * FROM github_jobs WHERE id = ? OR external_id = ? LIMIT 1',
       [id, id]
@@ -52,10 +81,11 @@ router.get('/github-jobs/:id', async (req, res) => {
     }
 
     return res.status(200).json({ job });
-  } catch (error) {
-    return res.status(500).json({ error: 'Erro ao buscar vaga', details: error.message });
+  } catch {
+    const fallback = getFallbackJobs().find((j) => String(j.id) === String(id));
+    if (fallback) return res.status(200).json({ job: fallback });
+    return res.status(404).json({ error: 'Vaga não encontrada' });
   }
 });
 
 export default router;
-
