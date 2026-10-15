@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
-import { initDatabase } from './config/database.js';
+import pool, { initDatabase } from './config/database.js';
 import { readLocalDb } from './config/localDb.js';
 import { calculateCompletionPercentage } from './services/profileService.js';
 

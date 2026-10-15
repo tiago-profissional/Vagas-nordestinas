@@ -1,6 +1,8 @@
+/* global process */
 import pool from '../config/database.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { validateProfileInput } from '../validators/profileValidator.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'vagas-nordestinas-chave-secreta-ultra-segura-2026';
 const JWT_EXPIRES = '1h';
@@ -69,7 +71,21 @@ export async function login(req, res) {
 
 export async function register(req, res) {
   try {
-    const { name, email, password, confirmPassword } = req.body || {};
+    const {
+      name,
+      email,
+      password,
+      confirmPassword,
+      phone,
+      city,
+      state,
+      birth_date: birthDate,
+      desired_role: desiredRole,
+      work_model: workModel,
+      contract_type: contractType,
+      availability,
+      skills
+    } = req.body || {};
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -82,6 +98,22 @@ export async function register(req, res) {
       return res.status(400).json({
         success: false,
         error: 'As senhas informadas não coincidem.'
+      });
+    }
+
+    const profileValidation = validateProfileInput({
+      email,
+      birth_date: birthDate,
+      work_model: workModel,
+      contract_type: contractType,
+      availability,
+      skills
+    });
+    if (!profileValidation.isValid) {
+      return res.status(400).json({
+        success: false,
+        error: 'Algumas informações adicionais são inválidas.',
+        errors: profileValidation.errors
       });
     }
 
@@ -101,10 +133,29 @@ export async function register(req, res) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const skillsJson = Array.isArray(skills) && skills.length > 0
+      ? JSON.stringify(skills)
+      : null;
 
     const [result] = await pool.query(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-      [String(name).trim(), trimmedEmail, hashedPassword]
+      `INSERT INTO users (
+        name, email, password, phone, city, state, birth_date, desired_role,
+        work_model, contract_type, availability, skills
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        String(name).trim(),
+        trimmedEmail,
+        hashedPassword,
+        phone || null,
+        city || null,
+        state || null,
+        birthDate || null,
+        desiredRole || null,
+        workModel || null,
+        contractType || null,
+        availability || null,
+        skillsJson
+      ]
     );
 
     const userId = result.insertId;
@@ -135,4 +186,3 @@ export async function register(req, res) {
     });
   }
 }
-
