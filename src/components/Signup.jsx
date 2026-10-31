@@ -52,8 +52,8 @@ function Signup() {
       return;
     }
 
-    if (password.length < 6) {
-      toast.error("A senha deve ter no mínimo 6 caracteres.");
+    if (password.length < 8) {
+      toast.error("A senha deve ter no mínimo 8 caracteres.");
       return;
     }
 
@@ -78,15 +78,6 @@ function Signup() {
           email: email.trim(),
           password,
           confirmPassword,
-          phone: additionalInfo.phone.trim() || null,
-          city: additionalInfo.city.trim() || null,
-          state: additionalInfo.state.trim() || null,
-          birth_date: additionalInfo.birthDate || null,
-          desired_role: additionalInfo.desiredRole.trim() || null,
-          work_model: additionalInfo.workModel || null,
-          contract_type: additionalInfo.contractType || null,
-          availability: additionalInfo.availability || null,
-          skills,
         }),
       });
       let data = {};
@@ -97,15 +88,68 @@ function Signup() {
       }
 
       if (!response.ok) {
-        if (response.status === 504 || response.status === 502 || response.status === 500) {
-          throw new Error(data.error || "O servidor backend (porta 3000) está desligado. Execute 'npm run api' no terminal.");
+        if (response.status >= 500) {
+          throw new Error(
+            data.message ||
+              "Servidor indisponível. Verifique se o backend (porta 3001) e o banco de dados estão rodando."
+          );
         }
-        throw new Error(data.error || data.message || "Não foi possível criar sua conta.");
+        throw new Error(data.message || data.error || "Não foi possível criar sua conta.");
       }
 
+      // Conta criada: guarda a sessão para o perfil saber quem está logado.
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      toast.success("Conta criada com sucesso!");
+
+      // Etapa 2: grava as informações adicionais no perfil do usuário (banco de dados).
+      const hasExtras =
+        additionalInfo.phone ||
+        additionalInfo.city ||
+        additionalInfo.state ||
+        additionalInfo.birthDate ||
+        additionalInfo.desiredRole ||
+        additionalInfo.workModel ||
+        additionalInfo.contractType ||
+        additionalInfo.availability ||
+        skills.length > 0;
+
+      let extrasSaved = true;
+
+      if (hasExtras) {
+        try {
+          const profileResponse = await fetch("/api/users/profile", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${data.access_token}`,
+            },
+            body: JSON.stringify({
+              personal_data: {
+                phone: additionalInfo.phone,
+                city: additionalInfo.city.trim(),
+                state: additionalInfo.state.trim(),
+                birth_date: additionalInfo.birthDate,
+              },
+              professional_preferences: {
+                desired_role: additionalInfo.desiredRole.trim(),
+                work_model: additionalInfo.workModel,
+                contract_type: additionalInfo.contractType,
+                availability: additionalInfo.availability,
+                skills,
+              },
+            }),
+          });
+          extrasSaved = profileResponse.ok;
+        } catch {
+          extrasSaved = false;
+        }
+      }
+
+      if (extrasSaved) {
+        toast.success("Conta criada com sucesso!");
+      } else {
+        toast.success("Conta criada! Complete seus dados no perfil.");
+      }
       navigate("/dashboard");
     } catch (error) {
       toast.error(error.message || "Não foi possível conectar ao servidor.");
@@ -161,7 +205,7 @@ function Signup() {
               <input
                 className="auth-input"
                 type="password"
-                placeholder="Senha (mínimo 6 caracteres)"
+                placeholder="Senha (mínimo 8 caracteres)"
                 aria-label="Senha"
                 autoComplete="new-password"
                 value={password}
@@ -222,7 +266,7 @@ function Signup() {
                   type="text"
                   name="state"
                   autoComplete="address-level1"
-                  maxLength={100}
+                  maxLength={60}
                   placeholder="Seu estado (ex: PE, CE, BA)"
                   value={additionalInfo.state}
                   onChange={updateAdditionalInfo}
@@ -245,7 +289,7 @@ function Signup() {
                   className="auth-input"
                   type="text"
                   name="desiredRole"
-                  maxLength={255}
+                  maxLength={160}
                   placeholder="Ex: Desenvolvedor Front-end"
                   value={additionalInfo.desiredRole}
                   onChange={updateAdditionalInfo}

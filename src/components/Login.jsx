@@ -25,25 +25,43 @@ function Login({ onLogin }) {
 
     setLoading(true);
 
-    setTimeout(() => {
-      const demoUser = {
-        id: Date.now(),
-        name: "Demo User",
-        email,
-        role: "candidate",
-      };
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
 
-      localStorage.setItem("user", JSON.stringify(demoUser));
-      onLogin(demoUser);
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
-      toast.success("Demo login successful!");
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            data.error ||
+            (response.status >= 500
+              ? "Servidor indisponível. Verifique se o backend e o banco de dados estão rodando."
+              : "Não foi possível entrar.")
+        );
+      }
+
+      // O token é o que a página de perfil usa para saber quem está logado.
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      onLogin?.(data.user);
+
+      toast.success("Login successful!");
       clearFields();
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error.message || "Não foi possível conectar ao servidor.");
+    } finally {
       setLoading(false);
-
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 700);
-    }, 700);
+    }
   };
 
   return (

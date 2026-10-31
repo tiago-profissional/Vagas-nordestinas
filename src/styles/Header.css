@@ -141,6 +141,140 @@
   background: #f4d6ba;
 }
 
+/* CONTA DO USUÁRIO LOGADO */
+
+.vne-header__account {
+  position: relative;
+}
+
+.vne-header__account-btn {
+  min-height: var(--altura-botao);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-2);
+
+  padding: 4px 12px 4px 4px;
+
+  color: var(--cor-titulo);
+  background: transparent;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+
+  font-family: inherit;
+  font-size: var(--fonte-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.vne-header__account-btn:hover {
+  background: var(--cor-selecao);
+}
+
+.vne-header__avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  color: #8b4a16;
+  background: #f9e3cf;
+  border-radius: 50%;
+
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.vne-header__avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vne-header__account-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vne-header__account-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+
+  min-width: 230px;
+  padding: 8px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+  box-shadow: var(--sombra-elevada);
+}
+
+.vne-header__account-info {
+  padding: 8px 12px 10px;
+  margin-bottom: 4px;
+
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.vne-header__account-info strong,
+.vne-header__account-info span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vne-header__account-info strong {
+  color: var(--cor-titulo);
+  font-size: var(--fonte-sm);
+}
+
+.vne-header__account-info span {
+  margin-top: 2px;
+  color: var(--cor-titulo);
+  font-size: 0.78rem;
+  opacity: 0.7;
+}
+
+.vne-header__account-item {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  padding: 10px 12px;
+
+  color: var(--cor-titulo);
+  background: transparent;
+  border: 0;
+  border-radius: var(--raio-pequeno);
+
+  font-family: inherit;
+  font-size: var(--fonte-sm);
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.vne-header__account-item:hover {
+  background: var(--cor-selecao);
+}
+
 /* BOTÕES */
 
 .vne-header__login-btn,
@@ -223,6 +357,31 @@
   cursor: pointer;
 }
 
+.vne-header__mobile-user {
+  grid-column: 1 / -1;
+
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+
+  padding: var(--espaco-2) var(--espaco-3);
+
+  color: var(--cor-titulo);
+  background: var(--cor-superficie-suave);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-campo);
+
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.vne-header__mobile-user span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .vne-header__hamburger img {
   width: 24px;
   height: 24px;
@@ -274,6 +433,19 @@
     min-height: 40px;
     padding-inline: var(--espaco-3);
     font-size: 0.78rem;
+  }
+}
+
+/* A PARTIR DO NOTEBOOK MENOR: SÓ A FOTO, SEM O NOME */
+
+@media (max-width: 1100px) {
+  .vne-header__account-name {
+    display: none;
+  }
+
+  .vne-header__account-btn {
+    min-height: 0;
+    padding: 3px;
   }
 }
 
@@ -336,6 +508,13 @@
     flex-basis: 34px;
   }
 
+  .vne-header__avatar {
+    width: 32px;
+    height: 32px;
+
+    font-size: 12px;
+  }
+
   .vne-header__login-btn,
   .vne-header__signup-btn {
     min-height: 36px;
@@ -386,6 +565,13 @@
     flex-basis: 30px;
 
     font-size: 0.75rem;
+  }
+
+  .vne-header__avatar {
+    width: 28px;
+    height: 28px;
+
+    font-size: 11px;
   }
 
   .vne-header__login-btn,
@@ -517,4 +703,3 @@
     width: 100%;
   }
 }
-

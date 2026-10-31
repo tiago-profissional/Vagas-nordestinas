@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
@@ -9,20 +9,19 @@ import {
 } from "../services/profileApi.js";
 import "../styles/User.css";
 
-const defaultProfile = {
-  name: "Tiago Ramon",
-  email: "tiagoramon@email.com",
-  phone: "(88) 99999-9999",
-  city: "Aracati",
-  state: "Ceará",
-  birthDate: "15/04/2004",
-  desiredRole: "Desenvolvedor Web Júnior",
-  workModel: "Remoto",
-  contract: "CLT ou PJ",
-  availability: "Imediata",
+// Perfil vazio: nada de dados de outra pessoa aparece enquanto a API carrega.
+const emptyProfile = {
+  name: "",
+  email: "",
+  phone: "",
+  city: "",
+  state: "",
+  birthDate: "",
+  desiredRole: "",
+  workModel: "",
+  contract: "",
+  availability: "",
 };
-
-const defaultSkills = ["React", "TypeScript", "Node.js", "PHP"];
 
 /**
  * Formata o número de telefone no padrão (99) 99999-9999 ao digitar
@@ -33,6 +32,41 @@ function formatPhone(value) {
   if (digits.length <= 2) return `(${digits}`;
   if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+}
+
+// "2004-04-15" -> "15/04/2004"
+function isoToBr(value) {
+  if (!value) return "";
+  const onlyDate = String(value).slice(0, 10);
+  if (!onlyDate.includes("-")) return value;
+  const [y, m, d] = onlyDate.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+// "15/04/2004" -> "2004-04-15" (formato que o MySQL espera)
+function brToIso(value) {
+  if (!value || !value.includes("/")) return value || null;
+  const [d, m, y] = value.split("/");
+  if (!d || !m || !y) return null;
+  return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+}
+
+// Contas criadas com a sigla (ex.: "CE") passam a aparecer como "Ceará" na lista.
+const stateAliases = {
+  CE: "Ceará",
+  PE: "Pernambuco",
+  BA: "Bahia",
+  PB: "Paraíba",
+  RN: "Rio Grande do Norte",
+  AL: "Alagoas",
+  SE: "Sergipe",
+  MA: "Maranhão",
+  PI: "Piauí",
+};
+
+function normalizeState(value) {
+  const text = String(value || "").trim();
+  return stateAliases[text.toUpperCase()] || text;
 }
 
 function calculateLocalPercentage(p, sk, av) {
@@ -53,21 +87,16 @@ function calculateLocalPercentage(p, sk, av) {
 }
 
 function User() {
-  const [profile, setProfile] = useState(() => {
-    const saved = localStorage.getItem("profile");
-    return saved ? JSON.parse(saved) : defaultProfile;
-  });
-
-  const [skills, setSkills] = useState(() => {
-    const savedSkills = localStorage.getItem("user_skills");
-    return savedSkills ? JSON.parse(savedSkills) : defaultSkills;
-  });
+  const [profile, setProfile] = useState(emptyProfile);
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const [isAddingSkill, setIsAddingSkill] = useState(false);
   const [newSkillText, setNewSkillText] = useState("");
 
   const [avatarUrl, setAvatarUrl] = useState(null);
-  const [completionPercentage, setCompletionPercentage] = useState(80);
+  const [completionPercentage, setCompletionPercentage] = useState(0);
   const [activeTab, setActiveTab] = useState("Perfil");
   const [publicProfile, setPublicProfile] = useState(true);
   const [jobRecommendations, setJobRecommendations] = useState(true);
@@ -75,86 +104,83 @@ function User() {
 
   const fileInputRef = useRef(null);
 
-  // Carrega os dados do back-end ao abrir a tela (se disponível)
-  useEffect(() => {
-    async function loadProfile() {
-      try {
-        const data = await fetchUserProfile();
-        if (data) {
-          const personal = data.personal_data || {};
-          const professional = data.professional_preferences || {};
-          const privacy = data.account_privacy || {};
+  // Busca o perfil do usuário logado na API e preenche a tela.
+  const loadProfile = useCallback(async () => {
+    setLoading(true);
+    setLoadError(false);
+    try {
+      const data = await fetchUserProfile();
+      if (!data) throw new Error("Resposta vazia da API");
 
-          let bDate = personal.birth_date || "";
-          if (bDate.includes("-")) {
-            const [y, m, d] = bDate.split("-");
-            bDate = `${d}/${m}/${y}`;
-          }
+      const personal = data.personal_data || {};
+      const professional = data.professional_preferences || {};
+      const privacy = data.account_privacy || {};
 
-          setProfile({
-            name: personal.name || defaultProfile.name,
-            email: personal.email || defaultProfile.email,
-            phone: personal.phone ? formatPhone(personal.phone) : defaultProfile.phone,
-            city: personal.city || defaultProfile.city,
-            state: personal.state || defaultProfile.state,
-            birthDate: bDate || defaultProfile.birthDate,
-            desiredRole: professional.desired_role || defaultProfile.desiredRole,
-            workModel: professional.work_model || defaultProfile.workModel,
-            contract: professional.contract_type || defaultProfile.contract,
-            availability: professional.availability || defaultProfile.availability,
-          });
+      setProfile({
+        name: personal.name || "",
+        email: personal.email || "",
+        phone: personal.phone ? formatPhone(personal.phone) : "",
+        city: personal.city || "",
+        state: normalizeState(personal.state),
+        birthDate: isoToBr(personal.birth_date),
+        desiredRole: professional.desired_role || "",
+        workModel: professional.work_model || "",
+        contract: professional.contract_type || "",
+        availability: professional.availability || "",
+      });
 
-          if (professional.skills && Array.isArray(professional.skills)) {
-            setSkills(professional.skills);
-          }
+      setSkills(Array.isArray(professional.skills) ? professional.skills : []);
+      setAvatarUrl(personal.avatar_url || null);
 
-          if (personal.avatar_url) {
-            setAvatarUrl(personal.avatar_url);
-          }
-
-          if (data.meta && typeof data.meta.profile_completion_percentage === "number") {
-            setCompletionPercentage(data.meta.profile_completion_percentage);
-          }
-
-          if (privacy.allow_recruiters !== undefined) {
-            setPublicProfile(Boolean(privacy.allow_recruiters));
-          }
-
-          if (privacy.email_recommendations !== undefined) {
-            setJobRecommendations(Boolean(privacy.email_recommendations));
-          }
-        }
-      } catch (err) {
-        // Fallback local caso o back-end não esteja rodando no momento
-        const localPerc = calculateLocalPercentage(profile, skills, avatarUrl);
-        setCompletionPercentage(localPerc);
+      if (typeof data.meta?.profile_completion_percentage === "number") {
+        setCompletionPercentage(data.meta.profile_completion_percentage);
       }
-    }
 
-    loadProfile();
+      setPublicProfile(
+        privacy.allow_recruiters !== undefined ? Boolean(privacy.allow_recruiters) : true
+      );
+      setJobRecommendations(
+        privacy.email_recommendations !== undefined
+          ? Boolean(privacy.email_recommendations)
+          : true
+      );
+    } catch (err) {
+      console.error("Erro ao carregar perfil:", err);
+      setLoadError(true);
+      toast.error(err.message || "Não foi possível carregar seu perfil.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    // Remove o cache antigo, que era compartilhado entre todos os usuários.
+    localStorage.removeItem("profile");
+    localStorage.removeItem("user_skills");
+    loadProfile();
+  }, [loadProfile]);
 
   function updateField(event) {
     const { name, value } = event.target;
     const formattedValue = name === "phone" ? formatPhone(value) : value;
-
-    setProfile((current) => {
-      const updated = { ...current, [name]: formattedValue };
-      const newPerc = calculateLocalPercentage(updated, skills, avatarUrl);
-      setCompletionPercentage(newPerc);
-      return updated;
-    });
+    const updated = { ...profile, [name]: formattedValue };
+    setProfile(updated);
+    setCompletionPercentage(calculateLocalPercentage(updated, skills, avatarUrl));
   }
 
   async function saveProfile(event) {
     event.preventDefault();
+    if (loadError) {
+      toast.error("Recarregue o perfil antes de salvar.");
+      return;
+    }
     setSaving(true);
 
     // Se o usuário digitou uma skill no campo aberto e clicou direto em Salvar, inclui ela também
     let currentSkills = [...skills];
     if (isAddingSkill && newSkillText.trim()) {
       const trimmed = newSkillText.trim();
-      if (!currentSkills.includes(trimmed)) {
+      if (!currentSkills.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
         currentSkills.push(trimmed);
         setSkills(currentSkills);
       }
@@ -170,7 +196,7 @@ function User() {
           phone: profile.phone,
           city: profile.city,
           state: profile.state,
-          birth_date: profile.birthDate,
+          birth_date: brToIso(profile.birthDate),
         },
         professional_preferences: {
           desired_role: profile.desiredRole,
@@ -186,20 +212,15 @@ function User() {
       };
 
       const updated = await updateUserProfile(payload);
-      if (updated && updated.meta) {
+      if (typeof updated?.meta?.profile_completion_percentage === "number") {
         setCompletionPercentage(updated.meta.profile_completion_percentage);
       }
-
-      localStorage.setItem("profile", JSON.stringify(profile));
-      localStorage.setItem("user_skills", JSON.stringify(currentSkills));
-      toast.success("Alterações salvas no banco de dados!");
+      // Avisa o Header para buscar o nome e a foto atualizados.
+      window.dispatchEvent(new Event("profile:updated"));
+      toast.success("Alterações salvas!");
     } catch (err) {
-      // Salva localmente sem travar a experiência
-      localStorage.setItem("profile", JSON.stringify(profile));
-      localStorage.setItem("user_skills", JSON.stringify(currentSkills));
-      const localPerc = calculateLocalPercentage(profile, currentSkills, avatarUrl);
-      setCompletionPercentage(localPerc);
-      toast.success("Alterações salvas com sucesso!");
+      console.error("Erro ao salvar perfil:", err);
+      toast.error(err.message || "Não foi possível salvar. Tente novamente.");
     } finally {
       setSaving(false);
     }
@@ -209,6 +230,7 @@ function User() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    const previousAvatar = avatarUrl;
     const localPreviewUrl = URL.createObjectURL(file);
     setAvatarUrl(localPreviewUrl);
     setCompletionPercentage(calculateLocalPercentage(profile, skills, localPreviewUrl));
@@ -216,18 +238,26 @@ function User() {
     const loadingToast = toast.loading("Enviando foto de perfil...");
     try {
       const result = await uploadUserAvatar(file);
-      if (result && result.avatar_url) {
+      if (result?.avatar_url) {
         setAvatarUrl(result.avatar_url);
       }
-      if (result && result.data && result.data.meta) {
+      if (typeof result?.data?.meta?.profile_completion_percentage === "number") {
         setCompletionPercentage(result.data.meta.profile_completion_percentage);
       }
+      // Avisa o Header para mostrar a foto nova.
+      window.dispatchEvent(new Event("profile:updated"));
       toast.success("Foto de perfil atualizada!", { id: loadingToast });
     } catch (err) {
-      toast.success("Foto atualizada!", { id: loadingToast });
+      console.error("Erro ao enviar avatar:", err);
+      setAvatarUrl(previousAvatar);
+      setCompletionPercentage(calculateLocalPercentage(profile, skills, previousAvatar));
+      toast.error(err.message || "Não foi possível enviar a foto.", { id: loadingToast });
+    } finally {
+      event.target.value = "";
     }
   }
 
+  // As habilidades só vão para o banco quando o usuário clica em "Salvar alterações".
   function confirmAddSkill() {
     const trimmed = newSkillText.trim();
     if (!trimmed) {
@@ -242,19 +272,17 @@ function User() {
 
     const updatedSkills = [...skills, trimmed];
     setSkills(updatedSkills);
-    localStorage.setItem("user_skills", JSON.stringify(updatedSkills));
     setCompletionPercentage(calculateLocalPercentage(profile, updatedSkills, avatarUrl));
     setNewSkillText("");
     setIsAddingSkill(false);
-    toast.success(`Habilidade "${trimmed}" adicionada!`);
+    toast.success(`Habilidade "${trimmed}" adicionada! Clique em Salvar alterações.`);
   }
 
   function handleRemoveSkill(skillToRemove) {
     const newSkills = skills.filter((s) => s !== skillToRemove);
     setSkills(newSkills);
-    localStorage.setItem("user_skills", JSON.stringify(newSkills));
     setCompletionPercentage(calculateLocalPercentage(profile, newSkills, avatarUrl));
-    toast(`Habilidade "${skillToRemove}" removida`, { icon: "🗑️" });
+    toast(`Habilidade "${skillToRemove}" removida. Clique em Salvar alterações.`, { icon: "🗑️" });
   }
 
   async function handleDeleteAccount() {
@@ -265,25 +293,20 @@ function User() {
 
     try {
       await deleteUserAccount();
+      window.dispatchEvent(new Event("profile:updated"));
       toast.success("Conta excluída com sucesso.");
+      setTimeout(() => window.location.assign("/"), 1200);
     } catch (err) {
-      localStorage.removeItem("profile");
-      localStorage.removeItem("user_skills");
-      setProfile(defaultProfile);
-      setSkills(defaultSkills);
-      toast.success("Conta redefinida com sucesso.");
+      console.error("Erro ao excluir conta:", err);
+      toast.error("Não foi possível excluir a conta.");
     }
   }
 
+  // Cancelar = descartar o que foi digitado e recarregar o que está salvo no banco.
   function cancelChanges() {
-    setProfile(defaultProfile);
-    setSkills(defaultSkills);
-    setAvatarUrl(null);
     setIsAddingSkill(false);
     setNewSkillText("");
-    setCompletionPercentage(80);
-    localStorage.removeItem("profile");
-    localStorage.removeItem("user_skills");
+    loadProfile();
     toast("Alterações canceladas", { icon: "↩" });
   }
 
@@ -295,6 +318,18 @@ function User() {
     ["state", "Estado", "select", ["Ceará", "Pernambuco", "Bahia", "Paraíba", "Rio Grande do Norte", "Alagoas", "Sergipe", "Maranhão", "Piauí"]],
     ["birthDate", "Data de nascimento", "text"],
   ];
+
+  const initials = profile.name
+    ? profile.name
+        .split(" ")
+        .filter(Boolean)
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "?";
+
+  const locationText = [profile.city, profile.state].filter(Boolean).join(", ");
 
   return (
     <div className="user-page">
@@ -355,7 +390,19 @@ function User() {
           ))}
         </div>
 
-        {activeTab === "Perfil" ? (
+        {loading ? (
+          <div className="empty-tab">
+            <p>Carregando seu perfil...</p>
+          </div>
+        ) : loadError ? (
+          <div className="empty-tab">
+            <h2>Não foi possível carregar seu perfil</h2>
+            <p>Verifique se o servidor e o banco de dados estão rodando.</p>
+            <button className="save-button" type="button" onClick={loadProfile}>
+              Tentar novamente
+            </button>
+          </div>
+        ) : activeTab === "Perfil" ? (
           <form className="user-layout" onSubmit={saveProfile}>
             <aside className="profile-card">
               <div className="profile-avatar" style={{ overflow: "hidden" }}>
@@ -366,21 +413,12 @@ function User() {
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
                   />
                 ) : (
-                  profile.name
-                    ? profile.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .slice(0, 2)
-                        .join("")
-                        .toUpperCase()
-                    : "TR"
+                  initials
                 )}
               </div>
               <h2>{profile.name}</h2>
               <p>{profile.desiredRole}</p>
-              <span className="profile-location">
-                ⌖ {profile.city ? `${profile.city}, ${profile.state}` : "Aracati, Ceará"}
-              </span>
+              {locationText && <span className="profile-location">⌖ {locationText}</span>}
 
               <button
                 className="change-photo"
@@ -414,6 +452,7 @@ function User() {
                       {label}
                       {type === "select" ? (
                         <select name={name} value={profile[name]} onChange={updateField}>
+                          <option value="">Selecione</option>
                           {options.map((option) => (
                             <option key={option} value={option}>{option}</option>
                           ))}
@@ -424,8 +463,14 @@ function User() {
                           type={type}
                           value={profile[name]}
                           onChange={updateField}
-                          placeholder={name === "phone" ? "(99) 99999-9999" : undefined}
-                          maxLength={name === "phone" ? 15 : undefined}
+                          placeholder={
+                            name === "phone"
+                              ? "(99) 99999-9999"
+                              : name === "birthDate"
+                              ? "dd/mm/aaaa"
+                              : undefined
+                          }
+                          maxLength={name === "phone" ? 15 : name === "birthDate" ? 10 : undefined}
                         />
                       )}
                     </label>
@@ -451,6 +496,7 @@ function User() {
                       value={profile.workModel}
                       onChange={updateField}
                     >
+                      <option value="">Selecione</option>
                       <option value="Remoto">Remoto</option>
                       <option value="Híbrido">Híbrido</option>
                       <option value="Presencial">Presencial</option>
@@ -463,6 +509,7 @@ function User() {
                       value={profile.contract}
                       onChange={updateField}
                     >
+                      <option value="">Selecione</option>
                       <option value="CLT ou PJ">CLT ou PJ</option>
                       <option value="CLT">CLT</option>
                       <option value="PJ">PJ</option>
@@ -475,6 +522,7 @@ function User() {
                       value={profile.availability}
                       onChange={updateField}
                     >
+                      <option value="">Selecione</option>
                       <option value="Imediata">Imediata</option>
                       <option value="15 dias">15 dias</option>
                       <option value="30 dias">30 dias</option>

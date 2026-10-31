@@ -1,0 +1,73 @@
+Summarizing progress and outlining the remaining work.
+Summarizing progress and outlining the remaining work.
+Combinado, sem código. Aqui está o mapa: o que você já fez e o que falta, com o que cada parte precisa fazer.
+
+✅ O que você já fez
+Tabela password_resets criada no MySQL (banco vagas_nordestinas), compatível com o backend-node:
+
+user_id é CHAR(36) e aponta para usuarios(id)
+collation utf8mb4_unicode_ci, igual à da tabela usuarios
+colunas token_hash, expires_at, used_at e created_at
+Você também mexeu no backend/config/database.js, do backend antigo. Esse backend não é o que você roda, então essa mudança não afeta nada. Se quiser desfazer: git checkout backend/config/database.js.
+
+⬜ O que falta
+1. Salvar o SQL da tabela num arquivo
+Crie backend-node/sql/password_resets.sql com o mesmo CREATE TABLE que você rodou no phpMyAdmin, para quem baixar o projeto conseguir criar a tabela.
+
+2. Função forgotPassword (no backend-node/src/controllers/authController.ts)
+
+Ler o e-mail do corpo da requisição (use lerCorpo e normalizarEmail, que já existem no arquivo)
+Buscar o usuário em usuarios com active = 1
+Se não existir: responder uma mensagem genérica de sucesso e parar
+Se existir:
+marcar como usados os tokens antigos dele que ainda não foram usados
+gerar um token aleatório (randomBytes do node:crypto)
+salvar o hash SHA-256 dele (createHash) com validade de 30 min
+montar o link http://localhost:5173/reset-password?token=...
+por enquanto, mostrar o link com console.log
+Responder a mesma mensagem genérica do caso anterior
+3. Registrar a rota em authRoutes.ts: POST /forgot-password.
+
+4. Testar com curl na porta 3001 (a do backend-node), com um e-mail que existe e outro que não existe. Confira o terminal e a tabela no phpMyAdmin.
+
+5. Envio de e-mail
+
+Instalar o Nodemailer no backend-node
+Criar um serviço (ex.: src/services/emailService.ts) com uma função que recebe destinatário, nome e link
+Configurações no .env: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, MAIL_FROM, FRONTEND_URL
+Para testar sem e-mail real: Ethereal (nodemailer.createTestAccount()), que gera um link para ver o e-mail no navegador
+No forgotPassword, trocar o console.log pelo envio, sem await: assim o tempo de resposta não denuncia se o e-mail existe
+6. Rota que valida o link: GET /reset-password/:token
+
+Gerar o hash do token recebido
+Buscar em password_resets onde used_at IS NULL e expires_at > NOW()
+Responder se é válido ou não. O front usa isso para mostrar “link expirado” antes de o usuário digitar a senha.
+7. Rota que troca a senha: POST /reset-password
+
+Receber token, password e confirmPassword
+Validar a senha com as mesmas regras do register: mínimo 8 caracteres, máximo 72 bytes, confirmação igual
+Buscar o token válido, do mesmo jeito do item 6
+Gerar o hash da senha com bcrypt, usando o mesmo custo (12) do arquivo
+Atualizar usuarios.password_hash
+Marcar o token como usado (used_at = NOW())
+Ideal: fazer esses dois UPDATE dentro de uma transação
+8. Telas no React
+
+ForgotPassword.jsx: campo de e-mail, chama POST /api/auth/forgot-password, mostra a mensagem
+ResetPassword.jsx: lê o token da URL com useSearchParams, valida com o GET, mostra os campos de nova senha, chama o POST e depois manda para /login com useNavigate
+Reaproveitar as classes do Signup.css (auth-page, auth-form-card, auth-input...) para ficar igual ao Login
+9. Rotas e link no front
+
+AppRoutes.jsx: adicionar /forgot-password e /reset-password
+Login.jsx: trocar o <span>Click Here!</span> por um <Link> para /forgot-password
+10. Corrigir o proxy do Vite
+No vite.config.js, o /api e o /uploads apontam para a porta 3000, mas o backend-node roda na 3001. Sem essa correção o front não alcança o backend. Foi esse o ECONNREFUSED do começo.
+
+11. Teste final do fluxo completo
+
+ Pedir o reset pela tela → o e-mail chega (ou aparece no Ethereal)
+ O link abre a tela de nova senha
+ Trocar a senha → login com a senha nova funciona e com a antiga não
+ Usar o mesmo link de novo → deve dar “link inválido”
+ E-mail que não existe → mesma mensagem, nada é enviado
+Quando travar em qualquer passo, me manda o código que você escreveu ou o erro, e eu te ajudo a achar o problema sem entregar a resposta pronta.
