@@ -60,7 +60,7 @@ export default function Headers() {
           </NavLink>
 
           <a
-            href="https://app.vagasnordestinas.com/dashboard"
+            href="https://vagas-nordestinas.vercel.app/dashboard"
             className="vne-header__nav-link"
             target="_blank"
             rel="noopener noreferrer"
