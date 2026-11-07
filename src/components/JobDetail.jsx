@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import applyIcon from "../img/raio.png";
 import "../styles/JobDetail.css";
 
@@ -254,12 +255,37 @@ function JobDetail({
     return date.toLocaleDateString("pt-BR");
   }
 
+  // Procura o link de candidatura em vários nomes de campo possíveis
+  function getApplyUrl() {
+    const candidates = [
+      job.url,
+      job.apply_url,
+      job.application_url,
+      job.application_link,
+      job.external_url,
+      job.link,
+    ];
+
+    for (const candidate of candidates) {
+      const value = String(candidate || "").trim();
+
+      if (/^https?:\/\//i.test(value)) {
+        return value;
+      }
+    }
+
+    return "";
+  }
+
+  const applyUrl = getApplyUrl();
+
   function handleApply() {
-    if (!job.url) {
+    if (!applyUrl) {
+      toast.error("Esta vaga ainda não possui link de candidatura.");
       return;
     }
 
-    window.open(job.url, "_blank", "noopener,noreferrer");
+    window.open(applyUrl, "_blank", "noopener,noreferrer");
   }
 
   const skills = getSkills();
@@ -430,25 +456,23 @@ function JobDetail({
         </div>
       </div>
 
-      {job.url && (
-        <button
-          type="button"
-          className="jd-apply-btn"
-          onClick={handleApply}
-          aria-label={`Candidatar-se à vaga ${
-            job.title || ""
-          }`}
-        >
-          <img
-            src={applyIcon}
-            alt=""
-            aria-hidden="true"
-            className="jd-apply-icon"
-          />
+      <button
+        type="button"
+        className="jd-apply-btn"
+        onClick={handleApply}
+        aria-label={`Candidatar-se à vaga ${
+          job.title || ""
+        }`}
+      >
+        <img
+          src={applyIcon}
+          alt=""
+          aria-hidden="true"
+          className="jd-apply-icon"
+        />
 
-          <span>Candidatar-se</span>
-        </button>
-      )}
+        <span>Candidatar-se</span>
+      </button>
     </div>
   );
 }

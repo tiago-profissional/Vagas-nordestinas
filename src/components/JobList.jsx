@@ -1,6 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 import "../styles/Home.css";
 
+// Gera os itens da paginação compacta: números e "..."
+// Ex.: [1, "...", 4, 5, 6, "...", 36]
+function getPageItems(current, total) {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  if (current <= 3) {
+    return [1, 2, 3, 4, "end-ellipsis", total];
+  }
+
+  if (current >= total - 2) {
+    return [1, "start-ellipsis", total - 3, total - 2, total - 1, total];
+  }
+
+  return [
+    1,
+    "start-ellipsis",
+    current - 1,
+    current,
+    current + 1,
+    "end-ellipsis",
+    total,
+  ];
+}
+
 function JobList({ jobs, selectedJobId, onSelect, noSearchResults }) {
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
@@ -137,21 +163,27 @@ function JobList({ jobs, selectedJobId, onSelect, noSearchResults }) {
             Prev
           </button>
 
-          {Array.from({ length: totalPages }, (_, index) => {
-            const page = index + 1;
+          {getPageItems(currentPage, totalPages).map((item) => {
+            if (typeof item === "string") {
+              return (
+                <span key={item} className="job-pagination__ellipsis">
+                  …
+                </span>
+              );
+            }
 
             return (
               <button
-                key={page}
+                key={item}
                 type="button"
                 className={
-                  currentPage === page
+                  currentPage === item
                     ? "job-pagination__btn job-pagination__btn--active"
                     : "job-pagination__btn"
                 }
-                onClick={() => goToPage(page)}
+                onClick={() => goToPage(item)}
               >
-                {page}
+                {item}
               </button>
             );
           })}

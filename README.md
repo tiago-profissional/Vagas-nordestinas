@@ -104,8 +104,7 @@ npm install
 npm start        # ou: npm run dev (reinicia sozinho ao salvar)
 ```
 
-<!-- TODO: liste os NOMES das variáveis do .env do backend/ (banco, porta, segredo do JWT...), sem valores,
-e crie backend/.env.example. -->
+Antes de iniciar, crie o `backend/.env` a partir do `backend/.env.example` e preencha os valores (veja "Variáveis de ambiente" abaixo). <!-- TODO: a busca não achou backend/.env. Confirme de onde o backend/ lê o .env (dotenv.config no server.js) -->
 
 ### 3. Frontend
 
@@ -128,7 +127,7 @@ npm run build    # compila para dist/
 npm start        # roda dist/server.js
 ```
 
-<!-- TODO: porta do backend-node e NOMES das variáveis do .env dele (sem valores). -->
+Antes de iniciar, crie o `backend-node/.env` a partir do `backend-node/.env.example`. <!-- TODO: diga a porta em que o backend-node escuta -->
 
 ### API PHP (produção / XAMPP)
 
@@ -162,9 +161,23 @@ npm start        # roda dist/server.js
 | `VITE_API_BASE_URL` | URL base da API. Se não for definida, o frontend usa `/api/index.php` |
 | `VITE_GITHUB_API_URL` | URL usada pelo serviço `githubJobsApi` <!-- TODO: confirme para que serve --> |
 
-O arquivo `.env.production` está no repositório e tem só essas duas URLs, sem segredos. Para mudar algo no seu computador, crie um `.env.local`, que o git ignora.
+O arquivo `.env.production` está no repositório e tem só essas duas URLs, sem segredos. Para mudar algo no seu computador, copie `.env.example` para `.env.local`, que o git ignora.
 
 Toda variável que começa com `VITE_` vai para o código que roda no navegador. **Nunca coloque chaves secretas nela.**
+
+### APIs (`backend/` e `backend-node/`)
+
+Copie o `.env.example` de cada pasta para `.env` e preencha. **O `.env` nunca vai para o git.**
+
+| Variável | Para que serve | `backend/` | `backend-node/` |
+|---|---|---|---|
+| `PORT` | Porta em que a API escuta | sim | sim |
+| `NODE_ENV` | Ambiente (`development` ou `production`) | sim | sim |
+| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Conexão com o banco de dados | sim | sim |
+| `JWT_SECRET` | Segredo que assina os tokens JWT. **Segredo** | sim | sim |
+| `COOKIE_SECRET` | Segredo dos cookies. **Segredo** | não | sim |
+| `FRONTEND_ORIGIN` | Endereço do frontend aceito pela API (CORS) <!-- TODO: confirme --> | não | sim |
+| `API_URL` | <!-- TODO: para que serve? --> | sim | não |
 
 ## Status
 

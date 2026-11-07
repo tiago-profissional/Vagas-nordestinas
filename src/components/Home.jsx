@@ -28,6 +28,9 @@ export default function Home({
   const [onlyRemote, setOnlyRemote] = useState(false);
   const [employmentType, setEmploymentType] = useState("");
 
+  // Controla o pop-up de detalhes da vaga (só tem efeito no mobile)
+  const [detailOpen, setDetailOpen] = useState(false);
+
   const [githubJobs, setGithubJobs] = useState([]);
 
   const [loadingGithubJobs, setLoadingGithubJobs] =
@@ -48,6 +51,37 @@ export default function Home({
     errorGithubJobDetail,
     setErrorGithubJobDetail,
   ] = useState(null);
+
+  function closeDetail() {
+    setDetailOpen(false);
+  }
+
+  // No mobile: trava a rolagem da página e fecha com a tecla Esc
+  useEffect(() => {
+    if (!detailOpen) return;
+
+    const isMobile = window.matchMedia(
+      "(max-width: 768px)"
+    ).matches;
+
+    if (!isMobile) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setDetailOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [detailOpen]);
 
   function parseSkills(skills) {
     if (Array.isArray(skills)) {
@@ -184,6 +218,7 @@ export default function Home({
   function handleSelect(job) {
     if (!job?.id) return;
 
+    setDetailOpen(true);
     navigate(`/jobs/${job.id}`);
   }
 
@@ -520,22 +555,48 @@ export default function Home({
               />
             </aside>
 
-            <section className="job-detail-panel">
-              <JobDetail
-                job={selectedJob}
-                loading={
-                  isGithubRoute
-                    ? loadingGithubJobDetail
-                    : false
+            <section
+              className={`job-detail-panel ${
+                detailOpen ? "is-open" : ""
+              }`}
+              onClick={(event) => {
+                // Clique no fundo escuro fecha o pop-up
+                if (event.target === event.currentTarget) {
+                  closeDetail();
                 }
-                error={
-                  isGithubRoute
-                    ? errorGithubJobDetail
-                    : null
-                }
-                notFound={selectedJobNotFound}
-                noSearchResults={noSearchResults}
-              />
+              }}
+            >
+              <div
+                className="job-detail-sheet"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Detalhes da vaga"
+              >
+                <button
+                  type="button"
+                  className="job-detail-close"
+                  onClick={closeDetail}
+                  aria-label="Fechar detalhes da vaga"
+                >
+                  ✕
+                </button>
+
+                <JobDetail
+                  job={selectedJob}
+                  loading={
+                    isGithubRoute
+                      ? loadingGithubJobDetail
+                      : false
+                  }
+                  error={
+                    isGithubRoute
+                      ? errorGithubJobDetail
+                      : null
+                  }
+                  notFound={selectedJobNotFound}
+                  noSearchResults={noSearchResults}
+                />
+              </div>
             </section>
           </main>
         </div>
