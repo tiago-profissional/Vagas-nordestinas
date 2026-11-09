@@ -1,0 +1,74 @@
+You already built part of the API. The confusion is that you have not built the full CRUD API yet.
+
+What you already finished:
+
+Created backend-node
+Installed/configured Node + Express
+Created server.ts
+Connected Node to MySQL through database.ts
+Confirmed the connection works with:
+GET /database
+Created ticketRoutes.ts
+Created ticketController.ts
+Created this endpoint:
+GET /api/tickets
+Wrote the SQL query that reads tickets from MySQL
+Confirmed the endpoint returns JSON
+
+So this part is already real API work:
+
+Frontend
+   ↓
+not connected yet
+
+Node API
+   ↓
+GET /api/tickets ✅
+   ↓
+MySQL ✅
+
+What you still need to do is:
+
+Connect TicketsPage.tsx to:
+http://localhost:3001/api/tickets
+Replace your fake/mock ticket data with the real response from Node.
+Build the remaining API endpoints:
+GET /api/tickets          ✅ done
+GET /api/tickets/:id      ⬜
+POST /api/tickets         ⬜
+PATCH /api/tickets/:id    ⬜
+DELETE /api/tickets/:id   ⬜
+
+Then connect each frontend action:
+
+List tickets        → GET
+Open ticket         → GET /:id
+Create ticket       → POST
+Edit/status update  → PATCH
+Delete ticket       → DELETE
+
+After that, add the finishing pieces:
+
+⬜ search
+⬜ status filter
+⬜ category filter
+⬜ loading state
+⬜ error state
+⬜ validation
+⬜ authentication
+⬜ show only the logged-in user's tickets
+
+So your exact position is:
+
+Node server                ✅
+MySQL connection           ✅
+First API endpoint         ✅
+Read tickets               ✅
+
+Frontend ↔ backend         ← NEXT
+
+Get one ticket             ⬜
+Create ticket              ⬜
+Update ticket              ⬜
+Delete ticket              ⬜
+Filters / auth / polish    ⬜

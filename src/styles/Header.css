@@ -124,6 +124,23 @@
   background: var(--cor-selecao);
 }
 
+.profile-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--altura-botao);
+  height: var(--altura-botao);
+  border-radius: 50%;
+  color: #8b4a16;
+  background: #f9e3cf;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.profile-icon:hover {
+  background: #f4d6ba;
+}
+
 /* BOTÕES */
 
 .vne-header__login-btn,

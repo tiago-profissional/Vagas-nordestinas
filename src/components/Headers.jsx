@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
-import brandLogo from "../img/Logo6.1.svg";
+import brandLogo from "../img/logo-vagas-nordestinas.png";
 import menuIcon from "../img/menu_hamburger.svg";
 
 import "../styles/Header.css";
@@ -15,6 +15,10 @@ export default function Headers() {
 
   function toggleMenu() {
     setMenuOpen((current) => !current);
+  }
+
+  function getNavLinkClass({ isActive }) {
+    return `vne-header__nav-link ${isActive ? "active" : ""}`;
   }
 
   return (
@@ -35,34 +39,35 @@ export default function Headers() {
 
         <nav
           id="menu-principal"
-          className={`vne-header__nav ${
-            menuOpen ? "is-open" : ""
-          }`}
+          className={`vne-header__nav ${menuOpen ? "is-open" : ""}`}
           aria-label="Navegação principal"
         >
-          <Link
-            className="vne-header__nav-link"
+          <NavLink
             to="/"
+            end
+            className={getNavLinkClass}
             onClick={closeMenu}
           >
             Vagas
-          </Link>
+          </NavLink>
 
-          <Link
-            className="vne-header__nav-link"
-            to="/reviews"
+          <NavLink
+            to="/dashboard"
+            className={getNavLinkClass}
             onClick={closeMenu}
           >
-            Avaliações da Empresa
-          </Link>
+            Dashboard
+          </NavLink>
 
-          <Link
+          <a
+            href="https://app.vagasnordestinas.com/dashboard"
             className="vne-header__nav-link"
-            to="/salaries"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={closeMenu}
           >
-            Cargos e Salários
-          </Link>
+            AI Resume
+          </a>
 
           <div className="vne-header__mobile-icons">
             <button
@@ -70,9 +75,18 @@ export default function Headers() {
               className="vne-header__mobile-search"
               onClick={closeMenu}
             >
-              <span aria-hidden="true">🔎</span>
+              <span aria-hidden="true">⌕</span>
               Buscar
             </button>
+
+            <Link
+              to="/user"
+              className="profile-icon"
+              onClick={closeMenu}
+              aria-label="Abrir perfil"
+            >
+              👤
+            </Link>
 
             <Link
               to="/login"
@@ -98,8 +112,17 @@ export default function Headers() {
             className="vne-header__icon-btn"
             aria-label="Buscar vagas"
           >
-            <span aria-hidden="true">🔎</span>
+            <span aria-hidden="true">⌕</span>
           </button>
+
+          <Link
+            to="/user"
+            className="profile-icon"
+            onClick={closeMenu}
+            aria-label="Abrir perfil"
+          >
+            👤
+          </Link>
 
           <Link
             to="/login"
@@ -122,9 +145,7 @@ export default function Headers() {
             menuOpen ? "is-active" : ""
           }`}
           onClick={toggleMenu}
-          aria-label={
-            menuOpen ? "Fechar menu" : "Abrir menu"
-          }
+          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={menuOpen}
           aria-controls="menu-principal"
         >
