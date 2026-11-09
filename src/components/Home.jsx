@@ -5,6 +5,8 @@ import JobList from "./JobList.jsx";
 import Headers from "./Headers.jsx";
 import SearchBar from "./SearchBar.jsx";
 import JobDetail from "./JobDetail.jsx";
+import Footer from "./Footer";
+import TermsConsentModal from "./TermsConsentModal";
 
 import {
   fetchGithubJobs,
@@ -27,17 +29,21 @@ export default function Home({
   const [employmentType, setEmploymentType] = useState("");
 
   const [githubJobs, setGithubJobs] = useState([]);
+
   const [loadingGithubJobs, setLoadingGithubJobs] =
     useState(false);
+
   const [errorGithubJobs, setErrorGithubJobs] =
     useState(null);
 
   const [githubJobDetail, setGithubJobDetail] =
     useState(null);
+
   const [
     loadingGithubJobDetail,
     setLoadingGithubJobDetail,
   ] = useState(false);
+
   const [
     errorGithubJobDetail,
     setErrorGithubJobDetail,
@@ -58,15 +64,25 @@ export default function Home({
   function normalizeGithubJob(job) {
     return {
       ...job,
+
       id: `github-${job.id}`,
+
       original_id: job.id,
+
       company: job.posted_by || "GitHub",
+
       city: "",
+
       state: "",
+
       work_mode: job.work_model,
+
       employment_type: "",
+
       type: "",
+
       source: "GitHub",
+
       skills: parseSkills(job.skills),
     };
   }
@@ -75,6 +91,7 @@ export default function Home({
     async function loadGithubJobs() {
       try {
         setLoadingGithubJobs(true);
+
         setErrorGithubJobs(null);
 
         const jobsData = await fetchGithubJobs({
@@ -113,18 +130,25 @@ export default function Home({
       if (!id || !String(id).startsWith("github-")) {
         setGithubJobDetail(null);
         setErrorGithubJobDetail(null);
+
         return;
       }
 
-      const githubId = String(id).replace("github-", "");
+      const githubId = String(id).replace(
+        "github-",
+        ""
+      );
 
       try {
         setLoadingGithubJobDetail(true);
         setErrorGithubJobDetail(null);
 
-        const job = await fetchGithubJobById(githubId);
+        const job =
+          await fetchGithubJobById(githubId);
 
-        setGithubJobDetail(normalizeGithubJob(job));
+        setGithubJobDetail(
+          normalizeGithubJob(job)
+        );
       } catch (error) {
         console.error(
           "Erro ao carregar detalhes do GitHub:",
@@ -146,10 +170,15 @@ export default function Home({
     loadGithubJobDetail();
   }, [id]);
 
-  const localJobsArray = Array.isArray(jobs) ? jobs : [];
+  const localJobsArray = Array.isArray(jobs)
+    ? jobs
+    : [];
 
   const jobsArray = useMemo(() => {
-    return [...localJobsArray, ...githubJobs];
+    return [
+      ...localJobsArray,
+      ...githubJobs,
+    ];
   }, [localJobsArray, githubJobs]);
 
   function handleSelect(job) {
@@ -159,13 +188,18 @@ export default function Home({
   }
 
   function normalizeText(value) {
-    return String(value || "").trim().toLowerCase();
+    return String(value || "")
+      .trim()
+      .toLowerCase();
   }
 
   function normalizeWorkMode(value) {
     const mode = normalizeText(value);
 
-    if (mode === "remote" || mode === "remoto") {
+    if (
+      mode === "remote" ||
+      mode === "remoto"
+    ) {
       return "remote";
     }
 
@@ -231,23 +265,42 @@ export default function Home({
 
   const filteredJobs = useMemo(() => {
     return jobsArray.filter((job) => {
-      const title = normalizeText(job.title);
-      const company = normalizeText(job.company);
-      const city = normalizeText(job.city);
-      const state = normalizeText(job.state);
-
-      const search = normalizeText(searchText);
-      const searchLocation = normalizeText(location);
-
-      const workMode = normalizeWorkMode(
-        job.work_mode || job.work_model || job.modality
+      const title = normalizeText(
+        job.title
       );
 
-      const jobType = normalizeEmploymentType(
-        job.employment_type ||
-          job.contractType ||
-          job.type
+      const company = normalizeText(
+        job.company
       );
+
+      const city = normalizeText(
+        job.city
+      );
+
+      const state = normalizeText(
+        job.state
+      );
+
+      const search = normalizeText(
+        searchText
+      );
+
+      const searchLocation =
+        normalizeText(location);
+
+      const workMode =
+        normalizeWorkMode(
+          job.work_mode ||
+            job.work_model ||
+            job.modality
+        );
+
+      const jobType =
+        normalizeEmploymentType(
+          job.employment_type ||
+            job.contractType ||
+            job.type
+        );
 
       const matchSearch =
         !search ||
@@ -258,7 +311,9 @@ export default function Home({
         !searchLocation ||
         city.includes(searchLocation) ||
         state.includes(searchLocation) ||
-        `${city} ${state}`.includes(searchLocation);
+        `${city} ${state}`.includes(
+          searchLocation
+        );
 
       const matchRemote = onlyRemote
         ? workMode === "remote"
@@ -266,7 +321,9 @@ export default function Home({
 
       const matchType = employmentType
         ? jobType ===
-          normalizeEmploymentType(employmentType)
+          normalizeEmploymentType(
+            employmentType
+          )
         : true;
 
       return (
@@ -285,17 +342,21 @@ export default function Home({
   ]);
 
   const noSearchResults =
-    hasSearchFilters && filteredJobs.length === 0;
+    hasSearchFilters &&
+    filteredJobs.length === 0;
 
   const isGithubRoute =
-    Boolean(id) && String(id).startsWith("github-");
+    Boolean(id) &&
+    String(id).startsWith("github-");
 
   const idDoesNotExist =
     Boolean(id) &&
     !isGithubRoute &&
     jobsArray.length > 0 &&
     !jobsArray.some(
-      (job) => String(job.id) === String(id)
+      (job) =>
+        String(job.id) ===
+        String(id)
     );
 
   const selectedJob = useMemo(() => {
@@ -317,7 +378,9 @@ export default function Home({
 
     return (
       jobsArray.find(
-        (job) => String(job.id) === String(id)
+        (job) =>
+          String(job.id) ===
+          String(id)
       ) || null
     );
   }, [
@@ -329,125 +392,156 @@ export default function Home({
     githubJobDetail,
   ]);
 
-  const selectedJobNotFound = isGithubRoute
-    ? Boolean(errorGithubJobDetail) &&
-      !loadingGithubJobDetail &&
-      !githubJobDetail
-    : idDoesNotExist;
+  const selectedJobNotFound =
+    isGithubRoute
+      ? Boolean(errorGithubJobDetail) &&
+        !loadingGithubJobDetail &&
+        !githubJobDetail
+      : idDoesNotExist;
 
   if (errorJobs) {
     return (
-      <div className="home-page page-wrapper">
-        <Headers />
+      <>
+        <TermsConsentModal />
 
-        <div className="container">
-          <div
-            className="error-container"
-            style={{
-              textAlign: "center",
-              padding: "40px",
-            }}
-          >
-            <h2>⚠️ Erro ao carregar vagas</h2>
+        <div className="home-page page-wrapper">
+          <Headers />
 
-            <p>{errorJobs}</p>
-
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
+          <div className="container">
+            <div
+              className="error-container"
               style={{
-                padding: "10px 20px",
-                marginTop: "20px",
-                cursor: "pointer",
+                textAlign: "center",
+                padding: "40px",
               }}
             >
-              Tentar novamente
-            </button>
+              <h2>
+                ⚠️ Erro ao carregar vagas
+              </h2>
+
+              <p>{errorJobs}</p>
+
+              <button
+                type="button"
+                onClick={() =>
+                  window.location.reload()
+                }
+                style={{
+                  padding: "10px 20px",
+                  marginTop: "20px",
+                  cursor: "pointer",
+                }}
+              >
+                Tentar novamente
+              </button>
+            </div>
           </div>
+
+          <Footer />
         </div>
-      </div>
+      </>
     );
   }
 
   if (loadingJobs) {
     return (
-      <div className="home-page page-wrapper">
-        <Headers />
+      <>
+        <TermsConsentModal />
 
-        <div className="container">
-          <p style={{ padding: "40px 0" }}>
-            Car Carregando vagas...
-          </p>
+        <div className="home-page page-wrapper">
+          <Headers />
+
+          <div className="container">
+            <p
+              style={{
+                padding: "40px 0",
+              }}
+            >
+              Carregando vagas...
+            </p>
+          </div>
+
+          <Footer />
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="home-page page-wrapper">
-      <Headers />
+    <>
+      <TermsConsentModal />
 
-      <div className="container">
-        <section className="search-area">
-          <SearchBar
-            searchText={searchText}
-            setSearchText={setSearchText}
-            location={location}
-            setLocation={setLocation}
-            onlyRemote={onlyRemote}
-            setOnlyRemote={setOnlyRemote}
-            employmentType={employmentType}
-            setEmploymentType={setEmploymentType}
-          />
-        </section>
+      <div className="home-page page-wrapper">
+        <Headers />
 
-        {loadingGithubJobs && (
-          <p style={{ padding: "10px 0" }}>
-            Carregando vagas do GitHub...
-          </p>
-        )}
-
-        {errorGithubJobs && (
-          <p
-            style={{
-              padding: "10px 0",
-              color: "red",
-            }}
-          >
-            Erro nas vagas do GitHub:{" "}
-            {errorGithubJobs}
-          </p>
-        )}
-
-        <main className="layout">
-          <aside className="job-list">
-            <JobList
-              jobs={filteredJobs}
-              selectedJobId={selectedJob?.id}
-              onSelect={handleSelect}
-              noSearchResults={noSearchResults}
-            />
-          </aside>
-
-          <section className="job-detail-panel">
-            <JobDetail
-              job={selectedJob}
-              loading={
-                isGithubRoute
-                  ? loadingGithubJobDetail
-                  : false
-              }
-              error={
-                isGithubRoute
-                  ? errorGithubJobDetail
-                  : null
-              }
-              notFound={selectedJobNotFound}
-              noSearchResults={noSearchResults}
+        <div className="container">
+          <section className="search-area">
+            <SearchBar
+              searchText={searchText}
+              setSearchText={setSearchText}
+              location={location}
+              setLocation={setLocation}
+              onlyRemote={onlyRemote}
+              setOnlyRemote={setOnlyRemote}
+              employmentType={employmentType}
+              setEmploymentType={setEmploymentType}
             />
           </section>
-        </main>
+
+          {loadingGithubJobs && (
+            <p
+              style={{
+                padding: "10px 0",
+              }}
+            >
+              Carregando vagas do GitHub...
+            </p>
+          )}
+
+          {errorGithubJobs && (
+            <p
+              style={{
+                padding: "10px 0",
+                color: "red",
+              }}
+            >
+              Erro nas vagas do GitHub:{" "}
+              {errorGithubJobs}
+            </p>
+          )}
+
+          <main className="layout">
+            <aside className="job-list">
+              <JobList
+                jobs={filteredJobs}
+                selectedJobId={selectedJob?.id}
+                onSelect={handleSelect}
+                noSearchResults={noSearchResults}
+              />
+            </aside>
+
+            <section className="job-detail-panel">
+              <JobDetail
+                job={selectedJob}
+                loading={
+                  isGithubRoute
+                    ? loadingGithubJobDetail
+                    : false
+                }
+                error={
+                  isGithubRoute
+                    ? errorGithubJobDetail
+                    : null
+                }
+                notFound={selectedJobNotFound}
+                noSearchResults={noSearchResults}
+              />
+            </section>
+          </main>
+        </div>
+
+        <Footer />
       </div>
-    </div>
+    </>
   );
 }

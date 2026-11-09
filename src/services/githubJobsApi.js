@@ -1,10 +1,12 @@
-const GITHUB_API_URL =
+const RAW_GITHUB_API_URL =
   import.meta.env.VITE_GITHUB_API_URL || "/api/index.php";
 
+const GITHUB_API_URL = RAW_GITHUB_API_URL.endsWith(".php")
+  ? RAW_GITHUB_API_URL
+  : `${RAW_GITHUB_API_URL.replace(/\/$/, "")}/index.php`;
+
 async function githubApi(route, query = {}) {
-  const params = new URLSearchParams({
-    route,
-  });
+  const params = new URLSearchParams({ route });
 
   Object.entries(query).forEach(([key, value]) => {
     if (value !== "" && value !== null && value !== undefined) {
@@ -15,18 +17,24 @@ async function githubApi(route, query = {}) {
   const response = await fetch(
     `${GITHUB_API_URL}?${params.toString()}`,
     {
+      method: "GET",
       headers: {
         Accept: "application/json",
       },
     }
   );
 
+  const responseText = await response.text();
   let data = null;
 
-  try {
-    data = await response.json();
-  } catch {
-    data = null;
+  if (responseText) {
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      throw new Error(
+        "A API de vagas do GitHub não retornou JSON válido."
+      );
+    }
   }
 
   if (!response.ok) {
@@ -58,7 +66,6 @@ export async function fetchGithubJobs({
     search,
   });
 
-  // Aceita tanto { jobs: [...] } quanto [...]
   if (Array.isArray(data?.jobs)) {
     return data.jobs;
   }
@@ -71,6 +78,10 @@ export async function fetchGithubJobs({
 }
 
 export async function fetchGithubJobById(id) {
+  if (!id) {
+    throw new Error("ID da vaga do GitHub não informado.");
+  }
+
   const data = await githubApi(
     `/github-jobs/${encodeURIComponent(id)}`
   );
