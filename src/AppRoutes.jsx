@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import DashboardJobs from "./components/dashboard";
 import CreateJob from "./components/CreateJob";
 import EditJob from "./components/EditJob";
+import AdminUsers from "./components/AdminUsers.jsx";
 import NotFound from "./components/NotFound";
 
 import Tickets from "./components/support/TicketsPage.tsx";
@@ -18,10 +19,8 @@ import PrivacyPolicyScreen from "./components/PrivacyPolicyScreen";
 import User from "./components/User.jsx";
 import RequireRole from "./components/RequireRole.jsx";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "/api/index.php";
-
-const JOBS_API_URL = `${API_BASE_URL}?route=/jobs`;
+import MinhasCandidaturas from "./components/minhas-candidaturas/minhas-candidaturas.jsx";
+import { fetchJobs } from "./services/jobsApi.js";
 
 export default function AppRoutes() {
   const [user, setUser] = useState(() => {
@@ -44,40 +43,10 @@ export default function AppRoutes() {
         setLoadingJobs(true);
         setErrorJobs(null);
 
-        const response = await fetch(JOBS_API_URL, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `Erro ${response.status} ao carregar vagas`,
-          );
-        }
-
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-          setJobs(data);
-        } else if (Array.isArray(data?.jobs)) {
-          setJobs(data.jobs);
-        } else {
-          setJobs([]);
-        }
+        setJobs(await fetchJobs({ signal: controller.signal }));
       } catch (error) {
         if (controller.signal.aborted) return;
-
-        console.error("Erro ao buscar vagas:", error);
-
-        setErrorJobs(
-          error instanceof Error
-            ? error.message
-            : "Erro ao carregar vagas",
-        );
-
+        setErrorJobs(error instanceof Error ? error.message : "Erro ao carregar vagas");
         setJobs([]);
       } finally {
         if (!controller.signal.aborted) {
@@ -91,13 +60,7 @@ export default function AppRoutes() {
     return () => controller.abort();
   }, []);
 
-  const home = (
-    <Home
-      jobs={jobs}
-      loadingJobs={loadingJobs}
-      errorJobs={errorJobs}
-    />
-  );
+  const home = <Home jobs={jobs} loadingJobs={loadingJobs} errorJobs={errorJobs} />;
 
   return (
     <Routes>
@@ -105,54 +68,24 @@ export default function AppRoutes() {
       <Route path="/jobs/:id" element={home} />
 
       <Route path="/signup" element={<Signup />} />
-      <Route
-        path="/login"
-        element={<Login onLogin={setUser} />}
-      />
-
-      <Route
-        path="/dashboard"
-        element={<DashboardJobs />}
-      />
+      <Route path="/login" element={<Login onLogin={setUser} />} />
 
       <Route path="/user" element={<User />} />
-
+      <Route path="/minhas-candidaturas" element={<MinhasCandidaturas />} />
       <Route path="/tickets" element={<Tickets />} />
-
-      <Route
-        path="/relatar-problema"
-        element={<RelatarProblema />}
-      />
-
+      <Route path="/relatar-problema" element={<RelatarProblema />} />
       <Route path="/footer" element={<Footer />} />
+      <Route path="/termos-de-uso" element={<TermsUseScreen />} />
+      <Route path="/politica-de-privacidade" element={<PrivacyPolicyScreen />} />
 
-      <Route
-        path="/termos-de-uso"
-        element={<TermsUseScreen />}
-      />
+      <Route element={<RequireRole user={user} roles={["recruiter", "admin"]} />}>
+        <Route path="/dashboard" element={<DashboardJobs />} />
+        <Route path="/create-job" element={<CreateJob />} />
+        <Route path="/edit-job/:id" element={<EditJob />} />
+      </Route>
 
-      <Route
-        path="/politica-de-privacidade"
-        element={<PrivacyPolicyScreen />}
-      />
-
-      <Route
-        element={
-          <RequireRole
-            user={user}
-            roles={["recruiter"]}
-          />
-        }
-      >
-        <Route
-          path="/create-job"
-          element={<CreateJob />}
-        />
-
-        <Route
-          path="/edit-job/:id"
-          element={<EditJob />}
-        />
+      <Route element={<RequireRole user={user} roles={["admin"]} />}>
+        <Route path="/admin/users" element={<AdminUsers />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

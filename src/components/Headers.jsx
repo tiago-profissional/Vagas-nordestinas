@@ -58,8 +58,6 @@ export default function Headers() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     closeMenu();
-
-    // Recarrega a página para limpar qualquer dado do usuário anterior.
     window.location.assign("/login");
   }
 
@@ -67,7 +65,6 @@ export default function Headers() {
     return `vne-header__nav-link ${isActive ? "active" : ""}`;
   }
 
-  // Fecha o menu da conta ao clicar fora ou apertar Esc.
   useEffect(() => {
     if (!accountOpen) return undefined;
 
@@ -120,13 +117,27 @@ export default function Headers() {
             Vagas
           </NavLink>
 
-          <NavLink
-            to="/dashboard"
-            className={getNavLinkClass}
-            onClick={closeMenu}
-          >
-            Dashboard
-          </NavLink>
+          {/* PAINEL DE VAGAS: Recrutador e Admin */}
+          {user && (user.role === "recruiter" || user.role === "admin") && (
+            <NavLink
+              to="/dashboard"
+              className={getNavLinkClass}
+              onClick={closeMenu}
+            >
+              Dashboard
+            </NavLink>
+          )}
+
+          {/* PAINEL ADMIN: Apenas Administradores */}
+          {user && user.role === "admin" && (
+            <NavLink
+              to="/admin/users"
+              className={getNavLinkClass}
+              onClick={closeMenu}
+            >
+              Gerenciar Usuários
+            </NavLink>
+          )}
 
           <a
             href="https://vagas-nordestinas.vercel.app/dashboard"
@@ -233,6 +244,17 @@ export default function Headers() {
                     Meu perfil
                   </Link>
 
+                  {user.role === "admin" && (
+                    <Link
+                      to="/admin/users"
+                      className="vne-header__account-item"
+                      role="menuitem"
+                      onClick={closeMenu}
+                    >
+                      Gerenciar Usuários
+                    </Link>
+                  )}
+
                   <button
                     type="button"
                     className="vne-header__account-item"
@@ -255,17 +277,11 @@ export default function Headers() {
                 👤
               </Link>
 
-              <Link
-                to="/login"
-                className="vne-header__login-btn"
-              >
+              <Link to="/login" className="vne-header__login-btn">
                 Entrar
               </Link>
 
-              <Link
-                to="/signup"
-                className="vne-header__signup-btn"
-              >
+              <Link to="/signup" className="vne-header__signup-btn">
                 Criar conta
               </Link>
             </>

@@ -12,9 +12,7 @@ import Tickets from "./components/support/TicketsPage.jsx";
 import Footer from "./components/Footer";
 import TermsUseScreen from "./components/TermsUseScreen";
 import PrivacyPolicyScreen from "./components/PrivacyPolicyScreen";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/index.php";
-const JOBS_API_URL = `${API_BASE_URL}?route=/jobs`;
+import { fetchJobs } from "./services/jobsApi.js";
 
 function AppRoutes() {
   const [jobs, setJobs] = useState([]);
@@ -29,27 +27,7 @@ function AppRoutes() {
         setLoadingJobs(true);
         setErrorJobs(null);
 
-        const response = await fetch(JOBS_API_URL, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erro ${response.status} ao carregar vagas`);
-        }
-
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-          setJobs(data);
-        } else if (Array.isArray(data?.jobs)) {
-          setJobs(data.jobs);
-        } else {
-          setJobs([]);
-        }
+        setJobs(await fetchJobs({ signal: controller.signal }));
       } catch (error) {
         if (error.name === "AbortError") return;
 

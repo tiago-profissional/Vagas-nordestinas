@@ -16,7 +16,6 @@ Plataforma de vagas (job board) com foco no Nordeste do Brasil. Candidatos busca
 - Cadastro e login de usuários
 - Listagem e pesquisa de vagas, com filtros por cargo, localização e modalidade, e página de detalhe
 - Criar, editar e excluir vagas (com confirmação antes de excluir), com painel (dashboard) para gerenciá-las
-- Integração com vagas externas do GitHub
 - Análise de currículo com IA, primeira versão: o usuário envia o currículo e vê dados profissionais, experiências e habilidades detectadas
 - Termos de uso e política de privacidade, com consentimento
 - Interface responsiva, com tratamento de carregamento e de erros
@@ -28,7 +27,7 @@ Plataforma de vagas (job board) com foco no Nordeste do Brasil. Candidatos busca
 
 - **Em desenvolvimento:** o frontend (Vite, porta 5173) encaminha `/api` e `/uploads` para `http://localhost:3001`, onde roda a API Node.js de `backend/`. O banco é um MariaDB em Docker. <!-- TODO: confirme que o server.js do backend/ escuta na porta 3001 -->
 - **Em produção (Hostinger):** o site chama a API em PHP, em `/api/index.php?route=...`, com MySQL. <!-- TODO: em que pasta está o código PHP? Ele ainda é o que roda em produção? -->
-- **`backend-node/`:** nova API em Node.js com TypeScript, **em desenvolvimento** (autenticação e sistema de chamados).
+- **`backend-node/`:** API em Node.js com TypeScript; a listagem e os detalhes das vagas são consultados no MySQL por essa API.
 
 ## Tecnologias
 
@@ -74,7 +73,7 @@ O parâmetro `route` leva o caminho do recurso, por exemplo `/api/index.php?rout
 |---|---|
 | `src/components/` | Telas e componentes (Home, Login, Signup, dashboard, CreateJob, EditJob, `support/`...) |
 | `src/hooks/` | `useAuth`, `useJobs`, `useCurrentUser`, `useLocalStorage` |
-| `src/services/` | Chamadas à API (`jobsApi`, `profileApi`, `githubJobsApi`) |
+| `src/services/` | Chamadas à API (`jobsApi`, `profileApi`) |
 | `src/types/` | Tipos TypeScript (`job`, `user`, `ticket`, `api`) |
 | `src/utils/` | `formatDate`, `validateEmail`, `parseResume` |
 | `src/styles/` | CSS de cada tela |
@@ -159,7 +158,7 @@ Antes de iniciar, crie o `backend-node/.env` a partir do `backend-node/.env.exam
 | Variável | Para que serve |
 |---|---|
 | `VITE_API_BASE_URL` | URL base da API. Se não for definida, o frontend usa `/api/index.php` |
-| `VITE_GITHUB_API_URL` | URL usada pelo serviço `githubJobsApi` <!-- TODO: confirme para que serve --> |
+| `VITE_NODE_API_BASE_URL` | URL base da API Node.js usada para listar e consultar vagas (padrão: `/api`) |
 
 O arquivo `.env.production` está no repositório e tem só essas duas URLs, sem segredos. Para mudar algo no seu computador, copie `.env.example` para `.env.local`, que o git ignora.
 

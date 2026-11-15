@@ -16,11 +16,13 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   try {
     const payload = jwt.verify(token, jwtSecret, { algorithms: ["HS256"] });
 
-    if (typeof payload === "string" || typeof payload.sub !== "string") {
+    // Correção: Agora aceita tanto string quanto número no 'sub'
+    if (typeof payload === "string" || !payload.sub) {
       throw new Error("Token sem usuário.");
     }
 
-    res.locals.userId = payload.sub;
+    // Força a conversão para string para o userController conseguir buscar no banco
+    res.locals.userId = String(payload.sub);
     next();
   } catch {
     res.status(401).json({ message: "Sessão expirada. Faça login novamente." });

@@ -162,17 +162,6 @@ $router->delete(
     "JobController@destroy"
 );
 
-// Vagas GitHub
-$router->get(
-    "/github-jobs",
-    "GithubJobController@index"
-);
-
-$router->get(
-    "/github-jobs/:id",
-    "GithubJobController@show"
-);
-
 // =========================
 // DESPACHAR ROTA
 // =========================

@@ -87,6 +87,10 @@ function calculateLocalPercentage(p, sk, av) {
 }
 
 function User() {
+  // Pega o usuário logado para descobrir o papel (role)
+  const localUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const roleName = localUser.role === 'recruiter' ? 'Recrutador' : localUser.role === 'admin' ? 'Administrador' : 'Candidato';
+
   const [profile, setProfile] = useState(emptyProfile);
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -419,6 +423,20 @@ function User() {
               <h2>{profile.name}</h2>
               <p>{profile.desiredRole}</p>
               {locationText && <span className="profile-location">⌖ {locationText}</span>}
+
+              {/* SELO DE TIPO DE CONTA (Não editável) */}
+              <div style={{
+                background: localUser.role === 'recruiter' ? '#d86b09' : '#dfcbb6',
+                color: localUser.role === 'recruiter' ? '#fff' : '#41362c',
+                padding: '4px 12px',
+                borderRadius: '20px',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                display: 'inline-block',
+                marginTop: '10px'
+              }}>
+                Perfil: {roleName}
+              </div>
 
               <button
                 className="change-photo"
