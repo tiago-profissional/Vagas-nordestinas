@@ -264,6 +264,11 @@ export async function updateUserRole(req: Request, res: Response, next: NextFunc
   res.set("Cache-Control", "no-store");
   try {
     const targetUserId = req.params.id;
+    if (typeof targetUserId !== "string" || !targetUserId.trim()) {
+      res.status(400).json({ message: "ID de usuário inválido." });
+      return;
+    }
+
     const body = objetoOuVazio(req.body, "Dados");
     const role = body.role;
     if (typeof role !== "string" || !["user", "recruiter", "admin"].includes(role)) {
