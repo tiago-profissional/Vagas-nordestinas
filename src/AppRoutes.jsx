@@ -89,7 +89,9 @@ export default function AppRoutes() {
       <Route
         path="/ai-resume"
         element={user ? <AiResume /> : <Navigate to="/login" replace />}
-      />
+      >
+        <Route path="compare" />
+      </Route>
       <Route path="/about" element={<About />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
