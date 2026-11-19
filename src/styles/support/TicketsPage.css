@@ -1,95 +1,11 @@
 .tickets-page {
   width: 100%;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   color: var(--cor-texto);
   background: var(--cor-fundo);
   font-family: var(--fonte-familia);
-}
-
-/* Header temporário */
-
-.tickets-header {
-  min-height: 80px;
-  padding-inline: var(--espaco-6);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--espaco-6);
-  position: relative;
-  z-index: var(--z-header);
-  background: var(--cor-superficie-suave);
-  border-bottom: 1px solid var(--cor-borda);
-}
-
-.tickets-brand {
-  color: var(--cor-titulo);
-  font-size: 1.75rem;
-  font-weight: 800;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.tickets-navigation {
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  gap: var(--espaco-7);
-}
-
-.tickets-navigation a {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  position: relative;
-  color: var(--cor-texto);
-  font-size: var(--fonte-sm);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.tickets-navigation a::after {
-  width: 0;
-  height: 3px;
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  background: var(--cor-primaria);
-  transition: width var(--transicao);
-}
-
-.tickets-navigation a:hover::after,
-.tickets-navigation a.active::after {
-  width: 100%;
-  left: 0;
-  right: auto;
-}
-
-.tickets-navigation a.active {
-  color: var(--cor-titulo);
-}
-
-.tickets-header-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--espaco-3);
-}
-
-.tickets-avatar {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--raio-pill);
-  color: var(--cor-titulo);
-  background: var(--cor-selecao);
-  font-size: var(--fonte-sm);
-  font-weight: 800;
-}
-
-.tickets-chevron {
-  color: var(--cor-titulo);
-  font-size: var(--fonte-xl);
 }
 
 /* Botões */
@@ -121,6 +37,7 @@
 
 .tickets-content {
   width: 100%;
+  flex: 1;
   max-width: var(--largura-container);
   margin-inline: auto;
   padding: var(--espaco-7) var(--espaco-6);
@@ -503,10 +420,6 @@
 /* Responsividade */
 
 @media (max-width: 1050px) {
-  .tickets-navigation {
-    display: none;
-  }
-
   .tickets-statistics {
     grid-template-columns: 1fr;
   }
@@ -517,20 +430,6 @@
 }
 
 @media (max-width: 768px) {
-  .tickets-header {
-    min-height: 68px;
-    padding-inline: var(--espaco-4);
-  }
-
-  .tickets-brand {
-    font-size: 1.25rem;
-  }
-
-  .tickets-avatar,
-  .tickets-chevron {
-    display: none;
-  }
-
   .tickets-primary-button {
     padding-inline: var(--espaco-3);
     font-size: var(--fonte-xs);
@@ -574,7 +473,7 @@
 }
 
 .tickets-page .tickets-error {
-  color: #a52a20;
+  color: var(--cor-erro);
 }
 
 .tickets-page .tickets-table-container {
@@ -589,7 +488,7 @@
 }
 
 .tickets-page .tickets-table th {
-  color: #7e4220;
+  color: var(--cor-titulo);
 }
 
 .tickets-page .tickets-table th,
@@ -599,13 +498,13 @@
 }
 
 .tickets-page .tickets-table tbody tr {
-  border-top: 1px solid #efd5bf;
+  border-top: 1px solid var(--cor-borda);
 }
 
 .tickets-page .tickets-description {
   max-width: 420px;
   margin: 8px 0 0;
-  color: #7e4220;
+  color: var(--cor-texto-secundario);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
@@ -613,23 +512,23 @@
 .tickets-page .tickets-status-badge {
   display: inline-block;
   padding: 6px 10px;
-  border: 1px solid #ea7805;
+  border: 1px solid var(--cor-primaria);
   border-radius: 20px;
-  background: #fff5ea;
-  color: #7e4220;
+  background: var(--cor-fundo);
+  color: var(--cor-titulo);
   white-space: nowrap;
 }
 
 .tickets-page .tickets-status-in_analysis {
-  background: #f1b435;
-  color: #191815;
-  border-color: #f1b435;
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso);
+  border-color: var(--cor-destaque);
 }
 
 .tickets-page .tickets-status-resolved {
-  background: #191815;
-  color: #fff5ea;
-  border-color: #191815;
+  background: var(--cor-sucesso-fundo);
+  color: var(--cor-sucesso);
+  border-color: var(--cor-sucesso);
 }
 
 .tickets-page .tickets-primary-button:disabled {

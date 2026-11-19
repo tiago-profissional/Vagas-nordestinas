@@ -27,7 +27,11 @@ export async function initDatabase() {
     await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'vagas_nordestinas'}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;`);
     await tempConn.end();
 
+<<<<<<< HEAD
     // Cria a tabela de usuários e perfil se não existir
+=======
+    // 1) Tabela de usuários e perfil
+>>>>>>> tiago/tickets-node
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT(11) NOT NULL AUTO_INCREMENT,
@@ -53,7 +57,26 @@ export async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
+<<<<<<< HEAD
     console.log('✅ Banco de dados MySQL conectado e tabela "users" pronta para uso!');
+=======
+    // 2) Tabela de tokens para redefinição de senha (depende de users)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS password_resets (
+        id INT(11) NOT NULL AUTO_INCREMENT,
+        user_id INT(11) NOT NULL,
+        token_hash CHAR(64) NOT NULL,
+        expires_at DATETIME NOT NULL,
+        used_at DATETIME DEFAULT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+        PRIMARY KEY (id),
+        UNIQUE KEY (token_hash),
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    console.log('✅ Banco de dados MySQL conectado e tabelas "users" e "password_resets" prontas!');
+>>>>>>> tiago/tickets-node
   } catch (err) {
     console.warn('⚠️ [Aviso MySQL] Não foi possível conectar ao MySQL na porta 3306.');
     console.warn('   Motivo:', err.message);
@@ -61,4 +84,8 @@ export async function initDatabase() {
   }
 }
 
+<<<<<<< HEAD
 export default pool;
+=======
+export default pool;
+>>>>>>> tiago/tickets-node

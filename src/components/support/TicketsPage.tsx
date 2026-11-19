@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Footer from "../Footer.jsx";
+import Headers from "../Headers.jsx";
 import "../../styles/support/TicketsPage.css";
 
 const API_URL = (
@@ -163,8 +165,10 @@ function MyTickets() {
       setError("");
 
       try {
+        const token = localStorage.getItem("token");
         const response = await fetch(API_URL, {
           credentials: "include",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
           signal: controller.signal,
         });
 
@@ -290,49 +294,12 @@ function MyTickets() {
   ];
 
   return (
-    <div className="tickets-page">
-      <header className="tickets-header">
-        <a className="tickets-brand" href="/">
-          Vagas Nordestinas
-        </a>
-
-        <nav
-          className="tickets-navigation"
-          aria-label="Navegação principal"
-        >
-          <a href="/">Vagas</a>
-          <a href="/dashboard">Dashboard</a>
-          <a href="/curriculo">Meu currículo</a>
-
-          <a
-            className="active"
-            href="/Tickets"
-            aria-current="page"
-          >
-            Meus chamados
-          </a>
-        </nav>
-
-        <div className="tickets-header-actions">
-          <div className="tickets-avatar">TR</div>
-          <span className="tickets-chevron" aria-hidden="true">
-            ⌄
-          </span>
-
-          <button
-            className="tickets-primary-button"
-            type="button"
-            onClick={abrirNovoChamado}
-          >
-            Relatar problema
-          </button>
-        </div>
-      </header>
-
+    <div className="tickets-page page-wrapper">
+      <Headers />
       <main className="tickets-content">
         <section className="tickets-title-section">
           <div className="tickets-title-row">
-            <h1>Meus chamados</h1>
+            <h1>Central de suporte</h1>
           </div>
 
           <p>
@@ -548,6 +515,7 @@ function MyTickets() {
           </button>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -141,36 +141,55 @@
   padding-top: var(--espaco-5);
 }
 
+/* Botões em formato pill, no padrão dos chips da busca */
 .cj-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: var(--altura-botao);
-  padding: var(--espaco-2) var(--espaco-5);
+  padding: var(--espaco-2) var(--espaco-6);
   border: 1px solid transparent;
-  border-radius: var(--raio-campo);
+  border-radius: var(--raio-pill);
+  font-family: inherit;
   font-size: var(--fonte-sm);
-  font-weight: 700;
-  transition: background-color var(--transicao);
+  font-weight: var(--peso-bold);
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--transicao),
+    border-color var(--transicao),
+    color var(--transicao);
+}
+
+.cj-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .cj-btn-primary {
   color: var(--cor-sobre-primaria);
   background: var(--cor-primaria);
+  border-color: var(--cor-primaria);
 }
 
 .cj-btn-primary:hover:not(:disabled) {
   background: var(--cor-primaria-hover);
+  border-color: var(--cor-primaria-hover);
 }
 
 .cj-btn-ghost {
   color: var(--cor-titulo);
   background: var(--cor-superficie);
-  border-color: var(--cor-borda-forte);
+  border-color: var(--cor-titulo);
 }
 
 .cj-btn-ghost:hover:not(:disabled) {
   background: var(--cor-selecao);
+}
+
+.cj-btn:focus-visible {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 2px;
 }
 
 @media (max-width: 600px) {

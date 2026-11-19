@@ -5,6 +5,8 @@
   width: 100%;
   min-width: 0;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   padding-bottom: var(--espaco-5);
   background: var(--cor-fundo);
   color: var(--cor-texto);
@@ -82,6 +84,7 @@
 
 .vn-page .vn-main {
   width: 100%;
+  flex: 1;
   max-width: var(--largura-container);
   margin-inline: auto;
   padding: var(--espaco-5) var(--espaco-6);

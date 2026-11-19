@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   ChevronDown,
@@ -11,6 +11,9 @@ import {
   LoaderCircle,
 } from "lucide-react";
 
+import Footer from "../../Footer.jsx";
+import Headers from "../../Headers.jsx";
+import { useCurrentUser } from "../../../hooks/useCurrentUser.js";
 import "../../../styles/support/relatar-problema/support_ticket.css";
 
 const API_URL = (
@@ -28,6 +31,8 @@ const categorias = [
 
 export default function RelatarProblemaPage() {
   const navigate = useNavigate();
+  const user = useCurrentUser();
+  const isAdmin = user?.role === "admin";
   const tituloRef = useRef<HTMLInputElement>(null);
 
   const [titulo, setTitulo] = useState("");
@@ -36,9 +41,10 @@ export default function RelatarProblemaPage() {
 
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState(false);
 
-  function verChamados() {
-    navigate("/tickets");
+  function voltarParaSuporte() {
+    navigate(isAdmin ? "/tickets" : "/");
   }
 
   function focarFormulario() {
@@ -53,6 +59,7 @@ export default function RelatarProblemaPage() {
     if (enviando) return;
 
     setErro("");
+    setSucesso(false);
 
     const tituloLimpo = titulo.trim();
     const descricaoLimpa = descricao.trim();
@@ -88,9 +95,9 @@ export default function RelatarProblemaPage() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          titulo: tituloLimpo,
-          categoria,
-          descricao: descricaoLimpa,
+          title: tituloLimpo,
+          category: categoria,
+          description: descricaoLimpa,
         }),
       });
 
@@ -105,7 +112,13 @@ export default function RelatarProblemaPage() {
         throw new Error(mensagem);
       }
 
-      navigate("/tickets");
+      if (isAdmin) {
+        navigate("/tickets");
+      } else {
+        setTitulo("");
+        setDescricao("");
+        setSucesso(true);
+      }
     } catch (error: unknown) {
       setErro(
         error instanceof Error
@@ -119,51 +132,7 @@ export default function RelatarProblemaPage() {
 
   return (
     <div className="vn-page">
-      <header className="vn-header">
-        <div className="vn-header-content">
-          <Link className="vn-brand" to="/">
-            Vagas Nordestinas
-          </Link>
-
-          <nav
-            className="vn-nav"
-            aria-label="Navegação principal"
-          >
-            <Link to="/">Vagas</Link>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/curriculo">Meu currículo</Link>
-
-            <Link
-              className="vn-nav-active"
-              to="/tickets"
-            >
-              Meus chamados
-            </Link>
-          </nav>
-
-          <div className="vn-header-actions">
-            <span
-              className="vn-profile"
-              aria-label="Tiago Ramon"
-            >
-              <span className="vn-avatar">TR</span>
-              <ChevronDown
-                size={18}
-                aria-hidden="true"
-              />
-            </span>
-
-            <button
-              type="button"
-              className="vn-button vn-primary"
-              onClick={focarFormulario}
-              disabled={enviando}
-            >
-              Relatar problema
-            </button>
-          </div>
-        </div>
-      </header>
+      <Headers />
 
       <main className="vn-main">
         <nav
@@ -172,10 +141,10 @@ export default function RelatarProblemaPage() {
         >
           <button
             type="button"
-            onClick={verChamados}
+            onClick={voltarParaSuporte}
             disabled={enviando}
           >
-            Meus chamados
+            {isAdmin ? "Meus chamados" : "Vagas"}
           </button>
 
           <span aria-hidden="true">/</span>
@@ -200,6 +169,15 @@ export default function RelatarProblemaPage() {
           </div>
         )}
 
+        {sucesso && (
+          <div
+            className="vn-feedback vn-success"
+            role="status"
+          >
+            Chamado enviado. A equipe de suporte recebeu seu relato.
+          </div>
+        )}
+
         <div className="vn-grid">
           <form
             className="vn-card vn-form"
@@ -219,7 +197,10 @@ export default function RelatarProblemaPage() {
                   type="text"
                   value={titulo}
                   onChange={(event) =>
-                    setTitulo(event.target.value)
+                    {
+                      setSucesso(false);
+                      setTitulo(event.target.value);
+                    }
                   }
                   placeholder="Microfone não reconhecido na entrevista"
                   minLength={5}
@@ -239,7 +220,10 @@ export default function RelatarProblemaPage() {
                     name="categoria"
                     value={categoria}
                     onChange={(event) =>
-                      setCategoria(event.target.value)
+                      {
+                        setSucesso(false);
+                        setCategoria(event.target.value);
+                      }
                     }
                     required
                   >
@@ -267,7 +251,10 @@ export default function RelatarProblemaPage() {
                   name="descricao"
                   value={descricao}
                   onChange={(event) =>
-                    setDescricao(event.target.value)
+                    {
+                      setSucesso(false);
+                      setDescricao(event.target.value);
+                    }
                   }
                   placeholder="Ao iniciar a entrevista, o sistema não reconheceu meu microfone. Autorizei o acesso no navegador e tentei novamente, mas o problema continuou."
                   minLength={20}
@@ -289,7 +276,7 @@ export default function RelatarProblemaPage() {
                 <button
                   type="button"
                   className="vn-button vn-secondary"
-                  onClick={verChamados}
+                  onClick={voltarParaSuporte}
                 >
                   Cancelar
                 </button>
@@ -368,21 +355,24 @@ export default function RelatarProblemaPage() {
               <h3>Depois do envio</h3>
 
               <p>
-                Acompanhe o status em Meus chamados.
+                {isAdmin
+                  ? "Acompanhe o status em Meus chamados."
+                  : "A equipe de suporte receberá seu relato."}
               </p>
 
               <button
                 type="button"
                 className="vn-text-link"
-                onClick={verChamados}
+                onClick={voltarParaSuporte}
                 disabled={enviando}
               >
-                Ver meus chamados
+                {isAdmin ? "Ver meus chamados" : "Voltar às vagas"}
               </button>
             </div>
           </aside>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -1,0 +1,108 @@
+.vn-ai-resume {
+  display: flex;
+  flex-direction: column;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+
+.vn-ai-resume__main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  width: 100%;
+  padding: var(--espaco-6);
+}
+
+.vn-ai-resume__content {
+  width: 100%;
+  max-width: var(--largura-container);
+  margin: 0 auto;
+  padding: clamp(var(--espaco-5), 6vw, var(--espaco-7));
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+  text-align: center;
+}
+
+.vn-ai-resume__eyebrow {
+  margin-bottom: var(--espaco-2);
+  color: var(--cor-primaria);
+  font-size: var(--fonte-sm);
+  font-weight: var(--peso-bold);
+}
+
+.vn-ai-resume__content h1 {
+  color: var(--cor-titulo);
+  font-size: var(--fonte-titulo);
+}
+
+.vn-ai-resume__description {
+  max-width: 720px;
+  margin: var(--espaco-4) auto 0;
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-lg);
+  line-height: 1.7;
+}
+
+.vn-ai-resume__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--espaco-3);
+  margin-top: var(--espaco-5);
+}
+
+.vn-ai-resume__button {
+  min-height: var(--altura-botao);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-2) var(--espaco-5);
+  border: 1px solid var(--cor-primaria);
+  border-radius: var(--raio-pequeno);
+  font-weight: var(--peso-bold);
+  text-decoration: none;
+  transition:
+    color var(--transicao),
+    background-color var(--transicao),
+    border-color var(--transicao);
+}
+
+.vn-ai-resume__button--primary {
+  color: var(--cor-sobre-primaria);
+  background: var(--cor-primaria);
+}
+
+.vn-ai-resume__button--primary:hover {
+  background: var(--cor-primaria-hover);
+  border-color: var(--cor-primaria-hover);
+}
+
+.vn-ai-resume__button--secondary {
+  color: var(--cor-titulo);
+  background: var(--cor-superficie);
+}
+
+.vn-ai-resume__button--secondary:hover {
+  background: var(--cor-selecao);
+}
+
+@media (max-width: 560px) {
+  .vn-ai-resume__main {
+    padding: var(--espaco-4);
+  }
+
+  .vn-ai-resume__content {
+    padding: var(--espaco-5) var(--espaco-4);
+  }
+
+  .vn-ai-resume__description {
+    font-size: var(--fonte-base);
+  }
+
+  .vn-ai-resume__actions,
+  .vn-ai-resume__button {
+    width: 100%;
+  }
+}

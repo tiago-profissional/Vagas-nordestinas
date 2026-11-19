@@ -1,201 +1,73 @@
-.editjob-page {
-  min-height: 100vh;
-  padding: var(--espaco-6) var(--espaco-4);
-  background: var(--cor-fundo);
-}
+/* ===== Botões da edição de vaga (colar no FINAL do EditJob.css) =====
+   Padrão pill dos chips da busca, usando as variáveis do cores.css */
 
-.editjob-page__inner {
-  width: 100%;
-  max-width: var(--largura-container);
-  margin-inline: auto;
-}
-
-.editjob-page__title {
-  color: var(--cor-titulo);
-  font-size: var(--fonte-titulo);
-  text-align: center;
-  margin-bottom: var(--espaco-5);
-}
-
-.editjob-page__loading {
-  color: var(--cor-texto-secundario);
-  text-align: center;
-}
-
-.editjob-layout {
-  display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  gap: var(--espaco-5);
-  align-items: start;
-}
-
-.editjob-layout__sidebar,
-.editjob-layout__main,
-.editjob-layout__search,
-.editjob-layout__list {
-  min-width: 0;
-}
-
-.editjob-layout__sidebar {
-  display: grid;
-  gap: var(--espaco-4);
-}
-
-.editjob-layout__list {
-  min-height: 0;
-}
-
-.editjob-form-card {
-  width: 100%;
-  padding: var(--espaco-5);
-  background: var(--cor-superficie);
-  border: 1px solid var(--cor-borda);
-  border-radius: var(--raio-card);
-  box-shadow: var(--sombra-card);
-}
-
-.editjob-form-card__title {
-  color: var(--cor-titulo);
-  font-size: var(--fonte-xl);
-  margin-bottom: var(--espaco-5);
-  padding-bottom: var(--espaco-4);
-  border-bottom: 1px solid var(--cor-borda);
-}
-
-.editjob-form-card__error {
-  color: var(--cor-erro);
-  background: var(--cor-erro-fundo);
-  padding: var(--espaco-3);
-  border-radius: var(--raio-campo);
-  margin-bottom: var(--espaco-4);
-}
-
-.editjob-form-card__success {
-  color: var(--cor-sucesso);
-  background: var(--cor-sucesso-fundo);
-  padding: var(--espaco-3);
-  border-radius: var(--raio-campo);
-  margin-bottom: var(--espaco-4);
-}
-
-.editjob-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--espaco-4);
-}
-
-.editjob-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--espaco-2);
-  min-width: 0;
-}
-
-.editjob-field--full {
-  grid-column: 1 / -1;
-}
-
-.editjob-field label {
-  color: var(--cor-titulo);
-  font-size: var(--fonte-sm);
-  font-weight: 600;
-}
-
-.editjob-field input,
-.editjob-field select,
-.editjob-field textarea {
-  width: 100%;
-  min-width: 0;
-  min-height: var(--altura-campo);
-  padding: var(--espaco-3);
-  background: var(--cor-superficie);
-  color: var(--cor-texto);
-  border: 1px solid var(--cor-borda-forte);
-  border-radius: var(--raio-campo);
-  font-size: var(--fonte-base);
-}
-
-.editjob-field textarea {
-  min-height: 140px;
-  resize: vertical;
-}
-
-.editjob-field input:focus,
-.editjob-field select:focus,
-.editjob-field textarea:focus {
-  border-color: var(--cor-titulo);
-  box-shadow: 0 0 0 3px var(--cor-foco);
-}
-
-.editjob-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--espaco-3);
-  padding-top: var(--espaco-3);
-}
-
-.editjob-btn {
+.editjob-page .editjob-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: var(--altura-botao);
-  padding: var(--espaco-2) var(--espaco-4);
+  padding: var(--espaco-2) var(--espaco-6);
   border: 1px solid transparent;
-  border-radius: var(--raio-campo);
+  border-radius: var(--raio-pill);
+  font-family: inherit;
   font-size: var(--fonte-sm);
-  font-weight: 700;
+  font-weight: var(--peso-bold);
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--transicao),
+    border-color var(--transicao),
+    color var(--transicao);
 }
 
-.editjob-btn--cancel {
-  background: var(--cor-superficie);
+.editjob-page .editjob-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.editjob-page .editjob-btn:focus-visible {
+  outline: 3px solid var(--cor-destaque);
+  outline-offset: 2px;
+}
+
+/* Salvar: laranja cheio, como "Remoto e presencial" */
+.editjob-page .editjob-btn--save {
+  color: var(--cor-sobre-primaria);
+  background: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+}
+
+.editjob-page .editjob-btn--save:hover:not(:disabled) {
+  background: var(--cor-primaria-hover);
+  border-color: var(--cor-primaria-hover);
+}
+
+/* Cancelar: contorno marrom, como "Apenas remoto" */
+.editjob-page .editjob-btn--cancel {
   color: var(--cor-titulo);
-  border-color: var(--cor-borda-forte);
+  background: var(--cor-superficie);
+  border-color: var(--cor-titulo);
 }
 
-.editjob-btn--cancel:hover {
+.editjob-page .editjob-btn--cancel:hover:not(:disabled) {
   background: var(--cor-selecao);
 }
 
-.editjob-btn--delete {
-  background: var(--cor-erro);
-  color: var(--cor-superficie);
+/* Delete: contorno vermelho */
+.editjob-page .editjob-btn--delete {
+  color: var(--cor-erro);
+  background: var(--cor-superficie);
+  border-color: var(--cor-erro);
 }
 
-.editjob-btn--delete:hover {
-  background: var(--cor-erro-hover);
+.editjob-page .editjob-btn--delete:hover:not(:disabled) {
+  color: var(--cor-erro-hover);
+  background: var(--cor-erro-fundo);
+  border-color: var(--cor-erro-hover);
 }
 
-.editjob-btn--save {
-  background: var(--cor-primaria);
-  color: var(--cor-sobre-primaria);
-}
-
-.editjob-btn--save:hover {
-  background: var(--cor-primaria-hover);
-}
-
-@media (max-width: 1000px) {
-  .editjob-layout {
-    grid-template-columns: 240px minmax(0, 1fr);
-    gap: var(--espaco-4);
-  }
-}
-
-@media (max-width: 768px) {
-  .editjob-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .editjob-form-card {
-    padding: var(--espaco-4);
-  }
-}
-
-@media (max-width: 520px) {
-  .editjob-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .editjob-btn {
-    flex: 1 1 100px;
+@media (max-width: 600px) {
+  .editjob-page .editjob-btn {
+    flex: 1 1 120px;
   }
 }

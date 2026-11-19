@@ -31,13 +31,13 @@ lerna-debug.log*
 
 # Variáveis de ambiente (senhas, chaves) - nunca vão para o Git
 .env*
-!.env.example
 
 # Docker: dump do banco tem dados pessoais
 docker/mysql/init/*.sql
 
 # Uploads de usuários
 backend/uploads/
+backend/uploads/*
 backend-node/uploads/
 
 # Editor e sistema
@@ -51,6 +51,11 @@ backend-node/uploads/
 *.sln
 *.sw?
 *.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
 bash.exe.stackdump
 
 # Vercel

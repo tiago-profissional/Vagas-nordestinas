@@ -1,34 +1,29 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { createJobApi } from "../services/jobsApi.js";
 
 import Headers from "./Headers.jsx";
 
 import "../styles/createjob.css";
 
-/*
-  API PHP do Vagas Nordestinas.
-
-  O index.php recebe a rota através de:
-  ?route=/jobs
-*/
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/index.php";
-const API_URL = `${API_BASE_URL}?route=/jobs`;
+const EMPTY_FORM = {
+  title: "",
+  company: "",
+  city: "",
+  state: "",
+  work_mode: "remote",
+  employment_type: "full_time",
+  salary_min: "",
+  salary_max: "",
+  url: "",
+  description: "",
+};
 
 export default function CreateJob({ onCancel }) {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    title: "",
-    company: "",
-    city: "",
-    state: "",
-    work_mode: "remote",
-    employment_type: "full_time",
-    salary_min: "",
-    salary_max: "",
-    description: "",
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -50,53 +45,7 @@ export default function CreateJob({ onCancel }) {
   }
 
   async function createJob(payload) {
-    console.log("📤 Enviando vaga:", payload);
-    console.log("🌐 Endpoint:", API_URL);
-
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    console.log("📥 Status da resposta:", response.status);
-
-    /*
-      Lemos a resposta como texto primeiro.
-
-      Assim conseguimos enxergar erros PHP,
-      JSON inválido, warnings, etc.
-    */
-    const responseText = await response.text();
-
-    console.log("📥 Resposta bruta do backend:", responseText);
-
-    let data = null;
-
-    if (responseText) {
-      try {
-        data = JSON.parse(responseText);
-      } catch (error) {
-        console.error(
-          "⚠️ O backend não retornou JSON válido:",
-          responseText
-        );
-      }
-    }
-
-    if (!response.ok) {
-      const message =
-        data?.message ||
-        data?.error ||
-        `Erro ${response.status}: não foi possível cadastrar a vaga.`;
-
-      throw new Error(message);
-    }
-
-    return data || { ...payload };
+    return createJobApi(payload);
   }
 
   async function handleSubmit(e) {
@@ -140,6 +89,15 @@ export default function CreateJob({ onCancel }) {
       return;
     }
 
+    const applyUrl = form.url.trim();
+
+    if (applyUrl && !/^https?:\/\//i.test(applyUrl)) {
+      toast.error(
+        "O link de candidatura precisa começar com http:// ou https://"
+      );
+      return;
+    }
+
     const payload = {
       title: form.title.trim(),
       company: form.company.trim(),
@@ -150,6 +108,8 @@ export default function CreateJob({ onCancel }) {
       salary_min: salaryMin,
       salary_max: salaryMax,
       description: form.description.trim(),
+      // Só envia o link se foi preenchido
+      ...(applyUrl ? { url: applyUrl } : {}),
     };
 
     const loadingToast = toast.loading("Publicando vaga...");
@@ -158,26 +118,13 @@ export default function CreateJob({ onCancel }) {
       setSubmitting(true);
 
       const createdJob = await createJob(payload);
-
-      console.log("✅ Vaga criada:", createdJob);
-
       toast.dismiss(loadingToast);
 
       toast.success(
         `Vaga "${createdJob?.title || form.title}" publicada com sucesso!`
       );
 
-      setForm({
-        title: "",
-        company: "",
-        city: "",
-        state: "",
-        work_mode: "remote",
-        employment_type: "full_time",
-        salary_min: "",
-        salary_max: "",
-        description: "",
-      });
+      setForm(EMPTY_FORM);
 
       setTimeout(() => {
         if (typeof onCancel === "function") {
@@ -188,8 +135,6 @@ export default function CreateJob({ onCancel }) {
       }, 700);
     } catch (error) {
       toast.dismiss(loadingToast);
-
-      console.error("❌ ERRO ao criar vaga:", error);
 
       if (
         error instanceof TypeError &&
@@ -342,6 +287,22 @@ export default function CreateJob({ onCancel }) {
                     setField("salary_max", e.target.value)
                   }
                   placeholder="7000"
+                />
+              </div>
+
+              <div className="cj-field cj-field-full">
+                <label className="cj-label">
+                  Link para candidatura (opcional)
+                </label>
+
+                <input
+                  className="cj-input"
+                  type="url"
+                  value={form.url}
+                  onChange={(e) =>
+                    setField("url", e.target.value)
+                  }
+                  placeholder="https://empresa.com/vagas/123"
                 />
               </div>
 

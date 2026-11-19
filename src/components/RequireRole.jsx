@@ -6,7 +6,7 @@ export default function RequireRole({ user, roles }) {
   }
 
   if (!roles.includes(user.role)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/profile" replace />;
   }
 
   return <Outlet />;

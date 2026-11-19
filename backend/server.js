@@ -156,8 +156,11 @@ const renderDbViewer = (req, res) => {
           <pre>${JSON.stringify(db, null, 2)}</pre>
         </div>
       </div>
+<<<<<<< HEAD
 
       <span>VAGABUNDO É FODA</span>
+=======
+>>>>>>> tiago/tickets-node
     </body>
     </html>
   `);

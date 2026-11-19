@@ -22,6 +22,13 @@ function DashboardJobs() {
       navigate("/login");
       return;
     }
+    
+    // BLOQUEIA QUEM NÃO É RECRUTADOR OU ADMIN
+    if (user.role !== 'recruiter' && user.role !== 'admin') {
+      toast.error("Acesso restrito: Apenas recrutadores podem acessar o Dashboard.");
+      navigate("/");
+      return;
+    }
 
     loadJobs();
   }, []);

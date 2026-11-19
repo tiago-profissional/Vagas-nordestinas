@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { apiRequest } from "../services/apiClient.js";
 import "../styles/Signup.css";
 
 function Login({ onLogin }) {
@@ -25,25 +26,32 @@ function Login({ onLogin }) {
 
     setLoading(true);
 
-    setTimeout(() => {
-      const demoUser = {
-        id: Date.now(),
-        name: "Demo User",
-        email,
-        role: "candidate",
-      };
+    try {
+      const data = await apiRequest("/auth/login", {
+        method: "POST",
+        body: { email: email.trim(), password },
+      });
+      if (!data.access_token || !data.user) {
+        throw new Error("A API não retornou os dados de sessão esperados.");
+      }
 
-      localStorage.setItem("user", JSON.stringify(demoUser));
-      onLogin(demoUser);
+      // O token é o que a página de perfil usa para saber quem está logado.
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      onLogin?.(data.user);
 
-      toast.success("Demo login successful!");
+      toast.success("Login successful!");
       clearFields();
+      navigate(
+        ["recruiter", "admin"].includes(data.user.role)
+          ? "/dashboard"
+          : "/profile"
+      );
+    } catch (error) {
+      toast.error(error.message || "Não foi possível conectar ao servidor.");
+    } finally {
       setLoading(false);
-
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 700);
-    }, 700);
+    }
   };
 
   return (

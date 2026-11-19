@@ -11,42 +11,21 @@ function Navbar() {
         </div>
 
         <div className="navbar-center">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
-          >
+          <NavLink to="/jobs" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
             Vagas
           </NavLink>
-
-          <button
-            type="button"
-            className="nav-link"
-            style={{ background: "transparent", border: 0, cursor: "pointer" }}
-          >
-            Avaliações da Empresa
-          </button>
-
-          <button
-            type="button"
-            className="nav-link"
-            style={{ background: "transparent", border: 0, cursor: "pointer" }}
-          >
-            Cargos e Salários
-          </button>
+          <Link to="/ai-resume" className="nav-link">
+            AI Resume
+          </Link>
         </div>
 
         <div className="navbar-right">
-          <button className="nav-icon-btn" aria-label="Buscar" type="button">
+          <Link to="/jobs" className="nav-icon-btn" aria-label="Buscar vagas">
             🔍
-          </button>
-          <span className="nav-text">Buscar</span>
-          <button className="nav-icon-btn" aria-label="Notificações" type="button">
-            🔔
-          </button>
-          <button className="nav-icon-btn" aria-label="Perfil" type="button">
+          </Link>
+          <Link to="/profile" className="nav-icon-btn" aria-label="Perfil">
             👤
-          </button>
+          </Link>
         </div>
       </div>
     </nav>

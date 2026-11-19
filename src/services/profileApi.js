@@ -1,131 +1,69 @@
-// src/services/profileApi.js
+import { apiRequest } from "./apiClient.js";
 
-const API_BASE = '/api';
+function getToken() {
+  return localStorage.getItem("token");
+}
 
-/**
- * Garante que exista um token de autenticação no localStorage para testes
- */
 export async function ensureAuthToken() {
-  let token = localStorage.getItem('token');
-  if (token) return token;
+  return getToken();
+}
 
-  try {
-    // Tenta fazer login ou criar usuário demo
-    const loginRes = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: 'tiagoramon@email.com',
-        password: 'SenhaSegura123!'
-      })
-    });
-
-    const loginData = await loginRes.json();
-    if (loginRes.ok && loginData.access_token) {
-      localStorage.setItem('token', loginData.access_token);
-      localStorage.setItem('user', JSON.stringify(loginData.user));
-      return loginData.access_token;
-    }
-
-    // Se não existia usuário, cadastra
-    const regRes = await fetch(`${API_BASE}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: 'Tiago Ramon',
-        email: 'tiagoramon@email.com',
-        password: 'SenhaSegura123!',
-        confirmPassword: 'SenhaSegura123!'
-      })
-    });
-
-    const regData = await regRes.json();
-    if (regRes.ok && regData.access_token) {
-      localStorage.setItem('token', regData.access_token);
-      localStorage.setItem('user', JSON.stringify(regData.user));
-      return regData.access_token;
-    }
-  } catch (err) {
-    console.warn('Não foi possível conectar ao back-end para autenticação automática:', err);
+async function request(path, options = {}) {
+  if (!getToken()) {
+    throw new Error("Você precisa estar logado para acessar o perfil.");
   }
 
-  return null;
+  try {
+    return await apiRequest(path, options);
+  } catch (error) {
+    if (error.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.dispatchEvent(new Event("auth:changed"));
+      throw new Error("Sessão expirada. Faça login novamente.");
+    }
+    throw error;
+  }
 }
 
 export async function fetchUserProfile() {
-  const token = await ensureAuthToken();
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const response = await fetch(`${API_BASE}/users/profile`, { headers });
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || data.message || 'Erro ao carregar perfil.');
-  }
-
+  const data = await request("/users/profile");
   return data.data;
 }
 
 export async function updateUserProfile(profileData) {
-  const token = await ensureAuthToken();
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const response = await fetch(`${API_BASE}/users/profile`, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify(profileData)
+  const data = await request("/users/profile", {
+    method: "PUT",
+    body: profileData,
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || data.error || 'Erro ao salvar alterações.');
-  }
-
   return data.data;
 }
 
 export async function uploadUserAvatar(file) {
-  const token = await ensureAuthToken();
   const formData = new FormData();
-  formData.append('avatar', file);
-
-  const headers = {};
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const response = await fetch(`${API_BASE}/users/profile/avatar`, {
-    method: 'POST',
-    headers,
-    body: formData
+  formData.append("avatar", file);
+  return request("/users/profile/avatar", {
+    method: "POST",
+    body: formData,
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || data.error || 'Erro ao enviar foto.');
-  }
-
-  return data;
 }
 
 export async function deleteUserAccount() {
-  const token = await ensureAuthToken();
-  const headers = {};
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const response = await fetch(`${API_BASE}/users/account`, {
-    method: 'DELETE',
-    headers
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Erro ao excluir conta.');
-  }
-
+  const data = await request("/users/account", { method: "DELETE" });
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.dispatchEvent(new Event("auth:changed"));
   return data;
 }
 
+export async function fetchAllUsersForAdmin() {
+  const response = await request("/users/admin/all");
+  return response.data;
+}
+
+export async function changeUserRoleByAdmin(userId, newRole) {
+  return request(`/users/admin/role/${userId}`, {
+    method: "PATCH",
+    body: { role: newRole },
+  });
+}
