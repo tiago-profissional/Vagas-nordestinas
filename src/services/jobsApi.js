@@ -1,50 +1,11 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/index.php";
-const NODE_API_BASE = import.meta.env.VITE_NODE_API_BASE_URL || "/api";
-const JOBS_API_BASE = `${NODE_API_BASE.replace(/\/$/, "")}/jobs`;
+import { apiRequest } from "./apiClient.js";
 
 function getToken() {
   return localStorage.getItem("token");
 }
 
 async function jobsApi(path, options = {}) {
-  const response = await fetch(`${JOBS_API_BASE}${path}`, {
-    headers: { Accept: "application/json" },
-    ...options,
-  });
-
-  let data = null;
-  try {
-    data = await response.json();
-  } catch {
-    if (response.ok) {
-      throw new Error("A API de vagas retornou uma resposta inválida.");
-    }
-  }
-
-  if (!response.ok) {
-    const error = new Error(data?.error || data?.message || `HTTP ${response.status}`);
-    error.status = response.status;
-    throw error;
-  }
-
-  return data;
-}
-
-async function api(route, options = {}) {
-  const url = `${API_BASE}?route=${encodeURIComponent(route)}`;
-  const response = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
-
-  let data = null;
-  try { data = await response.json(); } catch { data = null; }
-
-  if (!response.ok) {
-    throw new Error(data?.error || data?.message || `HTTP ${response.status}`);
-  }
-
-  return data;
+  return apiRequest(`/jobs${path}`, options);
 }
 
 export async function fetchJobs(options = {}) {
@@ -64,19 +25,22 @@ export async function getJobById(id, options = {}) {
 }
 
 export async function createJobApi(jobData) {
-  const result = await api("/jobs", {
+  const result = await apiRequest("/jobs", {
     method: "POST",
-    body: JSON.stringify(jobData),
+    body: jobData,
   });
   return { id: result.id, ...jobData };
 }
 
 export async function updateJobApi(id, jobData) {
-  return api(`/jobs/${id}`, { method: "PUT", body: JSON.stringify(jobData) });
+  return apiRequest(`/jobs/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    body: jobData,
+  });
 }
 
 export async function deleteJobApi(id) {
-  return api(`/jobs/${id}`, { method: "DELETE" });
+  return apiRequest(`/jobs/${encodeURIComponent(id)}`, { method: "DELETE" });
 }
 
 export async function getJobs() { return fetchJobs(); }
@@ -87,33 +51,14 @@ export async function getJobsByUser() {
 }
 
 export async function applyToJobApi(jobId) {
-  const token = getToken();
-  if (!token) throw new Error("Você precisa estar logado para se candidatar.");
-
-  const response = await fetch(`/api/jobs/${jobId}/apply`, {
+  if (!getToken()) throw new Error("Você precisa estar logado para se candidatar.");
+  return apiRequest(`/jobs/${encodeURIComponent(jobId)}/apply`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
   });
-
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || "Erro ao enviar candidatura.");
-
-  return data;
 }
 
 export async function fetchMyApplicationsApi() {
-  const token = getToken();
-  if (!token) throw new Error("Você precisa estar logado para ver suas candidaturas.");
-
-  const response = await fetch("/api/jobs/my-applications", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.message || "Erro ao buscar candidaturas.");
-
+  if (!getToken()) throw new Error("Você precisa estar logado para ver suas candidaturas.");
+  const data = await apiRequest("/jobs/my-applications");
   return data.data;
 }

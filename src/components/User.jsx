@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   fetchUserProfile,
@@ -87,6 +87,7 @@ function calculateLocalPercentage(p, sk, av) {
 }
 
 function User() {
+  const navigate = useNavigate();
   // Pega o usuário logado para descobrir o papel (role)
   const localUser = JSON.parse(localStorage.getItem("user") || "{}");
   const roleName = localUser.role === 'recruiter' ? 'Recrutador' : localUser.role === 'admin' ? 'Administrador' : 'Candidato';
@@ -298,8 +299,9 @@ function User() {
     try {
       await deleteUserAccount();
       window.dispatchEvent(new Event("profile:updated"));
+      window.dispatchEvent(new Event("auth:changed"));
       toast.success("Conta excluída com sucesso.");
-      setTimeout(() => window.location.assign("/"), 1200);
+      setTimeout(() => navigate("/"), 1200);
     } catch (err) {
       console.error("Erro ao excluir conta:", err);
       toast.error("Não foi possível excluir a conta.");
@@ -349,12 +351,14 @@ function User() {
         <Link className="user-brand" to="/">Vagas Nordestinas</Link>
         <nav className="user-nav" aria-label="Navegação principal">
           <Link to="/">Vagas</Link>
-          <Link to="/dashboard">Dashboard</Link>
-          <Link className="active" to="/user">Meu currículo</Link>
-          <Link to="/Tickets">Meus chamados</Link>
+          {["recruiter", "admin"].includes(localUser.role) && (
+            <Link to="/dashboard">Dashboard</Link>
+          )}
+          <Link className="active" to="/profile">Meu currículo</Link>
+          <Link to="/tickets">Meus chamados</Link>
         </nav>
         <div className="user-header-actions">
-          <Link className="user-avatar-small" to="/user" aria-label={`Perfil de ${profile.name}`}>
+          <Link className="user-avatar-small" to="/profile" aria-label={`Perfil de ${profile.name}`}>
             {avatarUrl ? (
               <img
                 src={avatarUrl}
@@ -369,7 +373,7 @@ function User() {
             )}
           </Link>
           <span className="user-chevron" aria-hidden="true">⌄</span>
-          <Link className="report-button" to="/Tickets">Relatar problema</Link>
+          <Link className="report-button" to="/relatar-problema">Relatar problema</Link>
         </div>
       </header>
 

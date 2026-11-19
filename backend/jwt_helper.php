@@ -3,36 +3,34 @@
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-// Configuração do JWT - CHAVE MAIS FORTE
-define('JWT_SECRET', 'vagas-nordestinas-chave-secreta-ultra-segura-2026');
-define('JWT_ALGO', 'HS256');
-define('JWT_EXPIRES', 3600); // 1 hora em segundos
-define('JWT_REFRESH_EXPIRES', 86400 * 7); // 7 dias
-
 class JwtHelper {
-    
-    // Gerar token de acesso
-    public static function generateToken($userId, $email, $name = null) {
+    private static function secret()
+    {
+        $secret = function_exists("vnEnv") ? vnEnv("JWT_SECRET") : getenv("JWT_SECRET");
+        if (!$secret || strlen($secret) < 32) {
+            throw new RuntimeException("Configure JWT_SECRET com pelo menos 32 caracteres aleatórios.");
+        }
+        return $secret;
+    }
+
+    public static function generateToken($userId, $email, $name = null, $role = "user") {
         $issuedAt = time();
-        $expire = $issuedAt + JWT_EXPIRES;
-        
+        $expire = $issuedAt + 3600;
         $payload = [
             'iat' => $issuedAt,
             'exp' => $expire,
             'sub' => $userId,
             'email' => $email,
             'name' => $name,
-            'type' => 'access'
+            'role' => $role,
+            'type' => 'access',
         ];
-        
-        return JWT::encode($payload, JWT_SECRET, JWT_ALGO);
+        return JWT::encode($payload, self::secret(), "HS256");
     }
-    
-    // Gerar refresh token
+
     public static function generateRefreshToken($userId, $email) {
         $issuedAt = time();
-        $expire = $issuedAt + JWT_REFRESH_EXPIRES;
-        
+        $expire = $issuedAt + 604800;
         $payload = [
             'iat' => $issuedAt,
             'exp' => $expire,
@@ -40,41 +38,54 @@ class JwtHelper {
             'email' => $email,
             'type' => 'refresh'
         ];
-        
-        return JWT::encode($payload, JWT_SECRET, JWT_ALGO);
+        return JWT::encode($payload, self::secret(), "HS256");
     }
-    
-    // Validar e decodificar token
+
     public static function validateToken($token) {
         try {
-            $decoded = JWT::decode($token, new Key(JWT_SECRET, JWT_ALGO));
+            $decoded = JWT::decode($token, new Key(self::secret(), "HS256"));
             return (array) $decoded;
-        } catch(Exception $e) {
+        } catch(\Throwable $e) {
             return null;
         }
     }
-    
-    // Verificar se token é válido
+
     public static function isAuthenticated() {
-        $headers = getallheaders();
-        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
-        
-        if (empty($authHeader)) {
+        $headers = function_exists("getallheaders") ? getallheaders() : [];
+        $authHeader = $_SERVER["HTTP_AUTHORIZATION"] ??
+            $headers["Authorization"] ??
+            $headers["authorization"] ??
+            "";
+        if (!preg_match('/^Bearer\s+(.+)$/i', $authHeader, $matches)) {
             return null;
         }
-        
-        $token = str_replace('Bearer ', '', $authHeader);
-        return self::validateToken($token);
+        $user = self::validateToken($matches[1]);
+        return $user && ($user["type"] ?? null) === "access" ? $user : null;
     }
-    
-    // Middleware para rotas protegidas
+
     public static function requireAuth() {
         $user = self::isAuthenticated();
-        
         if (!$user) {
             response(['error' => 'Unauthorized: Invalid or expired token'], 401);
         }
-        
+        $stmt = \getDB()->prepare(
+            "SELECT role FROM users WHERE id = :id AND deleted_at IS NULL LIMIT 1"
+        );
+        $stmt->execute([":id" => $user["sub"]]);
+        $role = $stmt->fetchColumn();
+        if ($role === false) {
+            response(["error" => "Sessão inválida ou conta inativa."], 401);
+        }
+        $user["role"] = $role;
+        return $user;
+    }
+
+    public static function requireAdmin()
+    {
+        $user = self::requireAuth();
+        if ($user["role"] !== "admin") {
+            response(["error" => "Acesso restrito a administradores."], 403);
+        }
         return $user;
     }
 }

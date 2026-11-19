@@ -75,7 +75,9 @@ function JobDetail({
       const formattedMaximum = formatCurrency(maximum);
 
       if (formattedMinimum && formattedMaximum) {
-        return `${formattedMinimum} - ${formattedMaximum}`;
+        return `${formattedMinimum}
+
+${formattedMaximum}`;
       }
     }
 
@@ -91,7 +93,9 @@ function JobDetail({
     const minimum = formatCurrency(job.salary_min);
     const maximum = formatCurrency(job.salary_max);
 
-    if (minimum && maximum) return `${minimum} - ${maximum}`;
+    if (minimum && maximum) return `${minimum}
+
+${maximum}`;
     if (minimum) return `A partir de ${minimum}`;
     if (maximum) return `Até ${maximum}`;
 
@@ -208,15 +212,24 @@ function JobDetail({
     const toastId = toast.loading("Enviando candidatura...");
 
     try {
-      await applyToJobApi(job.id);
+      const res = await applyToJobApi(job.id);
       toast.success("Candidatura realizada com sucesso!", { id: toastId });
 
-      if (applyUrl) {
-        window.open(applyUrl, "_blank", "noopener,noreferrer");
+      const targetUrl = res?.apply_url || applyUrl;
+      if (targetUrl) {
+        const win = window.open(targetUrl, "_blank", "noopener,noreferrer");
+        if (!win) {
+          window.location.href = targetUrl;
+        }
       }
     } catch (err) {
-      if (err.message.includes("já se candidatou")) {
+      if (err?.status === 401) {
+        toast.error("Sua sessão expirou. Faça login novamente para se candidatar.", { id: toastId });
+      } else if (err.message.includes("já se candidatou")) {
         toast.error("Você já se candidatou a esta vaga.", { id: toastId });
+        if (applyUrl) {
+          window.open(applyUrl, "_blank", "noopener,noreferrer");
+        }
       } else if (err.message.includes("precisa estar logado")) {
         toast.error("Faça login para se candidatar.", { id: toastId });
       } else {

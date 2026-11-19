@@ -1,19 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { createJobApi } from "../services/jobsApi.js";
 
 import Headers from "./Headers.jsx";
 
 import "../styles/createjob.css";
-
-/*
-  API PHP do Vagas Nordestinas.
-
-  O index.php recebe a rota através de:
-  ?route=/jobs
-*/
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/index.php";
-const API_URL = `${API_BASE_URL}?route=/jobs`;
 
 const EMPTY_FORM = {
   title: "",
@@ -53,53 +45,7 @@ export default function CreateJob({ onCancel }) {
   }
 
   async function createJob(payload) {
-    console.log("📤 Enviando vaga:", payload);
-    console.log("🌐 Endpoint:", API_URL);
-
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    console.log("📥 Status da resposta:", response.status);
-
-    /*
-      Lemos a resposta como texto primeiro.
-
-      Assim conseguimos enxergar erros PHP,
-      JSON inválido, warnings, etc.
-    */
-    const responseText = await response.text();
-
-    console.log("📥 Resposta bruta do backend:", responseText);
-
-    let data = null;
-
-    if (responseText) {
-      try {
-        data = JSON.parse(responseText);
-      } catch (error) {
-        console.error(
-          "⚠️ O backend não retornou JSON válido:",
-          responseText
-        );
-      }
-    }
-
-    if (!response.ok) {
-      const message =
-        data?.message ||
-        data?.error ||
-        `Erro ${response.status}: não foi possível cadastrar a vaga.`;
-
-      throw new Error(message);
-    }
-
-    return data || { ...payload };
+    return createJobApi(payload);
   }
 
   async function handleSubmit(e) {
@@ -173,8 +119,6 @@ export default function CreateJob({ onCancel }) {
 
       const createdJob = await createJob(payload);
 
-      console.log("✅ Vaga criada:", createdJob);
-
       toast.dismiss(loadingToast);
 
       toast.success(
@@ -192,8 +136,6 @@ export default function CreateJob({ onCancel }) {
       }, 700);
     } catch (error) {
       toast.dismiss(loadingToast);
-
-      console.error("❌ ERRO ao criar vaga:", error);
 
       if (
         error instanceof TypeError &&

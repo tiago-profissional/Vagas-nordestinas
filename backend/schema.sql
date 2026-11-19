@@ -1,10 +1,8 @@
 -- ========================================================
--- Schema MySQL para o Back-end Node.js - Vagas Nordestinas
--- Database: vagas_nordestinas
+-- Schema MySQL para a API PHP - Vagas Nordestinas
 -- ========================================================
 
-CREATE DATABASE IF NOT EXISTS `vagas_nordestinas` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `vagas_nordestinas`;
+-- Selecione primeiro o banco configurado em DB_NAME e execute este arquivo nele.
 
 -- Tabela de Usuários e Perfil
 CREATE TABLE IF NOT EXISTS `users` (
@@ -24,26 +22,45 @@ CREATE TABLE IF NOT EXISTS `users` (
   `skills` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`skills`)),
   `allow_recruiters` TINYINT(1) NOT NULL DEFAULT 1,
   `email_recommendations` TINYINT(1) NOT NULL DEFAULT 1,
+  `role` ENUM('user', 'recruiter', 'admin') NOT NULL DEFAULT 'user',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   `deleted_at` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Migração para tabelas existentes
-ALTER TABLE `users`
-  ADD COLUMN IF NOT EXISTS `phone` VARCHAR(30) DEFAULT NULL AFTER `password`,
-  ADD COLUMN IF NOT EXISTS `city` VARCHAR(100) DEFAULT NULL AFTER `phone`,
-  ADD COLUMN IF NOT EXISTS `state` VARCHAR(100) DEFAULT NULL AFTER `city`,
-  ADD COLUMN IF NOT EXISTS `birth_date` DATE DEFAULT NULL AFTER `state`,
-  ADD COLUMN IF NOT EXISTS `avatar_url` VARCHAR(500) DEFAULT NULL AFTER `birth_date`,
-  ADD COLUMN IF NOT EXISTS `desired_role` VARCHAR(255) DEFAULT NULL AFTER `avatar_url`,
-  ADD COLUMN IF NOT EXISTS `work_model` ENUM('Remoto', 'Híbrido', 'Presencial') DEFAULT 'Remoto' AFTER `desired_role`,
-  ADD COLUMN IF NOT EXISTS `contract_type` ENUM('CLT', 'PJ', 'CLT ou PJ') DEFAULT 'CLT ou PJ' AFTER `work_model`,
-  ADD COLUMN IF NOT EXISTS `availability` ENUM('Imediata', '15 dias', '30 dias', 'A combinar') DEFAULT 'Imediata' AFTER `contract_type`,
-  ADD COLUMN IF NOT EXISTS `skills` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL AFTER `availability`,
-  ADD COLUMN IF NOT EXISTS `allow_recruiters` TINYINT(1) NOT NULL DEFAULT 1 AFTER `skills`,
-  ADD COLUMN IF NOT EXISTS `email_recommendations` TINYINT(1) NOT NULL DEFAULT 1 AFTER `allow_recruiters`,
-  ADD COLUMN IF NOT EXISTS `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP() AFTER `created_at`,
-  ADD COLUMN IF NOT EXISTS `deleted_at` DATETIME DEFAULT NULL AFTER `updated_at`;
+CREATE TABLE IF NOT EXISTS `jobs` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(150) NOT NULL,
+  `company` VARCHAR(100) NOT NULL,
+  `city` VARCHAR(100) NOT NULL,
+  `state` VARCHAR(10) NOT NULL,
+  `work_mode` VARCHAR(20) NOT NULL,
+  `employment_type` VARCHAR(30) DEFAULT NULL,
+  `salary_min` INT DEFAULT NULL,
+  `salary_max` INT DEFAULT NULL,
+  `currency` VARCHAR(3) NOT NULL DEFAULT 'BRL',
+  `description` TEXT NOT NULL,
+  `url` VARCHAR(500) DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status` VARCHAR(50) DEFAULT 'Rascunho',
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `jobs_user_id_idx` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `candidaturas` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `job_id` INT UNSIGNED NOT NULL,
+  `status` VARCHAR(50) DEFAULT 'Em análise',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_candidatura` (`user_id`, `job_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_job_id` (`job_id`),
+  CONSTRAINT `candidaturas_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `candidaturas_job_id_fk` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

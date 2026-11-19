@@ -1,4 +1,4 @@
-const API_BASE = '/api';
+import { apiRequest } from "./apiClient.js";
 
 function getToken() {
   return localStorage.getItem('token');
@@ -8,43 +8,21 @@ export async function ensureAuthToken() {
   return getToken();
 }
 
-async function parseJson(response) {
-  const text = await response.text();
-  if (!text) return {};
-  try {
-    return JSON.parse(text);
-  } catch {
-    return {};
-  }
-}
-
 async function request(path, options = {}) {
-  const token = getToken();
-  if (!token) {
+  if (!getToken()) {
     throw new Error('Você precisa estar logado para acessar o perfil.');
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      ...(options.headers || {}),
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const data = await parseJson(response);
-
-  if (response.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    throw new Error('Sessão expirada. Faça login novamente.');
+  try {
+    return await apiRequest(path, options);
+  } catch (error) {
+    if (error.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      throw new Error('Sessão expirada. Faça login novamente.');
+    }
+    throw error;
   }
-
-  if (!response.ok) {
-    throw new Error(data.message || data.error || `Erro ${response.status} ao acessar o servidor.`);
-  }
-
-  return data;
 }
 
 export async function fetchUserProfile() {
@@ -55,8 +33,7 @@ export async function fetchUserProfile() {
 export async function updateUserProfile(profileData) {
   const data = await request('/users/profile', {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(profileData),
+    body: profileData,
   });
   return data.data;
 }
@@ -86,8 +63,7 @@ export async function fetchAllUsersForAdmin() {
 export async function changeUserRoleByAdmin(userId, newRole) {
   const response = await request(`/users/admin/role/${userId}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ role: newRole }),
+    body: { role: newRole },
   });
   return response;
 }

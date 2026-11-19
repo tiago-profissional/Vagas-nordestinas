@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "../../styles/support/TicketsPage.css";
 
@@ -292,25 +292,25 @@ function MyTickets() {
   return (
     <div className="tickets-page">
       <header className="tickets-header">
-        <a className="tickets-brand" href="/">
+        <Link className="tickets-brand" to="/">
           Vagas Nordestinas
-        </a>
+        </Link>
 
         <nav
           className="tickets-navigation"
           aria-label="Navegação principal"
         >
-          <a href="/">Vagas</a>
-          <a href="/dashboard">Dashboard</a>
-          <a href="/curriculo">Meu currículo</a>
+          <Link to="/jobs">Vagas</Link>
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/profile">Meu currículo</Link>
 
-          <a
+          <Link
             className="active"
-            href="/Tickets"
+            to="/tickets"
             aria-current="page"
           >
             Meus chamados
-          </a>
+          </Link>
         </nav>
 
         <div className="tickets-header-actions">

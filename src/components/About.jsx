@@ -90,17 +90,23 @@ export default function About() {
             <div className="about-section">
               <h2>Links</h2>
               <div className="about-links">
-                <a href="#" target="_blank" rel="noreferrer">
+                <a
+                  href="https://github.com/tiago-profissional/Vagas-nordestinas"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   GitHub Repository
                 </a>
 
-                <a href="#" target="_blank" rel="noreferrer">
+                <a
+                  href="https://vagasnordestinas.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Live Demo
                 </a>
 
-                <a href="#" target="_blank" rel="noreferrer">
-                  Video Walkthrough
-                </a>
+                <span>Video Walkthrough em breve</span>
               </div>
             </div>
           </div>

@@ -19,6 +19,11 @@ class Router {
         return $this;
     }
 
+    public function patch($path, $handler) {
+        $this->routes['PATCH'][$path] = $handler;
+        return $this;
+    }
+
     public function delete($path, $handler) {
         $this->routes['DELETE'][$path] = $handler;
         return $this;
@@ -84,7 +89,7 @@ if (!function_exists('response')) {
     function response($data, $status = 200) {
         http_response_code($status);
         header('Content-Type: application/json');
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         exit;
     }
 }

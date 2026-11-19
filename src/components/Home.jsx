@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 
 import JobList from "./JobList.jsx";
@@ -16,7 +16,6 @@ export default function Home({
   loadingJobs,
   errorJobs,
 }) {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const [searchText, setSearchText] = useState("");
@@ -110,7 +109,6 @@ export default function Home({
     if (!job?.id) return;
 
     setDetailOpen(true);
-    navigate(`/jobs/${job.id}`);
   }
 
   function normalizeText(value) {

@@ -157,26 +157,29 @@ Antes de iniciar, crie o `backend-node/.env` a partir do `backend-node/.env.exam
 
 | Variável | Para que serve |
 |---|---|
-| `VITE_API_BASE_URL` | URL base da API. Se não for definida, o frontend usa `/api/index.php` |
-| `VITE_NODE_API_BASE_URL` | URL base da API Node.js usada para listar e consultar vagas (padrão: `/api`) |
+| `VITE_API_BASE_URL` | Endpoint PHP; no deploy atual: `https://vagasnordestinas.com/api/index.php` |
 
-O arquivo `.env.production` está no repositório e tem só essas duas URLs, sem segredos. Para mudar algo no seu computador, copie `.env.example` para `.env.local`, que o git ignora.
+O arquivo `.env.production` contém somente a URL pública da API PHP. Para desenvolvimento local, copie `.env.example` para `.env.local`, que o git ignora.
 
 Toda variável que começa com `VITE_` vai para o código que roda no navegador. **Nunca coloque chaves secretas nela.**
 
-### APIs (`backend/` e `backend-node/`)
+### API PHP na Hostinger
 
-Copie o `.env.example` de cada pasta para `.env` e preencha. **O `.env` nunca vai para o git.**
+O código PHP fica em `backend/`; não existe uma pasta `api/` no repositório. Envie para `public_html/api/` `index.php`, `router.php`, `jwt_helper.php`, `config/database.php`, os três controllers PHP (`AuthController.php`, `JobController.php`, `UserController.php`), `.htaccess` e a pasta `vendor/` (necessária para JWT). Não envie os arquivos de teste, Node.js, `.env.example` nem `schema.sql` para a pasta pública. Execute `backend/schema.sql` no banco Aiven antes de usar a API. Se `users` ou `jobs` já existirem, confirme as colunas `users.role` e `jobs.url`; adicione apenas as que faltam (`ALTER TABLE users ADD COLUMN role ENUM('user','recruiter','admin') NOT NULL DEFAULT 'user';` e `ALTER TABLE jobs ADD COLUMN url VARCHAR(500) DEFAULT NULL;`).
 
-| Variável | Para que serve | `backend/` | `backend-node/` |
-|---|---|---|---|
-| `PORT` | Porta em que a API escuta | sim | sim |
-| `NODE_ENV` | Ambiente (`development` ou `production`) | sim | sim |
-| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Conexão com o banco de dados | sim | sim |
-| `JWT_SECRET` | Segredo que assina os tokens JWT. **Segredo** | sim | sim |
-| `COOKIE_SECRET` | Segredo dos cookies. **Segredo** | não | sim |
-| `FRONTEND_ORIGIN` | Endereço do frontend aceito pela API (CORS) <!-- TODO: confirme --> | não | sim |
-| `API_URL` | <!-- TODO: para que serve? --> | sim | não |
+Configure no ambiente PHP da Hostinger, nunca em `VITE_*`:
+
+| Variável | Valor a conferir |
+|---|---|
+| `DB_HOST` | Host MySQL fornecido pela Aiven |
+| `DB_PORT` | Porta fornecida pela Aiven (não presuma `3306`) |
+| `DB_NAME` | Nome exato do banco Aiven |
+| `DB_USER` | Usuário MySQL Aiven |
+| `DB_PASSWORD` | Senha MySQL Aiven |
+| `DB_SSL_CA` | Caminho absoluto legível para o certificado CA da Aiven |
+| `JWT_SECRET` | Segredo aleatório com pelo menos 32 caracteres |
+
+Em desenvolvimento local, o PHP carrega opcionalmente `backend/.env` apenas quando `SERVER_NAME` é `localhost` ou `127.0.0.1`; as variáveis de ambiente do processo têm prioridade. Configure nele `DB_HOST=localhost`, `DB_NAME=vagas_nordestinas`, `DB_USER=root`, `DB_PASSWORD=`, `DB_PORT=3306` e um `JWT_SECRET` aleatório com pelo menos 32 caracteres. Em produção, configure as variáveis no ambiente PHP e não envie `backend/.env` ao servidor. O template `backend/.env.example` documenta os nomes usados na configuração de produção. Mantenha a CA fora de uma pasta publicamente acessível quando possível. Confirme também que a Aiven permite conexões de saída do servidor Hostinger. Não envie credenciais ao repositório nem ao build do Vite.
 
 ## Status
 

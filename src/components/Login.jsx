@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { apiRequest } from "../services/apiClient.js";
 import "../styles/Signup.css";
 
 function Login({ onLogin }) {
@@ -26,27 +27,12 @@ function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const data = await apiRequest("/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: { email: email.trim(), password },
       });
-
-      let data = {};
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            data.error ||
-            (response.status >= 500
-              ? "Servidor indisponível. Verifique se o backend e o banco de dados estão rodando."
-              : "Não foi possível entrar.")
-        );
+      if (!data.access_token || !data.user) {
+        throw new Error("A API não retornou os dados de sessão esperados.");
       }
 
       // O token é o que a página de perfil usa para saber quem está logado.
@@ -56,7 +42,11 @@ function Login({ onLogin }) {
 
       toast.success("Login successful!");
       clearFields();
-      navigate("/dashboard");
+      navigate(
+        ["recruiter", "admin"].includes(data.user.role)
+          ? "/dashboard"
+          : "/profile"
+      );
     } catch (error) {
       toast.error(error.message || "Não foi possível conectar ao servidor.");
     } finally {

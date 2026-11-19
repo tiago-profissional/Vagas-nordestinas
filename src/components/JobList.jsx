@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/Home.css";
 
 // Gera os itens da paginação compacta: números e "..."
@@ -124,12 +125,14 @@ function JobList({ jobs, selectedJobId, onSelect, noSearchResults }) {
     <>
       <div className="job-list-wrapper">
         {currentJobs.map((job) => (
-          <div
+          <Link
             key={job.id}
+            to={`/jobs/${job.id}`}
             className={`job ${
               String(selectedJobId) === String(job.id) ? "selected" : ""
             }`}
             onClick={() => onSelect(job)}
+            aria-label={`Ver detalhes da vaga ${job.title} na empresa ${job.company}`}
           >
             <div className="job-top">
               <span className="job-source">{job.company}</span>
@@ -148,7 +151,7 @@ function JobList({ jobs, selectedJobId, onSelect, noSearchResults }) {
               <span className="tag">{getWorkMode(job)}</span>
               <span className="tag fulltime">{getEmploymentType(job)}</span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

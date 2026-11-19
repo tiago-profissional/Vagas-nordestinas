@@ -37,7 +37,7 @@ export default function MinhasCandidaturas() {
           <aside className="vn-dashboard-jobs__sidebar">
             <h2 className="vn-dashboard-jobs__sidebar-title">Meu Perfil</h2>
             <div className="vn-dashboard-jobs__sidebar-menu">
-              <Link to="/user" className="vn-dashboard-jobs__sidebar-item">Informações Pessoais</Link>
+              <Link to="/profile" className="vn-dashboard-jobs__sidebar-item">Informações Pessoais</Link>
               <button className="vn-dashboard-jobs__sidebar-item active">Minhas Candidaturas</button>
             </div>
           </aside>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import brandLogo from "../img/logo-vagas-nordestinas.png";
 import menuIcon from "../img/menu_hamburger.svg";
@@ -37,6 +37,7 @@ function UserAvatar({ name, avatarUrl }) {
 }
 
 export default function Headers() {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const accountRef = useRef(null);
@@ -54,11 +55,17 @@ export default function Headers() {
     setMenuOpen((current) => !current);
   }
 
+  function openJobs() {
+    closeMenu();
+    navigate("/jobs");
+  }
+
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     closeMenu();
-    window.location.assign("/login");
+    window.dispatchEvent(new Event("auth:changed"));
+    navigate("/login");
   }
 
   function getNavLinkClass({ isActive }) {
@@ -109,7 +116,7 @@ export default function Headers() {
           aria-label="Navegação principal"
         >
           <NavLink
-            to="/"
+            to="/jobs"
             end
             className={getNavLinkClass}
             onClick={closeMenu}
@@ -139,21 +146,19 @@ export default function Headers() {
             </NavLink>
           )}
 
-          <a
-            href="https://vagas-nordestinas.vercel.app/dashboard"
+          <Link
+            to="/ai-resume"
             className="vne-header__nav-link"
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={closeMenu}
           >
             AI Resume
-          </a>
+          </Link>
 
           <div className="vne-header__mobile-icons">
             <button
               type="button"
               className="vne-header__mobile-search"
-              onClick={closeMenu}
+              onClick={openJobs}
             >
               <span aria-hidden="true">⌕</span>
               Buscar
@@ -162,7 +167,7 @@ export default function Headers() {
             {user ? (
               <>
                 <Link
-                  to="/user"
+                  to="/profile"
                   className="vne-header__mobile-user"
                   onClick={closeMenu}
                 >
@@ -177,10 +182,10 @@ export default function Headers() {
             ) : (
               <>
                 <Link
-                  to="/user"
+                  to="/login"
                   className="profile-icon"
                   onClick={closeMenu}
-                  aria-label="Abrir perfil"
+                  aria-label="Entrar para acessar o perfil"
                 >
                   👤
                 </Link>
@@ -210,6 +215,7 @@ export default function Headers() {
             type="button"
             className="vne-header__icon-btn"
             aria-label="Buscar vagas"
+            onClick={openJobs}
           >
             <span aria-hidden="true">⌕</span>
           </button>
@@ -236,7 +242,7 @@ export default function Headers() {
                   </div>
 
                   <Link
-                    to="/user"
+                    to="/profile"
                     className="vne-header__account-item"
                     role="menuitem"
                     onClick={closeMenu}
@@ -269,10 +275,10 @@ export default function Headers() {
           ) : (
             <>
               <Link
-                to="/user"
+                to="/login"
                 className="profile-icon"
                 onClick={closeMenu}
-                aria-label="Abrir perfil"
+                aria-label="Entrar para acessar o perfil"
               >
                 👤
               </Link>

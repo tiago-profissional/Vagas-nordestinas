@@ -1,4 +1,5 @@
 import "../styles/Footer.css";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -14,15 +15,15 @@ function Footer() {
 
         <nav className="footer-links" aria-label="Vagas Nordestinas">
           <h3>Vagas Nordestinas</h3>
-          <a href="/">Vagas</a>
-          <a href="/about">Sobre nós</a>
-          <a href="/support">Suporte</a>
+          <Link to="/jobs">Vagas</Link>
+          <Link to="/about">Sobre nós</Link>
+          <Link to="/tickets">Suporte</Link>
         </nav>
 
         <nav className="footer-links" aria-label="Informações legais">
           <h3>Legal</h3>
-          <a href="/">Termos de Uso</a>
-          <a href="/">Política de Privacidade</a>
+          <Link to="/termos-de-uso">Termos de Uso</Link>
+          <Link to="/politica-de-privacidade">Política de Privacidade</Link>
         </nav>
       </div>
 

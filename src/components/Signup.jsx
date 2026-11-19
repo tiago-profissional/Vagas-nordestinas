@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { apiRequest } from "../services/apiClient.js";
+import { updateUserProfile } from "../services/profileApi.js";
 import "../styles/Signup.css";
 
 const initialAdditionalInfo = {
@@ -23,7 +25,7 @@ function formatPhone(value) {
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
 }
 
-function Signup() {
+function Signup({ onSignup }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
@@ -70,36 +72,23 @@ function Signup() {
       .filter(Boolean);
 
     try {
-      const response = await fetch("/api/auth/register", {
+      const data = await apiRequest("/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: {
           name: name.trim(),
           email: email.trim(),
           password,
           confirmPassword,
-        }),
+        },
       });
-      let data = {};
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      if (!response.ok) {
-        if (response.status >= 500) {
-          throw new Error(
-            data.message ||
-              "Servidor indisponível. Verifique se o backend (porta 3001) e o banco de dados estão rodando."
-          );
-        }
-        throw new Error(data.message || data.error || "Não foi possível criar sua conta.");
+      if (!data.access_token || !data.user) {
+        throw new Error("A API não retornou os dados de sessão esperados.");
       }
 
       // Conta criada: guarda a sessão para o perfil saber quem está logado.
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      onSignup?.(data.user);
 
       // Etapa 2: grava as informações adicionais no perfil do usuário (banco de dados).
       const hasExtras =
@@ -117,13 +106,7 @@ function Signup() {
 
       if (hasExtras) {
         try {
-          const profileResponse = await fetch("/api/users/profile", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${data.access_token}`,
-            },
-            body: JSON.stringify({
+          await updateUserProfile({
               personal_data: {
                 phone: additionalInfo.phone,
                 city: additionalInfo.city.trim(),
@@ -137,9 +120,7 @@ function Signup() {
                 availability: additionalInfo.availability,
                 skills,
               },
-            }),
           });
-          extrasSaved = profileResponse.ok;
         } catch {
           extrasSaved = false;
         }
@@ -150,7 +131,7 @@ function Signup() {
       } else {
         toast.success("Conta criada! Complete seus dados no perfil.");
       }
-      navigate("/dashboard");
+      navigate("/profile");
     } catch (error) {
       toast.error(error.message || "Não foi possível conectar ao servidor.");
     } finally {

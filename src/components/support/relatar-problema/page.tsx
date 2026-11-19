@@ -131,7 +131,7 @@ export default function RelatarProblemaPage() {
           >
             <Link to="/">Vagas</Link>
             <Link to="/dashboard">Dashboard</Link>
-            <Link to="/curriculo">Meu currículo</Link>
+            <Link to="/profile">Meu currículo</Link>
 
             <Link
               className="vn-nav-active"
