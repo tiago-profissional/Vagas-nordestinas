@@ -1,80 +1,125 @@
 import { useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import { apiRequest } from "../services/apiClient.js";
+import "../styles/Signup.css";
 
 export default function ResetPassword() {
-  const params = new URLSearchParams(window.location.search);
-
-  const token = params.get("token");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const token = searchParams.get("token") || "";
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
-  const sendPassword = async () => {
-    if (!password.trim()) {
-      setMessage("Digite sua senha.");
+  const sendPassword = async (event) => {
+    event.preventDefault();
+    setMessage("");
+    setMessageType("");
+
+    if (!token) {
+      setMessage("O link de redefinição está inválido ou incompleto.");
+      setMessageType("error");
       return;
     }
 
-    if (passwordConfirm && !passwordConfirm.trim() != !password.trim()) {
-      setMessage("Digite sua senha de confirmação.");
+    if (password.length < 8) {
+      setMessage("A senha deve ter pelo menos 8 caracteres.");
+      setMessageType("error");
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      setMessage("As senhas informadas não coincidem.");
+      setMessageType("error");
       return;
     }
 
     try {
       setLoading(true);
-      setMessage("");
-
-      const resp = await fetch("/api/auth/reset-password", {
+      const data = await apiRequest("/auth/reset-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password, passwordConfirm, token }),
+        body: { password, passwordConfirm, token },
       });
 
-      const data = await resp.json();
-
-      if (!resp.ok) {
-        throw new Error(
-          data.error || "Erro ao solicitar redefinição de senha.",
-        );
-      }
-
-      setMessage(data.message);
-
-      if(resp.ok){
-        window.location.href = "/login"
-      }
+      toast.success(data.message || "Senha redefinida com sucesso.");
+      navigate("/login", { replace: true });
     } catch (error) {
-      setMessage(error.message);
+      setMessage(error instanceof Error ? error.message : "Não foi possível redefinir sua senha.");
+      setMessageType("error");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <div>
-        <span>Digite sua nova senha:</span>
-        <input
-          type="text"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <div>
-        <span>confirme sua nova senha:</span>
-        <input
-          type="text"
-          value={passwordConfirm}
-          onChange={(e) => setPasswordConfirm(e.target.value)}
-        />
-      </div>
+    <main className="auth-page">
+      <form className="auth-form-card" onSubmit={sendPassword}>
+        <header className="auth-header">
+          <h1 className="auth-title">Redefinir senha</h1>
+          <p className="auth-subtitle">Escolha uma nova senha para sua conta.</p>
+          <div className="auth-underline" />
+        </header>
 
-      <button onClick={sendPassword} disabled={loading}>
-        {loading ? "carregando..." : "Redefinir senha"}
-      </button>
-      {message && <p>{message}</p>}
-    </div>
+        {!token ? (
+          <p className="auth-feedback auth-feedback--error" role="alert">
+            O link de redefinição está inválido ou incompleto.
+          </p>
+        ) : (
+          <div className="auth-inputs">
+            <label className="auth-input-wrapper" htmlFor="new-password">
+              <span className="auth-input-label">Nova senha</span>
+              <input
+                id="new-password"
+                className="auth-input"
+                type="password"
+                autoComplete="new-password"
+                minLength={8}
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </label>
+            <label className="auth-input-wrapper" htmlFor="confirm-password">
+              <span className="auth-input-label">Confirme a nova senha</span>
+              <input
+                id="confirm-password"
+                className="auth-input"
+                type="password"
+                autoComplete="new-password"
+                minLength={8}
+                required
+                value={passwordConfirm}
+                onChange={(event) => setPasswordConfirm(event.target.value)}
+              />
+            </label>
+          </div>
+        )}
+
+        {message && (
+          <p
+            className={`auth-feedback auth-feedback--${messageType}`}
+            role={messageType === "error" ? "alert" : "status"}
+            aria-live="polite"
+          >
+            {message}
+          </p>
+        )}
+
+        {token && (
+          <button className="auth-main-submit" type="submit" disabled={loading}>
+            {loading ? "Salvando..." : "Redefinir senha"}
+          </button>
+        )}
+
+        <p className="auth-bottom-text">
+          <Link to="/login" className="auth-bottom-link">
+            Voltar ao login
+          </Link>
+        </p>
+      </form>
+    </main>
   );
 }

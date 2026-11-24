@@ -1,6 +1,41 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "/api/index.php";
 
+const SESSION_COOKIE = "vn_token";
+const PORTAL_DOMAIN = "vagasnordestinas.com";
+
+export function syncSharedSessionCookie(token = localStorage.getItem("token")) {
+  if (typeof document === "undefined" || !token) return;
+
+  const hostname = window.location.hostname.toLowerCase();
+  const isPortalDomain =
+    hostname === PORTAL_DOMAIN || hostname.endsWith(`.${PORTAL_DOMAIN}`);
+  const attributes = [`${SESSION_COOKIE}=${encodeURIComponent(token)}`, "Path=/", "SameSite=Lax"];
+
+  if (isPortalDomain) {
+    attributes.push(`Domain=.${PORTAL_DOMAIN}`);
+    if (window.location.protocol === "https:") attributes.push("Secure");
+  }
+
+  document.cookie = attributes.join("; ");
+}
+
+export function clearSharedSessionCookie() {
+  if (typeof document === "undefined") return;
+
+  const hostname = window.location.hostname.toLowerCase();
+  const isPortalDomain =
+    hostname === PORTAL_DOMAIN || hostname.endsWith(`.${PORTAL_DOMAIN}`);
+  const attributes = [`${SESSION_COOKIE}=`, "Path=/", "Max-Age=0", "SameSite=Lax"];
+
+  document.cookie = attributes.join("; ");
+  if (isPortalDomain) {
+    attributes.push(`Domain=.${PORTAL_DOMAIN}`);
+    if (window.location.protocol === "https:") attributes.push("Secure");
+    document.cookie = attributes.join("; ");
+  }
+}
+
 export async function apiRequest(route, options = {}) {
   const { headers = {}, body, ...requestOptions } = options;
   const requestHeaders = {
@@ -21,6 +56,7 @@ export async function apiRequest(route, options = {}) {
 
   const token = localStorage.getItem("token");
   if (token) {
+    syncSharedSessionCookie(token);
     requestHeaders.Authorization = `Bearer ${token}`;
   }
 

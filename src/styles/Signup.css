@@ -118,6 +118,13 @@
   min-width: 0;
 }
 
+.auth-input-label {
+  display: block;
+  margin-bottom: var(--espaco-2);
+  color: var(--cor-texto-secundario);
+  font-size: var(--fonte-sm);
+}
+
 .auth-input {
   width: 100%;
   height: var(--altura-campo);
@@ -137,6 +144,20 @@
 .auth-input:focus {
   border-color: var(--cor-titulo);
   box-shadow: 0 0 0 3px var(--cor-foco);
+}
+
+.auth-feedback {
+  margin: var(--espaco-3) 0 0;
+  text-align: center;
+  font-size: var(--fonte-sm);
+}
+
+.auth-feedback--error {
+  color: #b42318;
+}
+
+.auth-feedback--success {
+  color: #067647;
 }
 
 .auth-forgot-password,

@@ -1,4 +1,7 @@
-import { apiRequest } from "./apiClient.js";
+import {
+  apiRequest,
+  clearSharedSessionCookie,
+} from "./apiClient.js";
 
 function getToken() {
   return localStorage.getItem("token");
@@ -19,6 +22,7 @@ async function request(path, options = {}) {
     if (error.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      clearSharedSessionCookie();
       window.dispatchEvent(new Event("auth:changed"));
       throw new Error("Sessão expirada. Faça login novamente.");
     }
@@ -52,6 +56,7 @@ export async function deleteUserAccount() {
   const data = await request("/users/account", { method: "DELETE" });
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+  clearSharedSessionCookie();
   window.dispatchEvent(new Event("auth:changed"));
   return data;
 }

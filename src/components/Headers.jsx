@@ -6,6 +6,7 @@ import menuIcon from "../img/menu_hamburger.svg";
 
 import { useCurrentUser } from "../hooks/useCurrentUser.js";
 import { resolveAvatarUrl } from "../services/avatarUrl.js";
+import { clearSharedSessionCookie } from "../services/apiClient.js";
 
 import "../styles/Header.css";
 
@@ -66,6 +67,7 @@ export default function Headers() {
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    clearSharedSessionCookie();
     closeMenu();
     window.dispatchEvent(new Event("auth:changed"));
     navigate("/login");

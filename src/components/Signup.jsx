@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { apiRequest } from "../services/apiClient.js";
+import {
+  apiRequest,
+  syncSharedSessionCookie,
+} from "../services/apiClient.js";
 import { updateUserProfile } from "../services/profileApi.js";
 import "../styles/Signup.css";
 
@@ -88,6 +91,7 @@ function Signup({ onSignup }) {
       // Conta criada: guarda a sessão para o perfil saber quem está logado.
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      syncSharedSessionCookie(data.access_token);
       onSignup?.(data.user);
 
       // Etapa 2: grava as informações adicionais no perfil do usuário (banco de dados).

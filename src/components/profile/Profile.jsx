@@ -69,6 +69,36 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState(false);
 
+  function applyStoredProfileFallback() {
+    try {
+      const stored = JSON.parse(localStorage.getItem("user") || "null");
+      if (!stored || typeof stored !== "object") return false;
+
+      const fallback = {
+        personal_data: {
+          id: stored.id ?? stored.sub ?? null,
+          name: typeof stored.name === "string" ? stored.name : "",
+          email: typeof stored.email === "string" ? stored.email : "",
+          role: typeof stored.role === "string" ? stored.role : "user",
+          avatar_url: stored.avatar_url || "",
+        },
+      };
+
+      if (!fallback.personal_data.id && !fallback.personal_data.name && !fallback.personal_data.email) {
+        return false;
+      }
+
+      setForm(profileToForm(fallback));
+      setAvatarUrl(resolveAvatarUrl(fallback.personal_data.avatar_url));
+      setAvatarFailed(false);
+      setCompletion(0);
+      setLoadError(false);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async function loadProfile() {
     setLoading(true);
     setLoadError(false);
@@ -79,8 +109,12 @@ export default function Profile() {
       setAvatarFailed(false);
       setCompletion(profileCompletion(data));
     } catch (error) {
-      setLoadError(true);
-      toast.error(error.message || "Não foi possível carregar seu perfil.");
+      if (!applyStoredProfileFallback()) {
+        setLoadError(true);
+        toast.error(error.message || "Não foi possível carregar seu perfil.");
+      } else {
+        toast.error("Exibindo os dados básicos salvos neste dispositivo.");
+      }
     } finally {
       setLoading(false);
     }
@@ -99,8 +133,12 @@ export default function Profile() {
       })
       .catch((error) => {
         if (!active) return;
-        setLoadError(true);
-        toast.error(error.message || "Não foi possível carregar seu perfil.");
+        if (!applyStoredProfileFallback()) {
+          setLoadError(true);
+          toast.error(error.message || "Não foi possível carregar seu perfil.");
+        } else {
+          toast.error("Exibindo os dados básicos salvos neste dispositivo.");
+        }
       })
       .finally(() => {
         if (active) setLoading(false);

@@ -22,6 +22,7 @@ import TermsUseScreen from "./components/TermsUseScreen";
 import PrivacyPolicyScreen from "./components/PrivacyPolicyScreen";
 import ResetPassword from "./components/ResetPassword";
 import { fetchJobs } from "./services/jobsApi.js";
+import { syncSharedSessionCookie } from "./services/apiClient.js";
 
 export default function AppRoutes() {
   const [user, setUser] = useState(() => {
@@ -57,9 +58,13 @@ export default function AppRoutes() {
   }, []);
 
   useEffect(() => {
+    syncSharedSessionCookie(localStorage.getItem("token"));
+
     function syncUser() {
       try {
-        setUser(JSON.parse(localStorage.getItem("user") || "null"));
+        const token = localStorage.getItem("token");
+        syncSharedSessionCookie(token);
+        setUser(token ? JSON.parse(localStorage.getItem("user") || "null") : null);
       } catch {
         setUser(null);
       }
@@ -86,12 +91,7 @@ export default function AppRoutes() {
       <Route path="/user" element={<Navigate to="/profile" replace />} />
       <Route path="/curriculo" element={<Navigate to="/profile" replace />} />
       <Route path="/minhas-candidaturas" element={user ? <MinhasCandidaturas /> : <Navigate to="/login" replace />} />
-      <Route
-        path="/ai-resume"
-        element={user ? <AiResume /> : <Navigate to="/login" replace />}
-      >
-        <Route path="compare" />
-      </Route>
+      <Route path="/ai-resume" element={<AiResume />} />
       <Route path="/about" element={<About />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />

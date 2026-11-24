@@ -4,6 +4,9 @@ import toast from "react-hot-toast";
 
 import Header from "./Headers";
 import { getJobsByUser, deleteJob } from "../services/jobsApi";
+import {
+  clearSharedSessionCookie,
+} from "../services/apiClient";
 
 import "../styles/dashboardJobs.css";
 
@@ -77,7 +80,10 @@ function DashboardJobs() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
+    clearSharedSessionCookie();
+    window.dispatchEvent(new Event("auth:changed"));
     toast.success("Logout realizado com sucesso!");
     navigate("/login");
   };

@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 
 import { resolveAvatarUrl } from "../services/avatarUrl.js";
 import { fetchUserProfile } from "../services/profileApi.js";
+import { syncSharedSessionCookie } from "../services/apiClient.js";
 
 // Evento disparado pela página de perfil quando os dados ou a foto mudam.
 export const PROFILE_UPDATED_EVENT = "profile:updated";
@@ -35,10 +36,12 @@ export function useCurrentUser() {
   const lastToken = useRef(undefined);
 
   const refresh = useCallback(async () => {
-    if (!localStorage.getItem("token")) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       setUser(null);
       return;
     }
+    syncSharedSessionCookie(token);
 
     try {
       const profile = await fetchUserProfile();

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { apiRequest } from "../services/apiClient.js";
+import {
+  apiRequest,
+  syncSharedSessionCookie,
+} from "../services/apiClient.js";
 import "../styles/Signup.css";
 
 function Login({ onLogin }) {
@@ -38,6 +41,7 @@ function Login({ onLogin }) {
       // O token é o que a página de perfil usa para saber quem está logado.
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      syncSharedSessionCookie(data.access_token);
       onLogin?.(data.user);
 
       toast.success("Login successful!");

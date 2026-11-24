@@ -37,6 +37,21 @@ class UserController
         return $user;
     }
 
+    private function userColumns($db): array
+    {
+        static $columns = null;
+        if ($columns !== null) {
+            return $columns;
+        }
+
+        $stmt = $db->query(
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users'"
+        );
+        $columns = array_fill_keys($stmt->fetchAll(\PDO::FETCH_COLUMN), true);
+        return $columns;
+    }
+
     private function profileData(array $user)
     {
         $skills = json_decode($user["skills"] ?? "[]", true);
@@ -50,23 +65,24 @@ class UserController
                 "id" => $user["id"],
                 "name" => $user["name"],
                 "email" => $user["email"],
-                "phone" => $user["phone"],
-                "city" => $user["city"],
-                "state" => $user["state"],
+                "role" => $user["role"] ?? "user",
+                "phone" => $user["phone"] ?? "",
+                "city" => $user["city"] ?? "",
+                "state" => $user["state"] ?? "",
                 "bio" => $user["bio"] ?? "",
-                "birth_date" => $user["birth_date"],
-                "avatar_url" => $user["avatar_url"],
+                "birth_date" => $user["birth_date"] ?? null,
+                "avatar_url" => $user["avatar_url"] ?? null,
             ],
             "professional_preferences" => [
-                "desired_role" => $user["desired_role"],
-                "work_model" => $user["work_model"],
-                "contract_type" => $user["contract_type"],
-                "availability" => $user["availability"],
+                "desired_role" => $user["desired_role"] ?? "",
+                "work_model" => $user["work_model"] ?? "",
+                "contract_type" => $user["contract_type"] ?? "",
+                "availability" => $user["availability"] ?? "",
                 "skills" => is_array($skills) ? $skills : [],
             ],
             "account_privacy" => [
-                "allow_recruiters" => (bool) $user["allow_recruiters"],
-                "email_recommendations" => (bool) $user["email_recommendations"],
+                "allow_recruiters" => (bool) ($user["allow_recruiters"] ?? false),
+                "email_recommendations" => (bool) ($user["email_recommendations"] ?? false),
             ],
             "profile_completion" => $completion,
             "meta" => ["profile_completion_percentage" => $completion],
@@ -80,12 +96,12 @@ class UserController
             "name", "email", "phone", "city", "state", "birth_date",
             "desired_role", "avatar_url",
         ] as $field) {
-            if (!empty($user[$field])) {
+            if (!empty($user[$field] ?? null)) {
                 $points += 10;
             }
         }
         foreach (["work_model", "contract_type", "availability"] as $field) {
-            if (!empty($user[$field])) {
+            if (!empty($user[$field] ?? null)) {
                 $points += 5;
             }
         }
@@ -284,17 +300,17 @@ class UserController
         }
 
         $phone = $this->optionalString(
-            $this->inputValue($data, $personalGroups, "phone", $user["phone"]),
+            $this->inputValue($data, $personalGroups, "phone", $user["phone"] ?? null),
             30,
             "Telefone"
         );
         $city = $this->optionalString(
-            $this->inputValue($data, $personalGroups, "city", $user["city"]),
+            $this->inputValue($data, $personalGroups, "city", $user["city"] ?? null),
             100,
             "Cidade"
         );
         $state = $this->optionalString(
-            $this->inputValue($data, $personalGroups, "state", $user["state"]),
+            $this->inputValue($data, $personalGroups, "state", $user["state"] ?? null),
             100,
             "Estado"
         );
@@ -305,59 +321,83 @@ class UserController
         );
         $birthDate = $this->birthDate(
             $this->inputValue($data, $personalGroups, "birth_date",
-                $this->inputValue($data, $personalGroups, "birthDate", $user["birth_date"]))
+                $this->inputValue($data, $personalGroups, "birthDate", $user["birth_date"] ?? null))
         );
         $desiredRole = $this->optionalString(
             $this->inputValue($data, $professionalGroups, "desired_role",
-                $this->inputValue($data, $professionalGroups, "desiredRole", $user["desired_role"])),
+                $this->inputValue($data, $professionalGroups, "desiredRole", $user["desired_role"] ?? null)),
             255,
             "Cargo desejado"
         );
 
         $workModel = $this->inputValue($data, $professionalGroups, "work_model",
-            $this->inputValue($data, $professionalGroups, "workModel", $user["work_model"]));
+            $this->inputValue($data, $professionalGroups, "workModel", $user["work_model"] ?? null));
         $contractType = $this->inputValue($data, $professionalGroups, "contract_type",
-            $this->inputValue($data, $professionalGroups, "contractType", $user["contract_type"]));
-        $availability = $this->inputValue($data, $professionalGroups, "availability", $user["availability"]);
+            $this->inputValue($data, $professionalGroups, "contractType", $user["contract_type"] ?? null));
+        $availability = $this->inputValue($data, $professionalGroups, "availability", $user["availability"] ?? null);
         $workModel = $this->optionalEnum($workModel, ["Remoto", "Híbrido", "Presencial"], "work_model");
         $contractType = $this->optionalEnum($contractType, ["CLT", "PJ", "CLT ou PJ"], "contract_type");
         $availability = $this->optionalEnum($availability, ["Imediata", "15 dias", "30 dias", "A combinar"], "availability");
         $skills = $this->skillsValue(
-            $this->inputValue($data, $professionalGroups, "skills", $user["skills"])
+            $this->inputValue($data, $professionalGroups, "skills", $user["skills"] ?? [])
         );
         $skillsJson = json_encode($skills, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 
-        $allowRecruiters = $this->inputValue($data, $privacyGroups, "allow_recruiters", $user["allow_recruiters"]);
-        $emailRecommendations = $this->inputValue($data, $privacyGroups, "email_recommendations", $user["email_recommendations"]);
-        $allowRecruiters = $this->booleanValue($allowRecruiters, (bool) $user["allow_recruiters"], "Privacidade");
-        $emailRecommendations = $this->booleanValue($emailRecommendations, (bool) $user["email_recommendations"], "Recomendações por e-mail");
+        $allowRecruiters = $this->inputValue(
+            $data,
+            $privacyGroups,
+            "allow_recruiters",
+            $user["allow_recruiters"] ?? false
+        );
+        $emailRecommendations = $this->inputValue(
+            $data,
+            $privacyGroups,
+            "email_recommendations",
+            $user["email_recommendations"] ?? false
+        );
+        $allowRecruiters = $this->booleanValue(
+            $allowRecruiters,
+            (bool) ($user["allow_recruiters"] ?? false),
+            "Privacidade"
+        );
+        $emailRecommendations = $this->booleanValue(
+            $emailRecommendations,
+            (bool) ($user["email_recommendations"] ?? false),
+            "Recomendações por e-mail"
+        );
+
+        $optionalUpdates = [
+            "phone" => $phone,
+            "city" => $city,
+            "bio" => $bio,
+            "state" => $state,
+            "birth_date" => $birthDate,
+            "desired_role" => $desiredRole,
+            "work_model" => $workModel,
+            "contract_type" => $contractType,
+            "availability" => $availability,
+            "skills" => $skillsJson,
+            "allow_recruiters" => $allowRecruiters,
+            "email_recommendations" => $emailRecommendations,
+        ];
+        $columns = $this->userColumns($db);
+        $sets = ["name = :name", "email = :email"];
+        $params = [":name" => $name, ":email" => $email, ":user_id" => $id];
+        foreach ($optionalUpdates as $column => $value) {
+            if (isset($columns[$column])) {
+                $sets[] = "{$column} = :{$column}";
+                $params[":{$column}"] = $value;
+            }
+        }
+        if (isset($columns["updated_at"])) {
+            $sets[] = "updated_at = NOW()";
+        }
 
         $stmt = $db->prepare(
-            "UPDATE users SET name = :name, email = :email, phone = :phone, city = :city, bio = :bio,
-             state = :state, birth_date = :birth_date, desired_role = :desired_role,
-             work_model = :work_model, contract_type = :contract_type,
-             availability = :availability, skills = :skills,
-             allow_recruiters = :allow_recruiters,
-             email_recommendations = :email_recommendations, updated_at = NOW()
-             WHERE id = :user_id AND deleted_at IS NULL"
+            "UPDATE users SET " . implode(", ", $sets) .
+            " WHERE id = :user_id AND deleted_at IS NULL"
         );
-        $stmt->execute([
-            ":name" => $name,
-            ":email" => $email,
-            ":phone" => $phone,
-            ":city" => $city,
-            ":bio" => $bio,
-            ":state" => $state,
-            ":birth_date" => $birthDate,
-            ":desired_role" => $desiredRole,
-            ":work_model" => $workModel,
-            ":contract_type" => $contractType,
-            ":availability" => $availability,
-            ":skills" => $skillsJson,
-            ":allow_recruiters" => $allowRecruiters,
-            ":email_recommendations" => $emailRecommendations,
-            ":user_id" => $id,
-        ]);
+        $stmt->execute($params);
 
         response([
             "success" => true,
